@@ -1,3 +1,6 @@
+#ifndef FUNCESTACIONES_H
+#define FUNCESTACIONES_H
+
 #include "funcTrenes.h"
 #define max_cad 50
 
@@ -8,10 +11,14 @@ typedef struct
 	TREN tren[10];	
 }ESTACION;
 
-void registrarTren(TREN tren);
+ESTACION ObtenerDatosEstacion();
+
+void registrarTren();
 
 void enviarTren();
 
 void finalizarTren();
 
 void estadoEstacion ();
+#endif	// FUNCESTACIONES_H
+

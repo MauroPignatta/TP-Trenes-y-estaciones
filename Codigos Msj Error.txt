@@ -1,0 +1,5 @@
+Mensajes de Error
+
+1 = No puede abrir archivo de configuracion de tren
+2 = Problemas de conexion a la red
+

@@ -1,6 +1,5 @@
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
+#ifndef FUNCTRENES_H
+#define FUNCTRENES_H
 
 #define max_est 30
 
@@ -23,3 +22,6 @@ void partir();
 void estadoTren();
 
 TREN pasarTren();
+
+#endif	// FUNCTRENES_H
+
