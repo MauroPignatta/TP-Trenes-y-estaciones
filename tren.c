@@ -4,8 +4,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <netdb.h>
+#include "lib/funcTrenes.h"
 
 int main(int argc, char** argv) {
+    
+    TREN tren = pasarTren();
+    
     struct sockaddr_in dirServer;
     dirServer.sin_family = AF_INET;
     dirServer.sin_addr.s_addr = inet_addr("127.0.0.1");
@@ -25,6 +29,7 @@ int main(int argc, char** argv) {
     
     while(1)
     {
+        
         fgets(mensaje,sizeof(mensaje),stdin);
         send (client, mensaje, strlen(mensaje), 0);
     }
