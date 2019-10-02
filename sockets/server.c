@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MaxClientes 15
+#define MaxClientes 3
 
 int main(int argc, char** argv) {
     
@@ -17,8 +17,9 @@ int main(int argc, char** argv) {
     //estructura que contiene datos del servidor 
     struct sockaddr_in dirServer;
     dirServer.sin_family = AF_INET;
-    dirServer.sin_addr.s_addr = inet_addr("192.168.1.11");
+    dirServer.sin_addr.s_addr = inet_addr("127.0.0.1");
     dirServer.sin_port = htons(8080);
+
     char msjServer[256]= "Bienvenido al servidor";
     
     //crea el socket
@@ -46,8 +47,6 @@ int main(int argc, char** argv) {
     //-------------------------------------------------------------------------
     
     // Aceptar conexion y enviar msj bienvenida 
-    struct sockaddr_in dirClient;
-    unsigned int sizeDir;
     int client[MaxClientes]; 
     memset(client,-1,sizeof(client));
     
@@ -57,17 +56,17 @@ int main(int argc, char** argv) {
     
     while (1)
     {
-		fd_set copy = master;
+	fd_set copy = master;
         nready = select(maxfd, &copy, NULL, NULL, NULL); 
         
         if ( FD_ISSET(server, &copy))
         {
             strcpy(msjServer,"Bienvenido");
             puts("Cliente nuevo");
-            client[n] = accept(server,(struct sockaddr*) &dirClient, &sizeDir );
+            client[n] = accept(server, 0, 0 );
             send(client[n], msjServer, sizeof(msjServer), 0);
             FD_SET(client[n],&master);
-			n++;
+		n++;
         }
         else {
             for(int i = 0; i < n; i ++)
@@ -78,11 +77,12 @@ int main(int argc, char** argv) {
                     int bytes = recv(client[i], msjServer, sizeof(msjServer), 0 );
                     if (bytes <= 0)
                     {
-                        printf("Se desconecto el cliente %s.\n", client[i]);
+			memset(msjServer,'\0', sizeof(msjServer));
+                        printf("Se desconecto el cliente %d.\n", client[i]);
                         FD_CLR(client[i],&master);
                     }
                     else{
-						printf("Mensaje Recibido del cliente %d: %s", client[i], msjServer);
+			printf("Mensaje Recibido del cliente %d: %s", client[i], msjServer);
                     }
                 }
             }

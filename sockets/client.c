@@ -8,7 +8,7 @@
 int main(int argc, char** argv) {
     struct sockaddr_in dirServer;
     dirServer.sin_family = AF_INET;
-    dirServer.sin_addr.s_addr = inet_addr("192.168.1.11");
+    dirServer.sin_addr.s_addr = inet_addr("127.0.0.1");
     dirServer.sin_port = htons(8080);
     
     int client = socket(AF_INET, SOCK_STREAM, 0);
