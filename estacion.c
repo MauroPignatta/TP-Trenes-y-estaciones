@@ -29,11 +29,14 @@ int main(int argc, char** argv) {
         
         if ( FD_ISSET(server, &copy))
         {
-            /**/
+            /* Falta preparar / mejorar el mensaje de bienvenida */
             strncpy(mensaje, "Bienvenido a la estacion", sizeMsj);
             puts("Un nuevo tren se ha conectado");
+
+            /* acepta al nuevo tren y le envia el mensaje de bienvenida*/
             client[n] = accept(server, 0, 0);
             send(client[n], mensaje, sizeMsj, 0);
+            /* lo agrega al fd */
             FD_SET(client[n],&master);
             n++;
         }

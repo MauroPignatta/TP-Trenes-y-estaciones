@@ -2,8 +2,13 @@ all: Estacion Tren
 	
 srcfiles = src/funcEstaciones.c src/funcTrenes.c src/Conexion.c 
 
+CFLAG = -Ilib 
+
 Estacion: estacion.c
-	gcc  -Ilib -o bin/estacion estacion.c $(srcfiles)
+	gcc  $(CFLAG) -o bin/estacion estacion.c $(srcfiles)
 
 Tren: tren.c
-	gcc -Ilib -o bin/tren tren.c $(srcfiles)
+	gcc $(CFLAG) -o bin/tren tren.c $(srcfiles)
+
+clean: 
+	rm -f bin/*.exe

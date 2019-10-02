@@ -8,16 +8,17 @@ int main(int argc, char** argv) {
     
     TREN tren = pasarTren();
 
-    /* Devuelve el socket ya configurado*/
+    /* Devuelve el socket ya configurado */
     int client = CrearSocketCliente();
     
     char mensaje[sizeMsj];
+
+    /* Recibe un mensaje de bienvenida */
     recv(client, &mensaje, sizeMsj, 0 );
     puts(mensaje);
     
     while(1)
     {
-        
         fgets(mensaje, sizeMsj, stdin);
         //armarMensaje(&tren, mensaje);
         send (client, mensaje, strlen(mensaje), 0);
