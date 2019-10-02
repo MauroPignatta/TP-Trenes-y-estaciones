@@ -7,13 +7,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../lib/funcEstaciones.h"
 
 #define MaxClientes 3
 
+
+
 int main(int argc, char** argv) {
     
+    ESTACION Estacion;
+
     int nready;
-    
     //estructura que contiene datos del servidor 
     struct sockaddr_in dirServer;
     dirServer.sin_family = AF_INET;
