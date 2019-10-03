@@ -6,7 +6,7 @@
 
 int main(int argc, char** argv) {
     
-    ESTACION Estacion = ObtenerDatosEstacion();
+    ESTACION estacion = ObtenerDatosEstacion();
     
     char mensaje[sizeMsj]= "";
     
@@ -54,13 +54,37 @@ int main(int argc, char** argv) {
                         FD_CLR(client[i],&master);
                     }
                     else{
+                        /* Recibo el mensaje */
+                        recv(client[n], mensaje, sizeMsj, 0);
                         
-                        /* Aca iria el switch enorme cuando recibe un mensaje del tren*/
+                        char opcion = mensaje[0];
                         
+                        switch (opcion)
+                        {
+                            case '1':
+                                registrarTren(&estacion, mensaje);
+                                break;
+                               
+                            case '2':
+                                // solicitar anden
+                                break;
+                                
+                            case '3':
+                                // partir
+                                break;
+                                
+                            case '4':
+                                // estado
+                                break;
+                                
+                            default:
+                                printf("Nunca deberia salir por el default\n");
+                                printf("Si ves este mensaje, hay algo que esta mal\n");
+                        }
                     }
                 }
             }
         }
-	}
+    }
     return (EXIT_SUCCESS);
 }
