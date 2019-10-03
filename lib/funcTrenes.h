@@ -9,6 +9,7 @@ typedef struct{
     char modelo[10];
     char estOrigen[max_est];
     char estDestino[max_est];
+    int tiempoRestante;
 }TREN;
 
 void cargarCombustible();

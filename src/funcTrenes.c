@@ -27,7 +27,7 @@ void strrev(char *str)
 }
 
 /* Pasa de entero a string */
-char * strint(int n)
+char * inttostr(int n)
 {
     char *str =(char*) malloc(sizeof(char) * 11);
     int i = 0;
@@ -44,8 +44,8 @@ char * strint(int n)
 }
 
 char * armarMensaje(TREN tren,char *ptr){
-    char *id = strint(tren.ID);
-    char *combustible = strint(tren.combustible);
+    char *id = inttostr(tren.ID);
+    char *combustible = inttostr(tren.combustible);
     strcat(ptr,";");
     strcat(ptr,id);
     strcat(ptr,";");
@@ -58,7 +58,7 @@ char * armarMensaje(TREN tren,char *ptr){
     strcat(ptr,tren.estOrigen);
 }
 
-TREN pasarTren(){
+TREN inicializarTren(){
     FILE *tren = openFile();
     TREN aux;
     char ptr[max_est];
@@ -68,6 +68,7 @@ TREN pasarTren(){
     aux.combustible = atoi(ptr);
     fgets(ptr, max_est, tren);
     strcpy(aux.modelo,ptr);
+    aux.tiempoRestante = 0;
     memset(aux.estDestino, '\0', max_est);
     memset(aux.estOrigen, '\0', max_est);
     fclose(tren);

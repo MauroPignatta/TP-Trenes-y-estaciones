@@ -2,18 +2,18 @@
 #define FUNCESTACIONES_H
 
 #include "funcTrenes.h"
-#define max_cad 50
+#define MAX_TREN 10
 
 typedef struct 
 {
 	char nombre[30];
 	int distancia;	
-	TREN tren[10];	
+	TREN tren[MAX_TREN];	
 }ESTACION;
 
 ESTACION ObtenerDatosEstacion();
 
-void registrarTren();
+void registrarTren(ESTACION *estacion, char * mensaje);
 
 void enviarTren();
 

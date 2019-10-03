@@ -6,7 +6,7 @@
 
 int main(int argc, char** argv) {
     
-    TREN tren = pasarTren();
+    TREN tren = inicializarTren();
 
     /* Devuelve el socket ya configurado */
     int client = CrearSocketCliente();
