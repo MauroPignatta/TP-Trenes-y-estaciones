@@ -16,13 +16,14 @@ void cargarCombustible();
 
 void solicitarPasoAnden();
 
-void registrarse();
+void registrarse(char *mensaje,TREN tren,int client);
 
 void partir();
 
 void estadoTren();
 
 TREN pasarTren();
+TREN inicializarTren();
 
 #endif	// FUNCTRENES_H
 

@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include "../lib/Conexion.h"
 FILE * openFile(){
     FILE *ptr = fopen("../config/configTrenes.txt","r");
     if(ptr == NULL){
@@ -82,4 +82,8 @@ void registrarse(char *mensaje,TREN tren,int client)
 {
      mensaje=armarMensaje(tren, mensaje);//armarMensaje(&tren, mensaje);
      send (client, mensaje, strlen(mensaje), 0);
+}
+
+void cargarCombustible(){
+    
 }
