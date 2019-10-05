@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
                                 
                             case '4':
                                 estadoDelTren(estacion ,mensaje);
-                                puts(mensaje);
+                                puts("Estado enviado");
                                 send(client[i], mensaje, strlen(mensaje), 0);
                                 break;
                                 

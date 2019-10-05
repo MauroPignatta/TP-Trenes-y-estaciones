@@ -9,6 +9,9 @@ int main(int argc, char** argv) {
         printf("Falta el nombre del tren \n");
         exit(3);
     }
+    
+    int yaRegistrado = 1;
+    
     char *nomArchivo=argv[1];
     TREN tren = inicializarTren(nomArchivo);
     
@@ -26,6 +29,12 @@ int main(int argc, char** argv) {
         gets(mensaje);
         switch(mensaje[0]){
             case '1':
+                if (!yaRegistrado)
+                {
+                    puts("Ya te has registrado.");
+                    break;
+                }
+                yaRegistrado = 0;
                 registrarse(mensaje,tren,client);
                 recv(client, mensaje, sizeMsj, 0);
                 puts(mensaje);            
