@@ -22,9 +22,7 @@ void partir();
 
 void estadoTren();
 
-TREN pasarTren();
-
-TREN inicializarTren();
+TREN inicializarTren(char *arch);
 
 #endif	// FUNCTRENES_H
 

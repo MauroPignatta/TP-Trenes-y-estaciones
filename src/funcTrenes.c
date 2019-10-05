@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include "../lib/Conexion.h"
 
-FILE * openFile(){
-    FILE *ptr = fopen("../config/configTrenes.txt","r");
+FILE * openFile(char * nombreArchivo){
+    FILE *ptr = fopen(nombreArchivo,"r");
     if(ptr == NULL){
         printf("No se pudo abrir el archivo de configuracion\n");
         exit(1);
@@ -62,8 +62,9 @@ char * armarMensaje(TREN tren,char *ptr){
     return ptr;
 }
 
-TREN inicializarTren(){
-    FILE *tren = openFile();
+TREN inicializarTren(char *arch){
+    
+    FILE *tren = openFile(arch);
     TREN aux;
     char ptr[max_est];
     fgets(ptr, max_est, tren);

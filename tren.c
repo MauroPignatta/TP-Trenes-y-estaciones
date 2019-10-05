@@ -5,8 +5,12 @@
 #include "lib/funcTrenes.h"
 
 int main(int argc, char** argv) {
-    
-    TREN tren = inicializarTren();
+    if(argc!=2){
+        printf("Falta el nombre del tren \n");
+        exit(3);
+    }
+    char *nomArchivo=argv[1];
+    TREN tren = inicializarTren(nomArchivo);
     
     /* Devuelve el socket ya configurado */
     int client = CrearSocketCliente();
