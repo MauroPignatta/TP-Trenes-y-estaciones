@@ -63,6 +63,8 @@ int registrarTren(ESTACION * estacion, char * mensaje)
     //copio el nombre de la estacion en la estacion origen del tren
     strcpy(estacion->tren[i].estOrigen, estacion->nombre);
     estacion->tren[i].tiempoRestante = 0;
+    strcpy(estacion->tren[i].estDestino, "A asignar");
+    
     
     return 1;
 }

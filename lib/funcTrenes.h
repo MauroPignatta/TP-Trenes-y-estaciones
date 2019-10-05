@@ -20,7 +20,7 @@ void registrarse(char *mensaje,TREN tren,int client);
 
 void partir();
 
-void estadoTren();
+void estadoTren(char * mensaje);
 
 TREN inicializarTren(char *arch);
 

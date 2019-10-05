@@ -27,6 +27,8 @@ int main(int argc, char** argv) {
         switch(mensaje[0]){
             case '1':
                 registrarse(mensaje,tren,client);
+                recv(client, mensaje, sizeMsj, 0);
+                puts(mensaje);            
                 break;
             case '2':
                 //solicitar anden
@@ -35,8 +37,10 @@ int main(int argc, char** argv) {
                //partir();
                 break;
             case '4':
-		send(client, mensaje, strlen(mensaje), 0);
-                //estadoTren();
+		sprintf(mensaje,"4;%d",tren.ID);
+                send(client, mensaje, strlen(mensaje), 0);
+                recv(client, mensaje, sizeMsj, 0);
+                estadoTren(mensaje);
                 break;
         }   
     }

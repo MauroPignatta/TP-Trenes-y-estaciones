@@ -74,7 +74,7 @@ TREN inicializarTren(char *arch){
     fscanf(tren,"%s",ptr);
     strcpy(aux.modelo,ptr);
     aux.tiempoRestante = 0;
-    strcpy(aux.estDestino," ");
+    strcpy(aux.estDestino,"A asignar");
     strcpy(aux.estOrigen," ");
     fclose(tren);
     return aux;
@@ -86,3 +86,19 @@ void registrarse(char *mensaje,TREN tren,int client)
     send (client, mensaje, strlen(mensaje), 0);
 }
 
+void estadoTren(char * mensaje){
+    char * token;
+    token=strtok(mensaje,";");
+    printf("El identificador del tren es: %s\n", token);
+    token=strtok(NULL,";");
+    printf("El combustible restante es: %s\n", token);
+    token=strtok(NULL,";");
+    printf("El modelo del tren es: %s\n", token);
+    token=strtok(NULL,";");
+    printf("La estacion en la q se encuentra es: %s\n", token);
+    token=strtok(NULL,";");
+    printf("La estacion destino es: %s\n", token);
+    token=strtok(NULL,";");
+    printf("El tiempo restante de viaje es: %s\n", token);   
+    
+}

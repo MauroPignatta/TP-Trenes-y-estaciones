@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
                                 	puts("No se pudo registrar al tren");
                                     strcpy(mensaje,"No te has podido registrar");
                                 }
-                                //puts("Registro de tren correcto");
+                                   puts("Registro de tren correcto");
 
                                 /*Envio una respuesta al tren*/
                                 send(client[i], mensaje, strlen(mensaje), 0);

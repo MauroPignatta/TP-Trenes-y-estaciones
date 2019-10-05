@@ -1,0 +1,12 @@
+git pull //trae todos los archivos actualizados desde el repositorio online. 
+
+TRABAJANDO
+
+git add . //agrega todo lo que hice al stage, un punto intermedio del codigo online. 
+
+git commit -m "Comentario" // Agrega una descripcion al contenido a subir.
+
+git pull //nuevamente para no pisar datos si alguno estuvo trabajando. 
+
+git push //sube los cambios realizados al repositorio online. 
+
