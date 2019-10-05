@@ -71,18 +71,18 @@ TREN inicializarTren(){
     aux.ID = atoi(ptr);
     fgets(ptr, max_est, tren);
     aux.combustible = atoi(ptr);
-    fgets(ptr, max_est, tren);
+    fscanf(tren,"%s",ptr);
     strcpy(aux.modelo,ptr);
     aux.tiempoRestante = 0;
-    memset(aux.estDestino, '\0', max_est);
-    memset(aux.estOrigen, '\0', max_est);
+    strcpy(aux.estDestino," ");
+    strcpy(aux.estOrigen," ");
     fclose(tren);
     return aux;
 }
 
 void registrarse(char *mensaje,TREN tren,int client)
 {
-    mensaje = armarMensaje(tren, mensaje);  //armarMensaje(&tren, mensaje);
+    armarMensaje(tren, mensaje);  //armarMensaje(&tren, mensaje);
     send (client, mensaje, strlen(mensaje), 0);
 }
 

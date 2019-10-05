@@ -28,6 +28,7 @@ int main(int argc, char** argv) {
         fd_set copy = master;
         int nready = select(maxfd, &copy, NULL, NULL, NULL); 
         
+	// si es un cliente nuevo
         if ( FD_ISSET(server, &copy))
         {
             /* Falta preparar / mejorar el mensaje de bienvenida */
@@ -37,10 +38,13 @@ int main(int argc, char** argv) {
             /* acepta al nuevo tren y le envia el mensaje de bienvenida*/
             client[n] = accept(server, 0, 0);
             send(client[n], mensaje, sizeMsj, 0);
+
             /* lo agrega al fd */
             FD_SET(client[n],&master);
             n++;
         }
+
+	// si ya lo conoce
         else {
             for(int i = 0; i < n; i ++)
             {
@@ -50,6 +54,7 @@ int main(int argc, char** argv) {
                     // Recibo el mensaje
                     int bytes = recv(client[i], mensaje, sizeof(mensaje), 0 );
                     
+		    //  Para saber si el cliente se desconecto 
                     if (bytes <= 0)
                     {
                         memset(mensaje,'\0', sizeof(mensaje));
@@ -73,7 +78,8 @@ int main(int argc, char** argv) {
                                 	puts("No se pudo registrar al tren");
                                     strcpy(mensaje,"No te has podido registrar");
                                 }
-                                puts("Registro de tren correcto");
+                                //puts("Registro de tren correcto");
+
                                 /*Envio una respuesta al tren*/
                                 send(client[i], mensaje, strlen(mensaje), 0);
                                 break;

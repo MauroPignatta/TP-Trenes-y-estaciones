@@ -44,7 +44,7 @@ int CrearSocketServer()
     if ( bind(server, (struct sockaddr*) &dirServer,sizeof (dirServer)) != 0)
     {
         perror("Error de conexion");
-        return 1;
+        exit (2);
     }
     
     listen(server, MaxClientes);
@@ -71,7 +71,7 @@ int CrearSocketCliente()
     dirServer.sin_port = htons(Puerto);
     
     /* Conectamos al servidor*/
-    if (connect(cliente, (void *)&dirServer, sizeof(dirServer)))
+    if (connect(cliente, (void *)&dirServer, sizeof(dirServer)) != 0)
     {
         perror("No se pudo conectar con el servidor");
         exit(2);

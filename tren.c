@@ -7,11 +7,11 @@
 int main(int argc, char** argv) {
     
     TREN tren = inicializarTren();
-
+    
     /* Devuelve el socket ya configurado */
     int client = CrearSocketCliente();
     
-    char *mensaje= (char*) malloc(sizeof(char)*sizeMsj);
+    char mensaje[sizeMsj];
 
     /* Recibe un mensaje de bienvenida */
     recv(client, mensaje, sizeMsj, 0 );
@@ -20,7 +20,21 @@ int main(int argc, char** argv) {
     while(1)
     {
         gets(mensaje);
-        registrarse(mensaje,tren,client);
+        switch(mensaje[0]){
+            case '1':
+                registrarse(mensaje,tren,client);
+                break;
+            case '2':
+                //solicitar anden
+                break;
+            case '3':
+               //partir();
+                break;
+            case '4':
+		send(client, mensaje, strlen(mensaje), 0);
+                //estadoTren();
+                break;
+        }   
     }
     
     return (EXIT_SUCCESS);
