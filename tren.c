@@ -6,7 +6,7 @@
 
 int main(int argc, char** argv) {
     if(argc!=2){
-        printf("Falta el nombre del tren \n");
+        printf("Ingrese la ruta al archivo de conf. como parametro\n");
         exit(3);
     }
     
