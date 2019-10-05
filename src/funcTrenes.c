@@ -14,7 +14,7 @@ FILE * openFile(){
 }
 
 /*Invierte la cadena*/
-void strrev(char *str)
+/*void strrev(char *str)
 {
     char *aux =(char*) malloc(sizeof(char) * 11);
     strcpy(aux,str);
@@ -26,10 +26,10 @@ void strrev(char *str)
         str++;
         i++;
     }
-}
+}*/
 
 /* Pasa de entero a string */
-char * inttostr(int n)
+/*char * inttostr(int n)
 {
     char *str =(char*) malloc(sizeof(char) * 11);
     int i = 0;
@@ -43,13 +43,12 @@ char * inttostr(int n)
     *(str + i) = '\0';
     strrev(str);
     return str;
-}
+}*/
 
 char * armarMensaje(TREN tren,char *ptr){
-    
-    char *id = inttostr(tren.ID);
-    char *combustible = inttostr(tren.combustible);
-    strcat(ptr,";");
+    ptr+=1;
+    sprintf(ptr,";%d;%d;%s;%s;%s;",tren.ID,tren.combustible,tren.modelo,tren.estDestino,tren.estOrigen);
+    /*strcat(ptr,";");
     strcat(ptr,id);
     strcat(ptr,";");
     strcat(ptr,combustible);
@@ -59,7 +58,7 @@ char * armarMensaje(TREN tren,char *ptr){
     strcat(ptr,tren.estDestino);
     strcat(ptr,";");
     strcat(ptr,tren.estOrigen);
-    strcat(ptr,";");
+    strcat(ptr,";");*/
     return ptr;
 }
 
@@ -86,8 +85,3 @@ void registrarse(char *mensaje,TREN tren,int client)
     send (client, mensaje, strlen(mensaje), 0);
 }
 
-void cargarCombustible(int *combustible){
-    
-    int resto=500-(*combustible);
-    *combustible+=resto;
-}

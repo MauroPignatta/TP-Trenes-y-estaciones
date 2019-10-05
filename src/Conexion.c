@@ -44,7 +44,7 @@ int CrearSocketServer()
     if ( bind(server, (struct sockaddr*) &dirServer,sizeof (dirServer)) != 0)
     {
         perror("Error de conexion");
-        exit (2);
+        exit(2);
     }
     
     listen(server, MaxClientes);
