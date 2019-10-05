@@ -84,6 +84,8 @@ void registrarse(char *mensaje,TREN tren,int client)
      send (client, mensaje, strlen(mensaje), 0);
 }
 
-void cargarCombustible(){
+void cargarCombustible(int *combustible){
     
+    int resto=500-(*combustible);
+    *combustible+=resto;
 }

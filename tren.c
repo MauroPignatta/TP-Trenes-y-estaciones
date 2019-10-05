@@ -20,6 +20,7 @@ int main(int argc, char** argv) {
     while(1)
     {
         fgets(mensaje, sizeMsj, stdin);
+        
         registrarse(mensaje,tren,client);
     }
     

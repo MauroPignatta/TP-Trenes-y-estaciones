@@ -12,7 +12,7 @@ typedef struct{
     int tiempoRestante;
 }TREN;
 
-void cargarCombustible();
+void cargarCombustible(int *combustible);
 
 void solicitarPasoAnden();
 
@@ -23,6 +23,7 @@ void partir();
 void estadoTren();
 
 TREN pasarTren();
+
 TREN inicializarTren();
 
 #endif	// FUNCTRENES_H
