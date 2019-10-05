@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../lib/Conexion.h"
+
 FILE * openFile(){
     FILE *ptr = fopen("../config/configTrenes.txt","r");
     if(ptr == NULL){
@@ -19,9 +20,10 @@ void strrev(char *str)
     strcpy(aux,str);
     int i = 0;
     int n = strlen(str) - 1;
-    while(*aux)
+    while(*str)
     {
-        *(str + i) = *(aux + n - i);
+        *str = *(aux + n - i);
+        str++;
         i++;
     }
 }
@@ -80,8 +82,8 @@ TREN inicializarTren(){
 
 void registrarse(char *mensaje,TREN tren,int client)
 {
-     mensaje=armarMensaje(tren, mensaje);//armarMensaje(&tren, mensaje);
-     send (client, mensaje, strlen(mensaje), 0);
+    mensaje = armarMensaje(tren, mensaje);  //armarMensaje(&tren, mensaje);
+    send (client, mensaje, strlen(mensaje), 0);
 }
 
 void cargarCombustible(int *combustible){

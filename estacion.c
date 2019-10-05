@@ -21,6 +21,7 @@ int main(int argc, char** argv) {
     int client[MaxClientes]; 
     memset(client,-1,sizeof(client));
     int n = 0;
+    int regCorrecto;
     
     while (1)
     {
@@ -46,23 +47,35 @@ int main(int argc, char** argv) {
                 if (FD_ISSET(client[i], &copy))
                 {
                     memset(mensaje,'\0',sizeof(mensaje));
+                    // Recibo el mensaje
                     int bytes = recv(client[i], mensaje, sizeof(mensaje), 0 );
+                    
                     if (bytes <= 0)
                     {
                         memset(mensaje,'\0', sizeof(mensaje));
-                        //printf("Se desconecto el cliente %d.\n", client[i]);
+                        printf("Se desconecto el cliente %d.\n", client[i]);
                         FD_CLR(client[i],&master);
                     }
                     else{
-                        /* Recibo el mensaje */
-                        recv(client[n], mensaje, sizeMsj, 0);
-                        
                         char opcion = mensaje[0];
                         
                         switch (opcion)
                         {
                             case '1':
-                                registrarTren(&estacion, mensaje);
+                                /*Registro al tren*/
+                            	puts("Registrando tren");
+                                regCorrecto = registrarTren(&estacion, mensaje);
+                                strcpy(mensaje,"Te has registrado correctamente");
+                                
+                                /*Comprueba que el tren se haya registrado*/
+                                if (!regCorrecto)
+                                {
+                                	puts("No se pudo registrar al tren");
+                                    strcpy(mensaje,"No te has podido registrar");
+                                }
+                                puts("Registro de tren correcto");
+                                /*Envio una respuesta al tren*/
+                                send(client[i], mensaje, strlen(mensaje), 0);
                                 break;
                                
                             case '2':
@@ -74,7 +87,9 @@ int main(int argc, char** argv) {
                                 break;
                                 
                             case '4':
-                                // estado
+                                estadoDelTren(estacion ,mensaje);
+                                puts(mensaje);
+                                send(client[i], mensaje, strlen(mensaje), 0);
                                 break;
                                 
                             default:

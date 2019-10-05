@@ -38,15 +38,13 @@ int BuscarLugarDesocupado(ESTACION* estacion)
     return encontrado;
 }
 
-/*Copia los datos del tren en la estacion
- * en caso que haya lugar disponible. */
-void registrarTren(ESTACION * estacion, char * mensaje)
+int registrarTren(ESTACION * estacion, char * mensaje)
 {
     int i = BuscarLugarDesocupado(estacion);
     if(i == -1)
     {
         printf("No queda espacio para mas trenes");
-        return;
+        return 0;
     }
     mensaje = mensaje + 2;
     
@@ -66,7 +64,7 @@ void registrarTren(ESTACION * estacion, char * mensaje)
     strcpy(estacion->tren[i].estOrigen, estacion->nombre);
     estacion->tren[i].tiempoRestante = 0;
     
-    
+    return 1;
 }
 
 void enviarTren()
@@ -81,8 +79,37 @@ void finalizarTren()
 
 }
 
-
-void estadoEstacion ()
+/*Devuelve la posicion en la que se encuentra el tren
+en el vector de trenes de la estacion, o -1 si no se
+encuentra*/
+int BuscarTrenEnEstacion(ESTACION estacion, int idTren)
 {
+    int i = 0;
+    while(i < MAX_TREN)
+    {
+        if (idTren == estacion.tren[i].ID)
+            return i;
+        i++;
+    }
+    return -1;
+}
 
+void estadoDelTren (ESTACION estacion, char * mensaje)
+{
+    int idTren;
+    mensaje = mensaje + 2;
+    sscanf(mensaje, "%d", &idTren);
+    int pos = BuscarTrenEnEstacion(estacion, idTren);
+    if (pos != -1)
+    {
+        mensaje = mensaje - 2;
+        sprintf(mensaje,"%d;%d;%s;%s;%s;%d;",
+                estacion.tren[pos].ID, estacion.tren[pos].combustible,
+                estacion.tren[pos].modelo, estacion.tren[pos].estOrigen,
+                estacion.tren[pos].estDestino, estacion.tren[pos].tiempoRestante);
+    }
+    else
+    {
+        strcpy(mensaje, "No se encuentra registrado.");
+    }
 }
