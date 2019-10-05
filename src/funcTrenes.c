@@ -44,6 +44,7 @@ char * inttostr(int n)
 }
 
 char * armarMensaje(TREN tren,char *ptr){
+    
     char *id = inttostr(tren.ID);
     char *combustible = inttostr(tren.combustible);
     strcat(ptr,";");
@@ -56,6 +57,8 @@ char * armarMensaje(TREN tren,char *ptr){
     strcat(ptr,tren.estDestino);
     strcat(ptr,";");
     strcat(ptr,tren.estOrigen);
+    strcat(ptr,";");
+    return ptr;
 }
 
 TREN inicializarTren(){
@@ -75,7 +78,8 @@ TREN inicializarTren(){
     return aux;
 }
 
-void registrarse()
+void registrarse(char *mensaje,TREN tren,int client)
 {
-    
+     mensaje=armarMensaje(tren, mensaje);//armarMensaje(&tren, mensaje);
+     send (client, mensaje, strlen(mensaje), 0);
 }

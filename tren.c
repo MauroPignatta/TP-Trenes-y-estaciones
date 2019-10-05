@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
     /* Devuelve el socket ya configurado */
     int client = CrearSocketCliente();
     
-    char mensaje[sizeMsj];
+    char *mensaje=(char*)malloc(sizeof(char)*sizeMsj);
 
     /* Recibe un mensaje de bienvenida */
     recv(client, &mensaje, sizeMsj, 0 );
@@ -20,8 +20,7 @@ int main(int argc, char** argv) {
     while(1)
     {
         fgets(mensaje, sizeMsj, stdin);
-        //armarMensaje(&tren, mensaje);
-        send (client, mensaje, strlen(mensaje), 0);
+        registrarse(mensaje,tren,client);
     }
     
     return (EXIT_SUCCESS);
