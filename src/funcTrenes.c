@@ -39,10 +39,9 @@ TREN inicializarTren(char *arch){
     return aux;
 }
 
-void registrarse(char *mensaje,TREN tren,int client)
+void registrarse(char *mensaje,TREN tren)
 {
-    armarMensaje(tren, mensaje);  //armarMensaje(&tren, mensaje);
-    send (client, mensaje, strlen(mensaje), 0);
+    armarMensaje(tren, mensaje);
 }
 
 void estadoTren(char * mensaje){

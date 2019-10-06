@@ -23,10 +23,25 @@ ESTACION ObtenerDatosEstacion(char * nomArchivo)
     return est;
 }
 
-/* Busca en la estacion el primer espacio 
- * libre en el vector de trenes y devuelve
- * su posicion o -1 si no hay lugar disponible. */
-int BuscarLugarDesocupado(ESTACION* estacion)
+/*Devuelve la posicion en la que se encuentra el tren
+en el vector de trenes de la estacion, o -1 si no se
+encuentra*/
+int BuscarTrenEnEstacion(ESTACION estacion, int idTren)
+{
+    int i = 0;
+    while(i < MAX_TREN)
+    {
+        if (idTren == estacion.tren[i].ID)
+            return i;
+        i++;
+    }
+    return -1;
+}
+
+/*Busca la primer posicion vacia en el vector de trenes
+y devuelve la posicion, o -1 en caso de no haber
+lugares vacios.*/
+int BuscarPosVacia(ESTACION* estacion)
 {
     int encontrado = -1;
     int i = 0;
@@ -40,7 +55,7 @@ int BuscarLugarDesocupado(ESTACION* estacion)
 
 int registrarTren(ESTACION * estacion, char * mensaje)
 {
-    int i = BuscarLugarDesocupado(estacion);
+    int i = BuscarPosVacia(estacion);
     if(i == -1)
     {
         printf("No queda espacio para mas trenes");
@@ -50,6 +65,14 @@ int registrarTren(ESTACION * estacion, char * mensaje)
     
     //token ahora contiene el ID
     char * token = strtok(mensaje, ";");
+    int ID = atoi(token);
+    int yaExisteID = BuscarTrenEnEstacion(*estacion, ID);
+    if (yaExisteID != -1)
+    {
+    	printf("\nYa hay un tren con ese ID registrado.");
+    	return 0;
+    }
+    
     estacion->tren[i].ID = atoi(token);
     
     //token ahora contiene el combustible
@@ -64,8 +87,6 @@ int registrarTren(ESTACION * estacion, char * mensaje)
     strcpy(estacion->tren[i].estOrigen, estacion->nombre);
     estacion->tren[i].tiempoRestante = 0;
     strcpy(estacion->tren[i].estDestino, "A asignar");
-    
-    
     return 1;
 }
 
@@ -79,21 +100,6 @@ void enviarTren()
 void finalizarTren()
 {
 
-}
-
-/*Devuelve la posicion en la que se encuentra el tren
-en el vector de trenes de la estacion, o -1 si no se
-encuentra*/
-int BuscarTrenEnEstacion(ESTACION estacion, int idTren)
-{
-    int i = 0;
-    while(i < MAX_TREN)
-    {
-        if (idTren == estacion.tren[i].ID)
-            return i;
-        i++;
-    }
-    return -1;
 }
 
 void estadoDelTren (ESTACION estacion, char * mensaje)

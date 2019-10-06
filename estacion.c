@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
 
     ESTACION estacion = ObtenerDatosEstacion(nomArchivo);
     
-    char mensaje[sizeMsj]= "";
+    char mensaje[sizeMsj];
     
     //Devuelve el socket ya configurado
     int server = CrearSocketServer();
@@ -73,23 +73,26 @@ int main(int argc, char** argv) {
                         FD_CLR(client[i],&master);
                     }
                     else{
+
                         char opcion = mensaje[0];
-                        
+
                         switch (opcion)
                         {
                             case '1':
                                 /*Registro al tren*/
                             	puts("Registrando tren");
                                 regCorrecto = registrarTren(&estacion, mensaje);
-                                strcpy(mensaje,"Te has registrado correctamente");
+                                strcpy(mensaje,"1;Te has registrado correctamente");
                                 
                                 /*Comprueba que el tren se haya registrado*/
                                 if (!regCorrecto)
                                 {
                                 	puts("No se pudo registrar al tren");
-                                    strcpy(mensaje,"No te has podido registrar");
+                                    strcpy(mensaje,"2;No te has podido registrar");
                                 }
+                                else{
                                    puts("Registro de tren correcto");
+                                }
 
                                 /*Envio una respuesta al tren*/
                                 send(client[i], mensaje, strlen(mensaje), 0);

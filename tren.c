@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
     /* Devuelve el socket ya configurado */
     int client = CrearSocketCliente();
     
-    char mensaje[sizeMsj];
+    char* mensaje = (char*) malloc(sizeMsj);
 
     /* Recibe un mensaje de bienvenida */
     recv(client, mensaje, sizeMsj, 0 );
@@ -44,10 +44,17 @@ int main(int argc, char** argv) {
                     puts("Ya te has registrado.");
                     break;
                 }
-                yaRegistrado = 0;
                 registrarse(mensaje,tren,client);
+                send (client, mensaje, strlen(mensaje), 0);
+
                 recv(client, mensaje, sizeMsj, 0);
-                puts(mensaje);            
+                if (*mensaje == '1')
+                {
+                    yaRegistrado = 0;
+                }
+                mensaje += 2;
+                puts(mensaje);
+                mensaje -= 2;            
                 break;
             case '2':
                 //solicitar anden
