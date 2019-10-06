@@ -13,52 +13,11 @@ FILE * openFile(char * nombreArchivo){
     return ptr;
 }
 
-/*Invierte la cadena*/
-/*void strrev(char *str)
-{
-    char *aux =(char*) malloc(sizeof(char) * 11);
-    strcpy(aux,str);
-    int i = 0;
-    int n = strlen(str) - 1;
-    while(*str)
-    {
-        *str = *(aux + n - i);
-        str++;
-        i++;
-    }
-}*/
-
-/* Pasa de entero a string */
-/*char * inttostr(int n)
-{
-    char *str =(char*) malloc(sizeof(char) * 11);
-    int i = 0;
-    while(n > 0)
-    {
-        int aux = n % 10;
-        n = n / 10;
-        *(str + i) = '0' + aux;
-        i++;
-    }
-    *(str + i) = '\0';
-    strrev(str);
-    return str;
-}*/
-
 char * armarMensaje(TREN tren,char *ptr){
     ptr+=1;
-    sprintf(ptr,";%d;%d;%s;%s;%s;",tren.ID,tren.combustible,tren.modelo,tren.estDestino,tren.estOrigen);
-    /*strcat(ptr,";");
-    strcat(ptr,id);
-    strcat(ptr,";");
-    strcat(ptr,combustible);
-    strcat(ptr,";");
-    strcat(ptr,tren.modelo);
-    strcat(ptr,";");
-    strcat(ptr,tren.estDestino);
-    strcat(ptr,";");
-    strcat(ptr,tren.estOrigen);
-    strcat(ptr,";");*/
+    sprintf(ptr,";%d;%d;%s;%s;%s;",
+        tren.ID, tren.combustible, tren.modelo,
+        tren.estDestino, tren.estOrigen);
     return ptr;
 }
 
@@ -99,6 +58,5 @@ void estadoTren(char * mensaje){
     token=strtok(NULL,";");
     printf("La estacion destino es: %s\n", token);
     token=strtok(NULL,";");
-    printf("El tiempo restante de viaje es: %s\n", token);   
-    
+    printf("El tiempo restante de viaje es: %s\n", token);
 }

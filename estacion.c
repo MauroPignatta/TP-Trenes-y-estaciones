@@ -6,7 +6,18 @@
 
 int main(int argc, char** argv) {
     
-    ESTACION estacion = ObtenerDatosEstacion();
+	system("cls");
+    
+    if (argc != 2)
+    {
+    	printf("Ingrese el nombre del archivo de conf. como parametro\n");
+        exit(3);
+    }
+
+    char nomArchivo[20] = "../config/";
+    strcat(nomArchivo, argv[1]);
+
+    ESTACION estacion = ObtenerDatosEstacion(nomArchivo);
     
     char mensaje[sizeMsj]= "";
     

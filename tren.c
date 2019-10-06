@@ -5,14 +5,16 @@
 #include "lib/funcTrenes.h"
 
 int main(int argc, char** argv) {
+
+    system("cls");
+
     if(argc!=2){
-        printf("Ingrese la ruta al archivo de conf. como parametro\n");
+        printf("Ingrese el nombre del archivo de conf. como parametro\n");
         exit(3);
     }
     
-    int yaRegistrado = 1;
-    
-    char *nomArchivo=argv[1];
+    char nomArchivo[20] = "../config/";
+    strcat(nomArchivo, argv[1]);
     TREN tren = inicializarTren(nomArchivo);
     
     /* Devuelve el socket ya configurado */
@@ -24,9 +26,17 @@ int main(int argc, char** argv) {
     recv(client, mensaje, sizeMsj, 0 );
     puts(mensaje);
     
+    /* Flag para que un tren no pueda registrarse 2 veces*/
+    int yaRegistrado = 1;
+
     while(1)
     {
+        printf("\n1. Registrarse    2. Solicitar Anden");
+        printf("\n3. Partir         4. Estado\n");
+        printf("Elija una opcion: ");
         gets(mensaje);
+        printf("\n");
+        system("cls");
         switch(mensaje[0]){
             case '1':
                 if (!yaRegistrado)
@@ -41,17 +51,27 @@ int main(int argc, char** argv) {
                 break;
             case '2':
                 //solicitar anden
+                printf("Todavia no implementado.\n");
                 break;
             case '3':
-               //partir();
+                //partir
+                printf("Todavia no implementado.\n");
                 break;
             case '4':
-		sprintf(mensaje,"4;%d",tren.ID);
+                if(yaRegistrado)
+                {
+                    puts("Todavia no estas registrado en la estacion.");
+                    break;
+                } 
+                printf("Estado: \n\n");
+		        sprintf(mensaje,"4;%d",tren.ID);
                 send(client, mensaje, strlen(mensaje), 0);
                 recv(client, mensaje, sizeMsj, 0);
                 estadoTren(mensaje);
                 break;
-        }   
+            default:
+                printf("\nOpcion invalida.\n");
+        }
     }
     
     return (EXIT_SUCCESS);

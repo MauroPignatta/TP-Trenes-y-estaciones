@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-ESTACION ObtenerDatosEstacion()
+ESTACION ObtenerDatosEstacion(char * nomArchivo)
 {
-    FILE * configEst = fopen("../config/configEstacion.txt","r") ;
+    FILE * configEst = fopen(nomArchivo,"r") ;
     ESTACION est;
     if(!configEst)
     {
@@ -19,7 +19,7 @@ ESTACION ObtenerDatosEstacion()
     {
         memset(est.tren + i,'\0',sizeof(TREN));
     }
-    
+    fclose(configEst);
     return est;
 }
 
