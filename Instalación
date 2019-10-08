@@ -1,0 +1,13 @@
+Instalación
+
+Pasos a seguir en la Instalación y Ejecución del Programa Trenes y Estaciones
+
+Para Plataformas de Linux
+
+1- Abrir una Terminal 
+2- Clonar este repositorio: git clone https://github.com/MauroPignatta/TP-Trenes-y-estaciones
+3- Ingresar hasta el siguiente directorio:
+Escritorio\TP-Trenes-y-estaciones
+4- Ejecutar ./estacion
+5- Ejecutar ./tren <configTrenes.txt>
+

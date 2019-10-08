@@ -16,7 +16,7 @@ void cargarCombustible(int *combustible);
 
 void solicitarPasoAnden();
 
-void registrarse(char *mensaje,TREN tren,int client);
+void registrarse(char *mensaje,TREN tren);
 
 void partir();
 

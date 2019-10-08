@@ -6,7 +6,7 @@
 
 int main(int argc, char** argv) {
 
-    system("cls");
+    system("clear");
 
     if(argc!=2){
         printf("Ingrese el nombre del archivo de conf. como parametro\n");
@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
         printf("Elija una opcion: ");
         gets(mensaje);
         printf("\n");
-        system("cls");
+        system("clear");
         switch(mensaje[0]){
             case '1':
                 if (!yaRegistrado)
@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
                     puts("Ya te has registrado.");
                     break;
                 }
-                registrarse(mensaje,tren,client);
+                registrarse(mensaje,tren);
                 send (client, mensaje, strlen(mensaje), 0);
 
                 recv(client, mensaje, sizeMsj, 0);
