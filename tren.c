@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
         printf("Ingrese el nombre del archivo de conf. como parametro\n");
         exit(3);
     }
-    
+    FormatearNombreArchivo(argv[1]);
     char nomArchivo[20] = "../config/";
     strcat(nomArchivo, argv[1]);
     TREN tren = inicializarTren(nomArchivo);

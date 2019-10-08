@@ -7,11 +7,14 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <netinet/in.h>
+#include <ctype.h>
 
 #define sizeIP sizeof(char) * 16
 #define sizePORT sizeof(char) * 6
 #define sizeMsj 256
 #define MaxClientes 15
+
+void  FormatearNombreArchivo( char * Palabra);
 
 void obtenerDatosRed(char* IP, int *Puerto);
 

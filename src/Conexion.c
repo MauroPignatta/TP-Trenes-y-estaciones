@@ -2,6 +2,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void  FormatearNombreArchivo( char * Palabra)
+{	
+    int i = 0; 
+    while (*Palabra)
+	{
+		if ( !i )
+		{
+			*Palabra = toupper(*Palabra);
+		}
+		else 
+		{
+			*Palabra = tolower(*Palabra);
+		}
+		i = 1;
+		Palabra++;
+	}
+}
+
+
 void obtenerDatosRed(char* IP, int *Puerto)
 {
     /* Abro el archivo */
