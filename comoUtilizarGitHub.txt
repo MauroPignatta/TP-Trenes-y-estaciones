@@ -10,3 +10,33 @@ git pull //nuevamente para no pisar datos si alguno estuvo trabajando.
 
 git push //sube los cambios realizados al repositorio online. 
 
+BRANCHES (ramas)
+
+git branch    //Muestra las ramas que tenemos creadas
+
+git branch <nombre de la nueva rama>  //Para crear una nueva rama
+
+Ej:
+git branch mcurses   //  para crear la rama ncurses: 
+
+git checkout <nombre de la rama a la que nos queremos cambiar>  //Se usa para cambiar de una rama a otra 
+
+Ej:
+git checkout mcurses   //  para cambiarnos a la rama que habiamos creado.
+
+git branch -m <nombre de la rama> <nuevo nombre para la rama>   //Sirve para cambiar el nombre de la rama
+
+Ej:
+git branch -m mcurses ncurses  // renombramos la rama 
+
+UNIR BRANCHES A MASTER
+
+Una vez que terminamos de trabajar en la rama la unimos con el master, para eso nos movemos a la rama master
+
+git checkout master   // volvemos a la rama principal
+
+git merge <nombre de la rama a unir>  // combina la rama con el master
+
+Ej: Una vez que terminamos con la rama de ncurses y nos movimos al master hacemos :
+
+git merge ncurses
