@@ -123,6 +123,5 @@ void estadoDelTren (ESTACION estacion, char * mensaje)
 }
 void cargarCombustible(int *combustible){
     
-    int resto=500-(*combustible);
-    *combustible+=resto;
+    *combustible=500;
 }

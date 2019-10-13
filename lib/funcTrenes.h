@@ -24,5 +24,8 @@ void estadoTren(char * mensaje);
 
 TREN inicializarTren(char *arch);
 
+void imprimirEstadoDelTren(TREN t);
+
+
 #endif	// FUNCTRENES_H
 

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+//#include 
 #include "../lib/Conexion.h"
 
 FILE * openFile(char * nombreArchivo){
@@ -73,6 +74,8 @@ void solicitarPasoAnden(){
 }
 void partir(TREN tren){
     for(int i=tren.tiempoRestante;i>0;i--){
-       tren.tiempoRestante--;
+	sleep(1);       
+	tren.tiempoRestante--;
     }	
 }
+

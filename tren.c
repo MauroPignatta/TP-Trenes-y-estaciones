@@ -66,9 +66,12 @@ int main(int argc, char** argv) {
                 break;
             case '3':
 		printf("A dónde desea viajar?\n");
-		gets(tren.estDestino);                
+		gets(tren.estDestino);
+		char solicitud[sizeMsj]="3;";
+    		send(client,solicitud,strlen(solicitud),0);
+    		recv(client,solicitud,sizeMsj,0);
+		tren.tiempoRestante=atoi(solicitud);
 		partir(&tren);//partir
-                //printf("Todavia no implementado.\n");
                 break;
             case '4':
                 if(yaRegistrado)
