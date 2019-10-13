@@ -59,3 +59,20 @@ void estadoTren(char * mensaje){
     token=strtok(NULL,";");
     printf("El tiempo restante de viaje es: %s\n", token);
 }
+void imprimirEstadoDelTren(TREN t)
+{
+    printf("%d",t.ID);
+    printf("%d",t.combustible);
+    printf("%s",t.modelo); 
+    printf("%s",t.estOrigen);
+    printf("%s",t.estDestino);
+    printf("%d",t.tiempoRestante);
+}
+void solicitarPasoAnden(){
+	
+}
+void partir(TREN tren){
+    for(int i=tren.tiempoRestante;i>0;i--){
+       tren.tiempoRestante--;
+    }	
+}

@@ -51,18 +51,24 @@ int main(int argc, char** argv) {
                 if (*mensaje == '1')
                 {
                     yaRegistrado = 0;
+		    sprintf(mensaje,"1;%s;",tren.estOrigen);	
                 }
-                mensaje += 2;
-                puts(mensaje);
-                mensaje -= 2;            
+		else{
+		    mensaje += 2;
+                    puts(mensaje);
+                    mensaje -= 2;  	
+		}
+                         
                 break;
             case '2':
                 //solicitar anden
                 printf("Todavia no implementado.\n");
                 break;
             case '3':
-                //partir
-                printf("Todavia no implementado.\n");
+		printf("A dónde desea viajar?\n");
+		gets(tren.estDestino);                
+		partir(&tren);//partir
+                //printf("Todavia no implementado.\n");
                 break;
             case '4':
                 if(yaRegistrado)
