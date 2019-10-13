@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
                     break;
                 } 
                 printf("Estado: \n\n");
-		        sprintf(mensaje,"4;%d",tren.ID);
+		sprintf(mensaje,"4;%d",tren.ID);
                 send(client, mensaje, strlen(mensaje), 0);
                 recv(client, mensaje, sizeMsj, 0);
                 estadoTren(mensaje);
