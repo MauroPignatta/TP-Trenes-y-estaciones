@@ -13,7 +13,9 @@ ESTACION ObtenerDatosEstacion(char * nomArchivo)
         printf("Error al abrir archivo de configuracion.\n");
         exit(1);
     }
-    fscanf(configEst ,"%s %d",est.nombre, &est.distancia);
+    
+    fscanf(configEst ,"%s",est.nombre);
+    fscanf(configEst ,"%d", &est.distancia);
     
     for(int i = 0; i < MAX_TREN; i++)
     {
