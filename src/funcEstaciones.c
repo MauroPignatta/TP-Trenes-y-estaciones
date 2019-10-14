@@ -14,8 +14,8 @@ ESTACION ObtenerDatosEstacion(char * nomArchivo)
         exit(1);
     }
     
-    fscanf(configEst ,"%s",est.nombre);
-    fscanf(configEst ,"%d", &est.distancia);
+    fscanf(configEst ,"Nombre: %s\n",est.nombre);
+    fscanf(configEst ,"Distancia: %d", &est.distancia);
     
     for(int i = 0; i < MAX_TREN; i++)
     {

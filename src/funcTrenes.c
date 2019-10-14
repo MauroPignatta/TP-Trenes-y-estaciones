@@ -26,9 +26,9 @@ TREN inicializarTren(char *arch){
     FILE *tren = openFile(arch);
     TREN aux;
     
-    fscanf(tren, "ID: %d", &aux.ID);
+    fscanf(tren, "ID: %d\n", &aux.ID);
     
-    fscanf(tren, "Combustible: %d",&aux.combustible);
+    fscanf(tren, "Combustible: %d\n",&aux.combustible);
 
     fscanf(tren, "Modelo: %s", aux.modelo);
    
