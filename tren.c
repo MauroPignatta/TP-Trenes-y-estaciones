@@ -83,7 +83,6 @@ int main(int argc, char** argv) {
 		sprintf(mensaje,"4;%d",tren.ID);
                 send(client, mensaje, strlen(mensaje), 0);
                 recv(client, mensaje, sizeMsj, 0);
-                estadoTren(mensaje);
                 break;
             default:
                 printf("\nOpcion invalida.\n");

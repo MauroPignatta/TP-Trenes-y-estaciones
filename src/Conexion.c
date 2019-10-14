@@ -32,7 +32,9 @@ void obtenerDatosRed(char* IP, int *Puerto)
     }
     
     /* Obtengo los datos */
-    fscanf(Red, "%s %d", IP, Puerto);
+    fscanf(Red, "IP: %s\n", IP);
+
+    fscanf(Red, "Puerto: %d", Puerto);
     
     /* Cierro el archivo*/
     fclose(Red);

@@ -20,8 +20,6 @@ void registrarse(char *mensaje,TREN tren);
 
 void partir();
 
-void estadoTren(char * mensaje);
-
 TREN inicializarTren(char *arch);
 
 void imprimirEstadoDelTren(TREN t);

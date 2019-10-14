@@ -26,13 +26,13 @@ TREN inicializarTren(char *arch){
     
     FILE *tren = openFile(arch);
     TREN aux;
-    char ptr[max_est];
-    fgets(ptr, max_est, tren);
-    aux.ID = atoi(ptr);
-    fgets(ptr, max_est, tren);
-    aux.combustible = atoi(ptr);
-    fscanf(tren,"%s",ptr);
-    strcpy(aux.modelo,ptr);
+    
+    fscanf(tren, "ID: %d\n", &aux.ID);
+    
+    fscanf(tren, "Combustible: %d\n",&aux.combustible);
+
+    fscanf(tren, "Modelo: %s", aux.modelo);
+   
     aux.tiempoRestante = 0;
     strcpy(aux.estDestino,"A asignar");
     strcpy(aux.estOrigen," ");
