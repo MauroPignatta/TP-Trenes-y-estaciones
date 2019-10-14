@@ -18,6 +18,7 @@ int main(int argc, char** argv) {
     char nomArchivo[20] = "../config/";
     strcat(nomArchivo, argv[1]);
 
+    //Declaro la estacion y le asigno los datos segun el archivo de conf.
     ESTACION estacion = ObtenerDatosEstacion(nomArchivo);
     
     char mensaje[sizeMsj];
@@ -40,7 +41,7 @@ int main(int argc, char** argv) {
         fd_set copy = master;
         int nready = select(maxfd, &copy, NULL, NULL, NULL); 
         
-	// si es un cliente nuevo
+	   // si es un cliente nuevo
         if ( FD_ISSET(server, &copy))
         {
             /* Falta preparar / mejorar el mensaje de bienvenida */
@@ -55,9 +56,8 @@ int main(int argc, char** argv) {
             FD_SET(client[n],&master);
             n++;
         }
-
-	// si ya lo conoce
-        else {
+        else // si ya lo conoce
+        {
             for(int i = 0; i < n; i ++)
             {
                 if (FD_ISSET(client[i], &copy))
@@ -66,25 +66,24 @@ int main(int argc, char** argv) {
                     // Recibo el mensaje
                     int bytes = recv(client[i], mensaje, sizeof(mensaje), 0 );
                     
-		    //  Para saber si el cliente se desconecto 
+		            //  Para saber si el cliente se desconecto 
                     if (bytes <= 0)
                     {
                         memset(mensaje,'\0', sizeof(mensaje));
                         printf("Se desconecto el cliente %d.\n", client[i]);
                         FD_CLR(client[i],&master);
                     }
-                    else{
-
+                    else
+                    {
                         char opcion = mensaje[0];
-
                         switch (opcion)
                         {
                             case '1':
                                 /*Registro al tren*/
                             	puts("Registrando tren");
                                 regCorrecto = registrarTren(&estacion, mensaje);
-                                strcpy(mensaje,"1;Te has registrado correctamente");
-                                
+                                sprintf(mensaje,"1;%s;Te has registrado correctamente", estacion.nombre);
+
                                 /*Comprueba que el tren se haya registrado*/
                                 if (!regCorrecto)
                                 {
@@ -108,9 +107,12 @@ int main(int argc, char** argv) {
                                 break;
                                 
                             case '4':
+                                /* Esto va a haber que cambiarlo, no borrar por ahora.
+
                                 estadoDelTren(estacion ,mensaje);
                                 puts("Estado enviado");
                                 send(client[i], mensaje, strlen(mensaje), 0);
+                                */
                                 break;
                                 
                             default:

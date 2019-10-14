@@ -48,41 +48,41 @@ int main(int argc, char** argv) {
                 send (client, mensaje, strlen(mensaje), 0);
 
                 recv(client, mensaje, sizeMsj, 0);
-                if (*mensaje == '1')
+
+                char * token = malloc(sizeMsj);
+                if (!token)
+                {
+                	puts("No se pudo asignar memoria.");
+                	exit(EXIT_FAILURE);
+                }
+
+                token = strtok(mensaje,";");
+
+                if (*token == '1')
                 {
                     yaRegistrado = 0;
-		    sprintf(mensaje,"1;%s;",tren.estOrigen);	
+                	token = strtok(NULL,";");
+                	strcpy(tren.estOrigen, token);
                 }
-		else{
-		    mensaje += 2;
-                    puts(mensaje);
-                    mensaje -= 2;  	
-		}
-                         
+                token = strtok(NULL,";");
+                puts(token);  
+                free(token);
                 break;
             case '2':
                 //solicitar anden
                 printf("Todavia no implementado.\n");
                 break;
             case '3':
-		printf("A dónde desea viajar?\n");
-		gets(tren.estDestino);
-		char solicitud[sizeMsj]="3;";
-    		send(client,solicitud,strlen(solicitud),0);
-    		recv(client,solicitud,sizeMsj,0);
-		tren.tiempoRestante=atoi(solicitud);
-		partir(&tren);//partir
+				printf("A dónde desea viajar?\n");
+				gets(tren.estDestino);
+				char solicitud[sizeMsj]="3;";
+	    		send(client,solicitud,strlen(solicitud),0);
+	    		recv(client,solicitud,sizeMsj,0);
+				tren.tiempoRestante=atoi(solicitud);
+				partir(&tren);//partir
                 break;
             case '4':
-                if(yaRegistrado)
-                {
-                    puts("Todavia no estas registrado en la estacion.");
-                    break;
-                } 
-                printf("Estado: \n\n");
-		sprintf(mensaje,"4;%d",tren.ID);
-                send(client, mensaje, strlen(mensaje), 0);
-                recv(client, mensaje, sizeMsj, 0);
+                imprimirEstadoDelTren(tren);
                 break;
             default:
                 printf("\nOpcion invalida.\n");

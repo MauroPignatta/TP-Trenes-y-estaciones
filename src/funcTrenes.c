@@ -35,7 +35,7 @@ TREN inicializarTren(char *arch){
    
     aux.tiempoRestante = 0;
     strcpy(aux.estDestino,"A asignar");
-    strcpy(aux.estOrigen," ");
+    strcpy(aux.estOrigen,"A asignar");
     fclose(tren);
     return aux;
 }
@@ -62,12 +62,13 @@ void estadoTren(char * mensaje){
 }
 void imprimirEstadoDelTren(TREN t)
 {
-    printf("%d",t.ID);
-    printf("%d",t.combustible);
-    printf("%s",t.modelo); 
-    printf("%s",t.estOrigen);
-    printf("%s",t.estDestino);
-    printf("%d",t.tiempoRestante);
+    printf("Estado: \n\n");
+    printf("ID: %d\n",t.ID);
+    printf("Combustible restante: %d\n",t.combustible);
+    printf("Modelo: %s\n",t.modelo); 
+    printf("Estacion Origen: %s\n",t.estOrigen);
+    printf("Estacion Destino: %s\n",t.estDestino);
+    printf("Tiempo de viaje restante: %d\n",t.tiempoRestante);
 }
 void solicitarPasoAnden(){
 	
