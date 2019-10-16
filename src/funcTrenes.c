@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-//#include 
+#include <time.h>
 #include "../lib/Conexion.h"
 
 FILE * openFile(char * nombreArchivo){
