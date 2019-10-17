@@ -12,7 +12,7 @@ ERROR printHelp(ST_APP_WINDOW *pAppWin){
     strncat(msg, "* anden: Solicita el anden\n", 40);
     strncat(msg, "* partir: Viaja a la nueva estacion.\n", 42);
     strncat(msg, "* estado: Muestra el estado del tren.", 41);
-    printMessage(pAppWin, msg, WHITE);
+    printLog(pAppWin, msg, WHITE);
     return ERR_OK;
 }
 

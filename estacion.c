@@ -52,11 +52,12 @@ int main(int argc, char** argv)
     int regCorrecto;
 
     //Aca empieza a correr ncurses
-    //ST_APP_WINDOW pWin;
     initUserInterface(&pWin);
     drawUserInterface(&pWin);
     
-    printWindowTitle(pWin.pLogFrame, "### Estacion ###");
+    printWindowTitle(pWin.pAppFrame, "### Estacion ###");
+    printWindowTitle(pWin.pLogFrame, "### Log ###");
+    printWindowTitle(pWin.pRegFrame, "### Registro ###");
     printWindowTitle(pWin.pCmdFrame, "### Comandos ###");
 
     mvwprintw(pWin.pLogWindow, getmaxy(pWin.pLogWindow) -1 , 0 , "Escriba \"help\" para obtener informacion.");
@@ -75,12 +76,12 @@ int main(int argc, char** argv)
         if ( FD_ISSET(server, &copy))
         {
             /* Falta preparar / mejorar el mensaje de bienvenida */
-            strcpy(mensaje, estacion.nombre);
-            printMessage(&pWin,"Un nuevo tren se ha conectado", WHITE);
+            sprintf(mensaje,"Bienvenido a la estacion %s", estacion.nombre);
+            printRegistro(&pWin,"Un nuevo tren se ha conectado", WHITE);
 
             /* acepta al nuevo tren y le envia el mensaje de bienvenida*/
             client[n] = accept(server, 0, 0);
-            send(client[n], mensaje, sizeMsj, 0);
+            send(client[n], mensaje, strlen(mensaje), 0);
 
             /* lo agrega al fd */
             FD_SET(client[n],&master);
@@ -92,15 +93,14 @@ int main(int argc, char** argv)
             {
                 if (FD_ISSET(client[i], &copy))
                 {
-                    memset(mensaje,'\0',sizeof(mensaje));
+                    memset(mensaje,'\0',sizeMsj);
                     // Recibo el mensaje
                     int bytes = recv(client[i], mensaje, sizeof(mensaje), 0 );
                     
 		            //  Para saber si el cliente se desconecto 
                     if (bytes <= 0)
                     {
-                        memset(mensaje,'\0', sizeof(mensaje));
-                        printMessage(&pWin,"Se ha ido un tren", WHITE);
+                        printRegistro(&pWin,"Se ha ido un tren", WHITE);
                         FD_CLR(client[i],&master);
                     }
                     else
@@ -110,22 +110,20 @@ int main(int argc, char** argv)
                         {
                             case '1':
                                 /*Registro al tren*/
-                                printMessage(&pWin,"Registrando tren", WHITE);
                                 regCorrecto = registrarTren(&estacion, mensaje);
                                 sprintf(mensaje,"1;%s;Te has registrado correctamente", estacion.nombre);
 
                                 /*Comprueba que el tren se haya registrado*/
                                 if (!regCorrecto)
                                 {
-                                    printMessage(&pWin,"No se pudo registrar al tren", WHITE);
+                                    printRegistro(&pWin,"No se pudo registrar a un tren", WHITE);
                                     strcpy(mensaje,"2;No te has podido registrar");
                                 }
                                 else{
-                                    printMessage(&pWin,"Registro de tren correcto", WHITE);
+                                    printRegistro(&pWin,"Un tren se ha registrado", WHITE);
                                 }
-
                                 /*Envio una respuesta al tren*/
-                                send(client[i], mensaje, strlen(mensaje), 0);
+                                send(client[i], mensaje, sizeMsj, 0);
                                 break;
                                
                             case '2':

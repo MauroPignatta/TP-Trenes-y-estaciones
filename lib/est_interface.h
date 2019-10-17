@@ -16,6 +16,8 @@ typedef struct {
     WINDOW *pLogWindow;
     WINDOW *pCmdFrame;
     WINDOW *pCmdWindow;
+   	WINDOW *pRegFrame;
+    WINDOW *pRegWindow; 
 } ST_APP_WINDOW;
 
 typedef enum {RED=1, GREEN, BLUE, WHITE,} COLOUR;
@@ -48,7 +50,9 @@ void drawUserInterface(ST_APP_WINDOW *);
 
 void printWindowTitle(WINDOW *pWin, const char * message);
 
-void printMessage(ST_APP_WINDOW *pWindow, const char * message, COLOUR colour);
+void printLog(ST_APP_WINDOW *pWindow, const char * message, COLOUR colour);
+
+void printRegistro(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour);
 
 void unInitUserInterface(ST_APP_WINDOW *);
 

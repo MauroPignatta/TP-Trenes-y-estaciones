@@ -23,8 +23,11 @@ void initUserInterface(ST_APP_WINDOW *pWindow)
     getmaxyx(pWindow->pAppFrame, frameHeight, frameWidth);
        
     // calcula ancho y alto de las ventanas internas
-    int msgWinWidth = (frameWidth * 0.985);
+    int msgWinWidth = (frameWidth * 0.55); //0.985)
     int msgWinHeigth = (frameHeight * 0.6);
+
+    int regWinWidth = (frameWidth * 0.435);
+    int regWinHeigth = (frameHeight * 0.6);
     
     int viewWinWidth = (frameWidth * 0.985);
     int viewWinHeigth = (frameHeight * 0.37);
@@ -36,14 +39,20 @@ void initUserInterface(ST_APP_WINDOW *pWindow)
     // crea la ventana interna de Cmd
     pWindow->pCmdFrame = derwin(pWindow->pAppFrame, viewWinHeigth, viewWinWidth, msgWinHeigth + SPACE, 1);
     pWindow->pCmdWindow = derwin(pWindow->pCmdFrame, viewWinHeigth-2, viewWinWidth-2, 1, 1);
+
+    //crea la ventana interde de Reg
+    pWindow->pRegFrame = derwin(pWindow->pAppFrame, regWinHeigth, regWinWidth, 1, msgWinWidth + 1);
+    pWindow->pRegWindow = derwin(pWindow->pRegFrame, regWinHeigth-2, regWinWidth-2, 1, 1);
     
     // asocia colores con las ventanas
-    wbkgd(pWindow->pAppFrame, COLOR_PAIR(GREEN));
+    wbkgd(pWindow->pAppFrame, COLOR_PAIR(RED));
+    wbkgd(pWindow->pRegFrame, COLOR_PAIR(WHITE));
     wbkgd(pWindow->pLogFrame, COLOR_PAIR(WHITE));
     wbkgd(pWindow->pCmdFrame, COLOR_PAIR(WHITE));
     
     // activa el scroll en la ventana de Log
     scrollok(pWindow->pLogWindow, TRUE);
+    scrollok(pWindow->pRegWindow, TRUE);
     cbreak();
 }
 
@@ -61,6 +70,10 @@ void drawUserInterface(ST_APP_WINDOW *pWindow){
     // Dibuja el marco de la ventana de Cmd
     box(pWindow->pCmdFrame, ACS_VLINE, ACS_HLINE);
     wrefresh(pWindow->pCmdFrame);
+
+    // Dibuja el marco de la ventana de Reg
+    box(pWindow->pRegFrame, ACS_VLINE, ACS_HLINE);
+    wrefresh(pWindow->pRegFrame);
 }
 
 void printWindowTitle(WINDOW *pWin, const char * message){
@@ -70,7 +83,7 @@ void printWindowTitle(WINDOW *pWin, const char * message){
     wrefresh(pWin);
 }
 
-void printMessage(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour){
+void printLog(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour){
     wattron(pWindow->pLogWindow, COLOR_PAIR(colour));
     wprintw(pWindow->pLogWindow, "%s\n", message);
     wattroff(pWindow->pLogWindow, COLOR_PAIR(colour));
@@ -78,6 +91,16 @@ void printMessage(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour){
     int y = getmaxy(pWindow->pLogWindow);
     mvwprintw(pWindow->pLogWindow, y-1 , 0 , "Escriba \"help\" para obtener informacion.");
     wrefresh(pWindow->pLogWindow);
+    wrefresh(pWindow->pCmdWindow);
+}
+
+void printRegistro(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour){
+    wattron(pWindow->pRegWindow, COLOR_PAIR(colour));
+    wprintw(pWindow->pRegWindow, "%s\n", message);
+    wattroff(pWindow->pRegWindow, COLOR_PAIR(colour));
+
+    wrefresh(pWindow->pRegWindow);
+    wrefresh(pWindow->pCmdWindow);
 }
 
 void unInitUserInterface(ST_APP_WINDOW *pWindow){

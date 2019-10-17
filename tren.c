@@ -23,37 +23,29 @@ int main(int argc, char** argv) {
     /* Devuelve el socket ya configurado */
     int client = CrearSocketCliente();
 
-    char * mensaje = (char*) malloc(sizeMsj);
-    char * token = malloc(sizeMsj);
-    if (!mensaje || !token)
-    {
-        puts("Error al asignar memoria.");
-        exit(EXIT_FAILURE);
-    }
-    recv(client, token, sizeMsj, 0);
-    sprintf(mensaje,"Bienvenido a la estacion %s", token);
+    char mensaje[sizeMsj];
 
     /* Flag para que un tren no pueda registrarse 2 veces*/
-    int yaRegistrado = 1;
+    int yaRegistrado = 0;
 
     //Aca empieza a correr ncurses
     ST_APP_WINDOW pWin;
     initUserInterface(&pWin);
     drawUserInterface(&pWin);
     
-    printWindowTitle(pWin.pLogFrame, "### Tren ###");
+    printWindowTitle(pWin.pAppFrame, "### Tren ###");
+    printWindowTitle(pWin.pLogFrame, "### Log ###");
     printWindowTitle(pWin.pCmdFrame, "### Comandos ###");
 
+
+    recv(client, mensaje, sizeMsj, 0);
     printMessage(&pWin, mensaje, WHITE);
-    wrefresh(pWin.pLogWindow);
-
     wmove(pWin.pCmdWindow, 0,0);
-
 
     while(1)
     {
         memset(mensaje, '\0', sizeMsj);
-        wgetnstr(pWin.pCmdWindow, mensaje, sizeMsj + 1);
+        wgetnstr(pWin.pCmdWindow, mensaje, sizeMsj);
 
         if(! strcmp(mensaje, "help"))
         {
@@ -64,35 +56,28 @@ int main(int argc, char** argv) {
         else if(!strcmp(mensaje, "registrarse"))
         {
             clearLogWindow(pWin.pLogWindow);
-            if (!yaRegistrado)
+            if (yaRegistrado)
             {
                 printMessage(&pWin, "Ya te has registrado.", WHITE);
             }
             else
             {
-                registrarse(mensaje,tren);
-                send (client, mensaje, strlen(mensaje), 0);
-
+                registrarse(mensaje, tren);
+                send(client, mensaje, strlen(mensaje), 0);
                 recv(client, mensaje, sizeMsj, 0);
-
-                char * token = malloc(sizeMsj);
-                if (!token)
-                {
-                    printMessage(&pWin, "No se pudo asignar memoria.", WHITE);
-                    exit(EXIT_FAILURE);
-                }
-
+			
+                char * token = NULL;
                 token = strtok(mensaje,";");
 
                 if (*token == '1')
                 {
-                    yaRegistrado = 0;
+                    yaRegistrado = 1;
                     token = strtok(NULL,";");
                     strcpy(tren.estOrigen, token);
                 }
+
                 token = strtok(NULL,";");
                 printMessage(&pWin, token, WHITE);
-                free(token);
             }
         }
         
@@ -141,8 +126,6 @@ int main(int argc, char** argv) {
         */
     }
 
-
-    free(mensaje);
     unInitUserInterface(&pWin);
     return (EXIT_SUCCESS);
 }
