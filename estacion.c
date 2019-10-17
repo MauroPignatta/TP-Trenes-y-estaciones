@@ -54,8 +54,11 @@ int main(int argc, char** argv)
     //Aca empieza a correr ncurses
     initUserInterface(&pWin);
     drawUserInterface(&pWin);
+
+    // Uso el mensaje para ponerle el titulo con el nombre de la estacion
+    sprintf(mensaje, " Estacion %s " , estacion.nombre);
     
-    printWindowTitle(pWin.pAppFrame, "### Estacion ###");
+    printWindowTitle(pWin.pAppFrame, mensaje);
     printWindowTitle(pWin.pLogFrame, "### Log ###");
     printWindowTitle(pWin.pRegFrame, "### Registro ###");
     printWindowTitle(pWin.pCmdFrame, "### Comandos ###");
