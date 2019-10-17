@@ -1,16 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   user_interface.h
- * Author: ezequiel
- *
- * Created on 26 de septiembre de 2019, 08:53
- */
-
 #ifndef USER_INTERFACE_H
 #define USER_INTERFACE_H
 
@@ -31,7 +18,7 @@ typedef struct {
     WINDOW *pCmdWindow;
 } ST_APP_WINDOW;
 
-typedef enum {RED=1, GREEN, BLUE, WHITE} COLOUR;
+typedef enum {RED=1, GREEN, BLUE, WHITE,} COLOUR;
 
 
 /**
@@ -66,12 +53,3 @@ void printMessage(ST_APP_WINDOW *pWindow, const char * message, COLOUR colour);
 void unInitUserInterface(ST_APP_WINDOW *);
 
 #endif
-
-
-
-
-#ifdef __cplusplus
-}
-#endif
-
-

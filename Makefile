@@ -1,16 +1,22 @@
-all: Estacion Tren
+all: estacion tren
 	
-srcfiles = src/funcEstaciones.c src/funcTrenes.c src/Conexion.c 
+SRCTREN = src/tren_commands.c src/tren_interface.c src/conexion.c src/funcTrenes.c
 
-CFLAG = -Ilib 
+SRCEST = src/est_commands.c src/est_interface.c src/conexion.c src/funcEstaciones.c
+
+HEADERS = $(wildcard lib/*.h)
+
+LIB = -Ilib
+
+CFLAG = -lncurses
 
 CC = gcc
 
-Estacion: estacion.c
-	$(CC)  $(CFLAG) -o bin/estacion estacion.c $(srcfiles)
+estacion: estacion.c $(SRCFILES) $(HEADERS)
+	$(CC) $(LIB) estacion.c $(SRCEST) -o bin/estacion $(CFLAG)
 
-Tren: tren.c
-	$(CC) $(CFLAG) -o bin/tren tren.c $(srcfiles)
+tren: tren.c $(SRCFILES) $(HEADERS)
+	$(CC) $(LIB) tren.c $(SRCTREN) -o bin/tren $(CFLAG)
 
 clean: 
 	rm -f bin/*

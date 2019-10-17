@@ -15,10 +15,9 @@ FILE * openFile(char * nombreArchivo){
 }
 
 char * armarMensaje(TREN tren,char *ptr){
-    ptr+=1;
-    sprintf(ptr,";%d;%d;%s;%s;%s;",
+    sprintf(ptr,"1;%d;%d;%s;%s;%s;",
         tren.ID, tren.combustible, tren.modelo,
-        tren.estDestino, tren.estOrigen);
+            tren.estDestino, tren.estOrigen);
     return ptr;
 }
 
@@ -45,30 +44,21 @@ void registrarse(char *mensaje,TREN tren)
     armarMensaje(tren, mensaje);
 }
 
-void estadoTren(char * mensaje){
-    char * token;
-    token=strtok(mensaje,";");
-    printf("El identificador del tren es: %s\n", token);
-    token=strtok(NULL,";");
-    printf("El combustible restante es: %s\n", token);
-    token=strtok(NULL,";");
-    printf("El modelo del tren es: %s\n", token);
-    token=strtok(NULL,";");
-    printf("La estacion en la q se encuentra es: %s\n", token);
-    token=strtok(NULL,";");
-    printf("La estacion destino es: %s\n", token);
-    token=strtok(NULL,";");
-    printf("El tiempo restante de viaje es: %s\n", token);
-}
-void imprimirEstadoDelTren(TREN t)
+void armarMensajeEstadoDelTren(TREN t, char * mensaje)
 {
-    printf("Estado: \n\n");
-    printf("ID: %d\n",t.ID);
-    printf("Combustible restante: %d\n",t.combustible);
-    printf("Modelo: %s\n",t.modelo); 
-    printf("Estacion Origen: %s\n",t.estOrigen);
-    printf("Estacion Destino: %s\n",t.estDestino);
-    printf("Tiempo de viaje restante: %d\n",t.tiempoRestante);
+    sprintf(mensaje,"Estado:\n\n");
+    mensaje += strlen(mensaje);
+    sprintf(mensaje,"ID: %d\n",t.ID);
+    mensaje += strlen(mensaje);
+    sprintf(mensaje,"Combustible restante: %d\n",t.combustible);
+    mensaje += strlen(mensaje);
+    sprintf(mensaje,"Modelo: %s\n",t.modelo); 
+    mensaje += strlen(mensaje);
+    sprintf(mensaje,"Estacion Origen: %s\n",t.estOrigen);
+    mensaje += strlen(mensaje);
+    sprintf(mensaje,"Estacion Destino: %s\n",t.estDestino);
+    mensaje += strlen(mensaje);
+    sprintf(mensaje,"Tiempo de viaje restante: %d\n",t.tiempoRestante);
 }
 void solicitarPasoAnden(){
 	

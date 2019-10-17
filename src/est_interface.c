@@ -1,4 +1,4 @@
-#include "user_interface.h"
+#include "../lib/est_interface.h"
 #include <string.h>
 
 void initUserInterface(ST_APP_WINDOW *pWindow)
@@ -38,7 +38,7 @@ void initUserInterface(ST_APP_WINDOW *pWindow)
     pWindow->pCmdWindow = derwin(pWindow->pCmdFrame, viewWinHeigth-2, viewWinWidth-2, 1, 1);
     
     // asocia colores con las ventanas
-    wbkgd(pWindow->pAppFrame, COLOR_PAIR(RED));
+    wbkgd(pWindow->pAppFrame, COLOR_PAIR(GREEN));
     wbkgd(pWindow->pLogFrame, COLOR_PAIR(WHITE));
     wbkgd(pWindow->pCmdFrame, COLOR_PAIR(WHITE));
     
@@ -72,12 +72,10 @@ void printWindowTitle(WINDOW *pWin, const char * message){
 
 void printMessage(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour){
     int y = getmaxy(pWindow->pLogWindow);
-    werase(pWindow->pLogWindow);
-    wrefresh(pWindow->pLogWindow);
     wattron(pWindow->pLogWindow, COLOR_PAIR(colour));
     wprintw(pWindow->pLogWindow, "%s\n", message);
     wattroff(pWindow->pLogWindow, COLOR_PAIR(colour));
-    mvwprintw(pWindow->pLogWindow, y-1 , 0 , "Escriba \"help\" para obtener información.");
+    mvwprintw(pWindow->pLogWindow, y-1 , 0 , "Escriba \"help\" para obtener informacion.");
     wrefresh(pWindow->pLogWindow);
 }
 

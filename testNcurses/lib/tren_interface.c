@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 #include "user_interface.h"
 #include <string.h>
 
@@ -28,11 +23,11 @@ void initUserInterface(ST_APP_WINDOW *pWindow)
     getmaxyx(pWindow->pAppFrame, frameHeight, frameWidth);
        
     // calcula ancho y alto de las ventanas internas
-    int msgWinWidth = (frameWidth * 0.99);
+    int msgWinWidth = (frameWidth * 0.985);
     int msgWinHeigth = (frameHeight * 0.6);
     
-    int viewWinWidth = (frameWidth * 0.99);
-    int viewWinHeigth = (frameHeight * 0.39);
+    int viewWinWidth = (frameWidth * 0.985);
+    int viewWinHeigth = (frameHeight * 0.37);
     
     // crea la ventana interna de Log
     pWindow->pLogFrame = derwin(pWindow->pAppFrame, msgWinHeigth, msgWinWidth, 1, 1);
@@ -44,8 +39,8 @@ void initUserInterface(ST_APP_WINDOW *pWindow)
     
     // asocia colores con las ventanas
     wbkgd(pWindow->pAppFrame, COLOR_PAIR(RED));
-    wbkgd(pWindow->pLogFrame, COLOR_PAIR(BLUE));
-    wbkgd(pWindow->pCmdFrame, COLOR_PAIR(GREEN));
+    wbkgd(pWindow->pLogFrame, COLOR_PAIR(WHITE));
+    wbkgd(pWindow->pCmdFrame, COLOR_PAIR(WHITE));
     
     // activa el scroll en la ventana de Log
     scrollok(pWindow->pLogWindow, TRUE);
@@ -76,9 +71,13 @@ void printWindowTitle(WINDOW *pWin, const char * message){
 }
 
 void printMessage(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour){
+    int y = getmaxy(pWindow->pLogWindow);
+    werase(pWindow->pLogWindow);
+    wrefresh(pWindow->pLogWindow);
     wattron(pWindow->pLogWindow, COLOR_PAIR(colour));
     wprintw(pWindow->pLogWindow, "%s\n", message);
     wattroff(pWindow->pLogWindow, COLOR_PAIR(colour));
+    mvwprintw(pWindow->pLogWindow, y-1 , 0 , "Escriba \"help\" para obtener informacion.");
     wrefresh(pWindow->pLogWindow);
 }
 

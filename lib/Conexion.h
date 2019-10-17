@@ -11,7 +11,7 @@
 
 #define sizeIP sizeof(char) * 16
 #define sizePORT sizeof(char) * 6
-#define sizeMsj 256
+#define sizeMsj 1024
 #define MaxClientes 15
 
 void  FormatearNombreArchivo( char * Palabra);

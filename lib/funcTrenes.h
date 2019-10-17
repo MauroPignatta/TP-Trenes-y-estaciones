@@ -22,7 +22,7 @@ void partir();
 
 TREN inicializarTren(char *arch);
 
-void imprimirEstadoDelTren(TREN t);
+void armarMensajeEstadoDelTren(TREN t, char * mensaje);
 
 
 #endif	// FUNCTRENES_H

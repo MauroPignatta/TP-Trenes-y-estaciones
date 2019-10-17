@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     printWindowTitle(pWin.pLogFrame, "### Tren ###");
     printWindowTitle(pWin.pCmdFrame, "### Comandos ###");
 
-    mvwprintw(pWin.pLogWindow, getmaxy(pWin.pLogWindow) -1 , 0 , "Escriba \"help\" para obtener información.");
+    mvwprintw(pWin.pLogWindow, getmaxy(pWin.pLogWindow) -1 , 0 , "Escriba \"help\" para obtener informacion.");
     wrefresh(pWin.pLogWindow);
    // printMessage(&pWin, "Escriba \"help\" para obtener información", WHITE);
     

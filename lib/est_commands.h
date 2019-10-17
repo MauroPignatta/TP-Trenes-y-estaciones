@@ -5,32 +5,23 @@
  */
 
 /* 
- * File:   user_commands.h
- * Author: ezequiel
+ * File:   commands.h
+ * Author: alejandro
  *
- * Created on 26 de septiembre de 2019, 08:54
+ * Created on September 8, 2019, 2:33 PM
  */
 
 #ifndef USER_COMMANDS_H
 #define USER_COMMANDS_H
 
-#include "user_interface.h"
+#include "est_interface.h"
+ #include <unistd.h>
     
-#define CMD_LINE_LENGHT 50
+#define CMD_LINE_LENGHT 500
     
 typedef enum {ERR_OK=0, ERR_UNKNOWN_CMD} ERROR;
     
 ERROR processCommand(ST_APP_WINDOW *pWin, const char *commandLine);
 
 #endif /* COMMANDS_H */
-
-
-
-
-
-#ifdef __cplusplus
-}
-#endif
-
-
 
