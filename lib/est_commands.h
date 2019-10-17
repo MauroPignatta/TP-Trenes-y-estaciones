@@ -23,5 +23,9 @@ typedef enum {ERR_OK=0, ERR_UNKNOWN_CMD} ERROR;
     
 ERROR processCommand(ST_APP_WINDOW *pWin, const char *commandLine);
 
+ERROR clearLogWindow(WINDOW *pWin);
+
+ERROR clearCmdWindow(WINDOW *pWin);
+
 #endif /* COMMANDS_H */
 

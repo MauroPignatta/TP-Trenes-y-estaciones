@@ -14,14 +14,13 @@ void getInput()
 {
     while(1)
     {
-        wmove(pWin.pCmdWindow, 0,0);
         wgetnstr(pWin.pCmdWindow, comandos, 20);
         clearCmdWindow(pWin.pCmdWindow);
     }
 }
 
-int main(int argc, char** argv) {
-    
+int main(int argc, char** argv) 
+{ 
     system("clear");
     
     if (argc != 2)
@@ -52,8 +51,6 @@ int main(int argc, char** argv) {
     int n = 0;
     int regCorrecto;
 
-    
-
     //Aca empieza a correr ncurses
     //ST_APP_WINDOW pWin;
     initUserInterface(&pWin);
@@ -66,6 +63,7 @@ int main(int argc, char** argv) {
     wrefresh(pWin.pLogWindow);
 
     pthread_t input;
+    wmove(pWin.pCmdWindow, 0,0);
     pthread_create(&input, NULL,(void*) getInput ,NULL);
     
     while (1)

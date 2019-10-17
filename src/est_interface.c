@@ -71,10 +71,11 @@ void printWindowTitle(WINDOW *pWin, const char * message){
 }
 
 void printMessage(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour){
-    int y = getmaxy(pWindow->pLogWindow);
     wattron(pWindow->pLogWindow, COLOR_PAIR(colour));
     wprintw(pWindow->pLogWindow, "%s\n", message);
     wattroff(pWindow->pLogWindow, COLOR_PAIR(colour));
+
+    int y = getmaxy(pWindow->pLogWindow);
     mvwprintw(pWindow->pLogWindow, y-1 , 0 , "Escriba \"help\" para obtener informacion.");
     wrefresh(pWindow->pLogWindow);
 }
