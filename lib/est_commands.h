@@ -20,8 +20,6 @@
 #define CMD_LINE_LENGHT 500
     
 typedef enum {ERR_OK=0, ERR_UNKNOWN_CMD} ERROR;
-    
-ERROR processCommand(ST_APP_WINDOW *pWin, const char *commandLine);
 
 ERROR printHelp(ST_APP_WINDOW *pAppWin);
 

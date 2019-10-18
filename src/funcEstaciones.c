@@ -18,8 +18,8 @@ ESTACION ObtenerDatosEstacion(char * nomArchivo)
     fscanf(configEst ,"Distancia: %d", &est.distancia);
     
     for(int i = 0; i < MAX_TREN; i++)
-    {
-        memset(est.tren + i,'\0',sizeof(TREN));
+    { 
+        memset(est.tren[i], 0,sizeof(TREN));
     }
     fclose(configEst);
     return est;

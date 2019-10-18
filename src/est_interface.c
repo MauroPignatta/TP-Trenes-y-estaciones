@@ -103,6 +103,22 @@ void printRegistro(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour){
     wrefresh(pWindow->pCmdWindow);
 }
 
+void printEstadoTrenes(ST_APP_WINDOW *pWin , ESTACION est)
+{
+    int i = 0;
+    char *estado = (char *) malloc(1024);
+    if(! estado)
+    {
+        printLog(pWin, "Error al mostrar estado.");
+        return;
+    }
+    for(int i = 0; i < MAX_TREN; i++)
+    {
+        if ()
+    }
+    free(estado);
+}
+
 void unInitUserInterface(ST_APP_WINDOW *pWindow){
     delwin(pWindow->pLogWindow);
     delwin(pWindow->pCmdWindow);

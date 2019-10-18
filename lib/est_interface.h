@@ -2,6 +2,7 @@
 #define USER_INTERFACE_H
 
 #include <curses.h>
+#include "funcEstaciones.h"
 
 #define LINE_LENGTH 80
 #define VIEW_WIN_WIDTH 0
@@ -53,6 +54,8 @@ void printWindowTitle(WINDOW *pWin, const char * message);
 void printLog(ST_APP_WINDOW *pWindow, const char * message, COLOUR colour);
 
 void printRegistro(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour);
+
+void printEstadoTrenes(ST_APP_WINDOW *pWin  , ESTACION est);
 
 void unInitUserInterface(ST_APP_WINDOW *);
 

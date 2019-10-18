@@ -9,7 +9,8 @@
 
 /* Variables globales que usa el hilo */
 ST_APP_WINDOW pWin;
-
+ESTACION estacion;
+int cantTrenes = 0;
 
 void getInput();
 
@@ -28,7 +29,7 @@ int main(int argc, char** argv)
     strcat(nomArchivo, argv[1]);
 
     //Declaro la estacion y le asigno los datos segun el archivo de conf.
-    ESTACION estacion = ObtenerDatosEstacion(nomArchivo);
+    estacion = ObtenerDatosEstacion(nomArchivo);
     
     char mensaje[sizeMsj];
     
@@ -43,7 +44,6 @@ int main(int argc, char** argv)
     //vector con los datos para la conexion
     int client[MaxClientes]; 
     memset(client , -1, sizeof(client));
-    int n = 0;
     int regCorrecto;
 
     //Aca empieza a correr ncurses
@@ -84,11 +84,11 @@ int main(int argc, char** argv)
 
             /* lo agrega al fd */
             FD_SET(client[n],&master);
-            n++;
+            cantTrenes++;
         }
         else // si ya lo conoce
         {
-            for(int i = 0; i < n; i ++)
+            for(int i = 0; i < cantTrenes; i ++)
             {
                 if (FD_ISSET(client[i], &copy))
                 {
@@ -170,8 +170,15 @@ void getInput()
 
       	else if (!strcmp(comandos, "estado"))
       	{
-      		clearWindow(pWin.pLogWindow);
-      		printLog(&pWin,"Todavia no implementado...", WHITE);
+      		if(cantTrenes > 0)
+      		{
+      			clearWindow(pWin.pLogWindow);
+      			printEstadoTrenes(&pWin, estacion.tren[], cantTrenes);
+      		}
+      		else
+      		{
+      			printLog(&pWin,"No hay trenes en la estacion.", WHITE);
+      		}
       	}
 
       	else if (!strcmp(comandos, "clearlog"))

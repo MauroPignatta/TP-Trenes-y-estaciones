@@ -54,7 +54,7 @@ void armarMensajeEstadoDelTren(TREN t, char * mensaje)
     mensaje += strlen(mensaje);
     sprintf(mensaje,"Modelo: %s\n",t.modelo); 
     mensaje += strlen(mensaje);
-    sprintf(mensaje,"Estacion Origen: %s\n",t.estOrigen);
+    sprintf(mensaje,"Estacion Actual: %s\n",t.estOrigen);
     mensaje += strlen(mensaje);
     sprintf(mensaje,"Estacion Destino: %s\n",t.estDestino);
     mensaje += strlen(mensaje);
