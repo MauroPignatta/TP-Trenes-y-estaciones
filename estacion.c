@@ -40,8 +40,9 @@ int main(int argc, char** argv)
     FD_ZERO(&master);
     FD_SET(server, &master);
     
+    //vector con los datos para la conexion
     int client[MaxClientes]; 
-    memset(client,-1,sizeof(client));
+    memset(client , -1, sizeof(client));
     int n = 0;
     int regCorrecto;
 
@@ -60,6 +61,7 @@ int main(int argc, char** argv)
     mvwprintw(pWin.pLogWindow, getmaxy(pWin.pLogWindow) -1 , 0 , "Escriba \"help\" para obtener informacion.");
     wrefresh(pWin.pLogWindow);
 
+    /* Hilo para recibir los comandos de la estacion */
     pthread_t input;
     wmove(pWin.pCmdWindow, 0,0);
     pthread_create(&input, NULL,(void*) getInput ,NULL);
@@ -113,8 +115,8 @@ int main(int argc, char** argv)
                                 /*Comprueba que el tren se haya registrado*/
                                 if (!regCorrecto)
                                 {
-                                    printRegistro(&pWin,"No se pudo registrar a un tren", WHITE);
-                                    strcpy(mensaje,"2;No te has podido registrar");
+                                    printRegistro(&pWin,"No se pudo registrar a un\ntren: Ya registrado.", WHITE);
+                                    strcpy(mensaje,"2;No te has podido registrar: Ya existe un tren con el mismo ID.");
                                 }
                                 else{
                                     printRegistro(&pWin,"Un tren se ha registrado", WHITE);
