@@ -6,18 +6,17 @@
 ERROR printHelp(ST_APP_WINDOW *pAppWin){
     char msg[HELP_MSG_LENGHT+1];
     memset(msg, '\0', HELP_MSG_LENGHT+1);
-    strncpy(msg, "Comandos del Tren\n", 20);
-    strncat(msg, "Comandos permitidos:\n\n", 24);
-    strncat(msg, "* registrarse: Registra al tren en la estacion.\n", 53);
-    strncat(msg, "* anden: Solicita el anden\n", 40);
-    strncat(msg, "* partir: Viaja a la nueva estacion.\n", 42);
-    strncat(msg, "* estado: Muestra el estado del tren.", 41);
+    strncpy(msg, "Comandos de la Estacion\n", 26);
+    strncat(msg, "Comandos permitidos:\n\n", 25);
+    strncat(msg, "* estado: Muestra el estado de los tren.\n", 43);
+    strncat(msg, "* clearlog: Limpia la pantalla de log.\n", 41);
+    strncat(msg, "* clearreg: Limpia la pantalla de registros.", 45);
     printLog(pAppWin, msg, WHITE);
     return ERR_OK;
 }
 
 
-ERROR clearLogWindow(WINDOW *pWin){
+ERROR clearWindow(WINDOW *pWin){
     werase(pWin);
     wrefresh(pWin);
     return ERR_OK;

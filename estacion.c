@@ -7,17 +7,11 @@
 #include "lib/est_interface.h"
 #include "lib/est_commands.h"
 
+/* Variables globales que usa el hilo */
 ST_APP_WINDOW pWin;
-char comandos[20];
 
-void getInput()
-{
-    while(1)
-    {
-        wgetnstr(pWin.pCmdWindow, comandos, 20);
-        clearCmdWindow(pWin.pCmdWindow);
-    }
-}
+
+void getInput();
 
 int main(int argc, char** argv) 
 { 
@@ -80,7 +74,7 @@ int main(int argc, char** argv)
         {
             /* Falta preparar / mejorar el mensaje de bienvenida */
             sprintf(mensaje,"Bienvenido a la estacion %s", estacion.nombre);
-            printRegistro(&pWin,"Un nuevo tren se ha conectado", WHITE);
+            printRegistro(&pWin,"Se conecto un nuevo tren", WHITE);
 
             /* acepta al nuevo tren y le envia el mensaje de bienvenida*/
             client[n] = accept(server, 0, 0);
@@ -103,7 +97,7 @@ int main(int argc, char** argv)
 		            //  Para saber si el cliente se desconecto 
                     if (bytes <= 0)
                     {
-                        printRegistro(&pWin,"Se ha ido un tren", WHITE);
+                        printRegistro(&pWin,"Se desconecto un tren", WHITE);
                         FD_CLR(client[i],&master);
                     }
                     else
@@ -156,4 +150,44 @@ int main(int argc, char** argv)
         }
     }
     return (EXIT_SUCCESS);
+}
+
+void getInput()
+{
+	char comandos[46];
+    while(1)
+    {
+        wgetnstr(pWin.pCmdWindow, comandos, 20);
+        clearCmdWindow(pWin.pCmdWindow);
+
+      	if (!strcmp(comandos, "help"))
+      	{
+      		clearWindow(pWin.pLogWindow);
+      		printHelp(&pWin);
+      	}
+
+      	else if (!strcmp(comandos, "estado"))
+      	{
+      		clearWindow(pWin.pLogWindow);
+      		printLog(&pWin,"Todavia no implementado...", WHITE);
+      	}
+
+      	else if (!strcmp(comandos, "clearlog"))
+      	{
+      		clearWindow(pWin.pLogWindow);
+      		printLog(&pWin,"", WHITE);
+      	}
+
+      	else if (!strcmp(comandos, "clearreg"))
+      	{
+      		clearWindow(pWin.pRegWindow);
+      	}
+
+      	else
+      	{
+      		clearWindow(pWin.pLogWindow);
+      		strcat(comandos, " no es un comando valido.");
+      		printLog(&pWin, comandos, WHITE);
+      	}
+    }
 }

@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     initUserInterface(&pWin);
     drawUserInterface(&pWin);
     
-    printWindowTitle(pWin.pAppFrame, "### Tren ###");
+    printWindowTitle(pWin.pAppFrame, " Tren ");
     printWindowTitle(pWin.pLogFrame, "### Log ###");
     printWindowTitle(pWin.pCmdFrame, "### Comandos ###");
 

@@ -23,10 +23,10 @@ void initUserInterface(ST_APP_WINDOW *pWindow)
     getmaxyx(pWindow->pAppFrame, frameHeight, frameWidth);
        
     // calcula ancho y alto de las ventanas internas
-    int msgWinWidth = (frameWidth * 0.55); //0.985)
+    int msgWinWidth = (frameWidth * 0.60); //0.985)
     int msgWinHeigth = (frameHeight * 0.6);
 
-    int regWinWidth = (frameWidth * 0.435);
+    int regWinWidth = (frameWidth * 0.385);
     int regWinHeigth = (frameHeight * 0.6);
     
     int viewWinWidth = (frameWidth * 0.985);

@@ -25,7 +25,7 @@ ERROR processCommand(ST_APP_WINDOW *pWin, const char *commandLine);
 
 ERROR printHelp(ST_APP_WINDOW *pAppWin);
 
-ERROR clearLogWindow(WINDOW *pWin);
+ERROR clearWindow(WINDOW *pWin);
 
 ERROR clearCmdWindow(WINDOW *pWin);
 
