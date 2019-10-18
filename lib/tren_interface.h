@@ -18,7 +18,7 @@ typedef struct {
     WINDOW *pCmdWindow;
 } ST_APP_WINDOW;
 
-typedef enum {RED=1, GREEN, BLUE, WHITE,} COLOUR;
+typedef enum {RED = 1, GREEN, BLUE, WHITE} COLOUR;
 
 
 /**

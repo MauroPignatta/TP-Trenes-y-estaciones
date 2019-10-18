@@ -36,21 +36,21 @@ ERROR clearCmdWindow(WINDOW *pWin){
 
 void trencitoViajando(WINDOW *pLogWindow)
 {
-    int y = getmaxy(pLogWindow)/ 2 - 3;
-    int x = getmaxx(pLogWindow)/ 2 - 30;
-    int fixX = x - 8;
-    for(int i = 0 ; i < 10; i ++)
+    int y = getmaxy(pLogWindow)/ 2;
+    int x = 18;
+    int fixX = 0;
+    for(int i = 0 ; i < 18; i ++)
     {
-        werase(pLogWindow);
-        x--;
-        mvwprintw(pLogWindow, y    , x, "           o x o x o x o . . .\n");
-        mvwprintw(pLogWindow, y + 1, x, "         o      _____            _______________ ___=====__T___\n");
-        mvwprintw(pLogWindow, y + 2, x, "       .][__n_n_|DD[  ====_____  |    |.\\/.|   | |   |_|     |_\n");
-        mvwprintw(pLogWindow, y + 3, x, "      >(________|__|_[_________]_|____|_/\\_|___|_|___________|_|\n");
-        mvwprintw(pLogWindow, y + 4, x, "      _/oo OOOOO oo`  ooo   ooo   o^o       o^o   o^o     o^o\n");
-        mvwprintw(pLogWindow, y + 5, fixX, " -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-");
+        mvwprintw(pLogWindow, 0 , 0, "Viajando...\n");
+        mvwprintw(pLogWindow, y    , x, "    o x o x o x o . . .\n");
+        mvwprintw(pLogWindow, y + 1, x, "   o      _____            _______________ ___=====__T___\n");
+        mvwprintw(pLogWindow, y + 2, x, " .][__n_n_|DD[  ====_____  |    |.\\/.|   | |   |_|     |_\n");
+        mvwprintw(pLogWindow, y + 3, x, ">(________|__|_[_________]_|____|_/\\_|___|_|___________|_|\n");
+        mvwprintw(pLogWindow, y + 4, x, "_/oo OOOOO oo`  ooo   ooo   o^o       o^o   o^o     o^o\n");
+        mvwprintw(pLogWindow, y + 5, fixX, "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-");
         wrefresh(pLogWindow);
-        sleep(1);
+        x--;
+        usleep(150000);
         werase(pLogWindow);
     }
     wrefresh(pLogWindow);
