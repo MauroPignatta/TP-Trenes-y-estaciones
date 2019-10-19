@@ -19,16 +19,31 @@ ESTACION ObtenerDatosEstacion(char * nomArchivo)
     
     for(int i = 0; i < MAX_TREN; i++)
     { 
-        memset(est.tren[i], 0,sizeof(TREN));
+        memset(&est.tren[i], 0,sizeof(TREN));
     }
     fclose(configEst);
     return est;
 }
 
+/* Devuelve un vector con las posiciones del vector de trenes
+en las que se encuentran */
+void buscarTrenes( TREN trenes[] ,int posTrenes[])
+{
+    int j = 0;
+    for(int i = 0; i < MAX_TREN; i++)
+    {
+        if(trenes[i].ID != 0)
+        {
+            posTrenes[j] = i;
+            j++;
+        }
+    }
+}
+
 /*Devuelve la posicion en la que se encuentra el tren
 en el vector de trenes de la estacion, o -1 si no se
 encuentra*/
-int BuscarTrenEnEstacion(ESTACION estacion, int idTren)
+int BuscarTrenPorID(ESTACION estacion, int idTren)
 {
     int i = 0;
     while(i < MAX_TREN)
@@ -68,7 +83,7 @@ int registrarTren(ESTACION * estacion, char * mensaje)
     //token ahora contiene el ID
     char * token = strtok(mensaje, ";");
     int ID = atoi(token);
-    int yaExisteID = BuscarTrenEnEstacion(*estacion, ID);
+    int yaExisteID = BuscarTrenPorID(*estacion, ID);
     if (yaExisteID != -1)
     {
     	printf("\nYa hay un tren con ese ID registrado.");
@@ -109,7 +124,7 @@ void estadoDelTren (ESTACION estacion, char * mensaje)
     int idTren;
     mensaje = mensaje + 2;
     sscanf(mensaje, "%d", &idTren);
-    int pos = BuscarTrenEnEstacion(estacion, idTren);
+    int pos = BuscarTrenPorID(estacion, idTren);
     if (pos != -1)
     {
         mensaje = mensaje - 2;
@@ -127,3 +142,5 @@ void cargarCombustible(int *combustible){
     
     *combustible=500;
 }
+
+

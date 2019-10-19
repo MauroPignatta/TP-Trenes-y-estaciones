@@ -11,6 +11,7 @@
 ST_APP_WINDOW pWin;
 ESTACION estacion;
 int cantTrenes = 0;
+int trenesRegistrados = 0;
 
 void getInput();
 
@@ -79,11 +80,11 @@ int main(int argc, char** argv)
             printRegistro(&pWin,"Se conecto un nuevo tren", WHITE);
 
             /* acepta al nuevo tren y le envia el mensaje de bienvenida*/
-            client[n] = accept(server, 0, 0);
-            send(client[n], mensaje, strlen(mensaje), 0);
+            client[cantTrenes] = accept(server, 0, 0);
+            send(client[cantTrenes], mensaje, strlen(mensaje), 0);
 
             /* lo agrega al fd */
-            FD_SET(client[n],&master);
+            FD_SET(client[cantTrenes],&master);
             cantTrenes++;
         }
         else // si ya lo conoce
@@ -100,6 +101,8 @@ int main(int argc, char** argv)
                     if (bytes <= 0)
                     {
                         printRegistro(&pWin,"Se desconecto un tren", WHITE);
+                        estacion.tren[i].ID = 0;
+                        trenesRegistrados --;
                         FD_CLR(client[i],&master);
                     }
                     else
@@ -120,6 +123,7 @@ int main(int argc, char** argv)
                                 }
                                 else{
                                     printRegistro(&pWin,"Un tren se ha registrado", WHITE);
+                                    trenesRegistrados++;
                                 }
                                 /*Envio una respuesta al tren*/
                                 send(client[i], mensaje, sizeMsj, 0);
@@ -170,10 +174,11 @@ void getInput()
 
       	else if (!strcmp(comandos, "estado"))
       	{
-      		if(cantTrenes > 0)
+      		clearWindow(pWin.pLogWindow);
+      		if(trenesRegistrados > 0)
       		{
-      			clearWindow(pWin.pLogWindow);
-      			printEstadoTrenes(&pWin, estacion.tren[], cantTrenes);
+      			printEstadoTrenes(&pWin, estacion.tren, trenesRegistrados);
+      			printLog(&pWin,"", WHITE);
       		}
       		else
       		{

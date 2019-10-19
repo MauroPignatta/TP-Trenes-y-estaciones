@@ -24,5 +24,11 @@ void enviarTren();
 void finalizarTren();
 
 void estadoDelTren (ESTACION estacion, char * mensaje);
-#endif	// FUNCESTACIONES_H
 
+/* Devuelve un vector con las posiciones del vector de trenes
+en las que se encuentran */
+void buscarTrenes( TREN trenes[] ,int posTrenes[]);
+
+
+
+#endif	// FUNCESTACIONES_H

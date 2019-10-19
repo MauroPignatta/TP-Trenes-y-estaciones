@@ -103,21 +103,55 @@ void printRegistro(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour){
     wrefresh(pWindow->pCmdWindow);
 }
 
-void printEstadoTrenes(ST_APP_WINDOW *pWin , ESTACION est)
+void printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[], int cantTrenes)
 {
-    int i = 0;
-    char *estado = (char *) malloc(1024);
-    if(! estado)
+    int j = 0;
+    char command[6] = " ";
+
+    int posTrenes[cantTrenes];
+    buscarTrenes(trenes , posTrenes );
+
+    int y = getmaxy(pWin->pLogWindow);
+
+    while(strcmp(command, "back"))
     {
-        printLog(pWin, "Error al mostrar estado.");
-        return;
+        if (j < cantTrenes)
+        {
+            wprintw(pWin->pLogWindow,"Estado: Tren %d\n\n", j + 1);
+            wprintw(pWin->pLogWindow,"ID: %d\n",trenes[posTrenes[j]].ID);
+            wprintw(pWin->pLogWindow,"Combustible restante: %d\n",trenes[posTrenes[j]].combustible);
+            wprintw(pWin->pLogWindow,"Modelo: %s\n",trenes[posTrenes[j]].modelo);
+            wprintw(pWin->pLogWindow,"Estacion Actual: %s\n",trenes[posTrenes[j]].estOrigen);
+            wprintw(pWin->pLogWindow,"Estacion Destino: %s\n",trenes[posTrenes[j]].estDestino);
+            wprintw(pWin->pLogWindow,"Tiempo de viaje restante: %d\n\n",trenes[posTrenes[j]].tiempoRestante);
+            wprintw(pWin->pLogWindow,"<- ant\t\t Pagina %d/%d \t\tsig ->\n",j + 1, cantTrenes);
+            mvwprintw(pWin->pLogWindow, y-1 , 0, "Escriba \"back\" para volver.");
+            wrefresh(pWin->pLogWindow);
+
+            wgetnstr(pWin->pCmdWindow, command, 5);
+            wrefresh(pWin->pCmdWindow);
+
+            if (!strcmp(command, "ant"))
+            {
+                if (j > 0)
+                {
+                    j--;
+                }
+            }
+
+            else if (!strcmp(command, "sig"))
+            {
+                if( j < cantTrenes - 1)
+                {
+                    j++;
+                }
+            }
+            werase(pWin->pLogWindow);
+            werase(pWin->pCmdWindow);
+        }
     }
-    for(int i = 0; i < MAX_TREN; i++)
-    {
-        if ()
-    }
-    free(estado);
 }
+
 
 void unInitUserInterface(ST_APP_WINDOW *pWindow){
     delwin(pWindow->pLogWindow);
