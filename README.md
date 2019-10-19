@@ -1,28 +1,30 @@
-# TP-Trenes-y-estaciones 
+##TP-Trenes-y-estaciones
 
-Instalación
+#Instalación y Ejecución del Programa
 
-Pasos a seguir en la Instalación y Ejecución del Programa Trenes y Estaciones
-´´´
-Para Plataformas de Linux
+Para Plataformas Linux
 
-1- Abrir una Terminal 
-Crear el directorio Trenes y Estaciones donde Ud quiera
+1-	Abrir una Terminal 
 
-2- Clonar este repositorio con el siguiente comando:
-   git clone  https://github.com/MauroPignatta/TP-Trenes-y-estacionesggg
-3- Ya puede ejecutar el programa, ingresando al subdirectorio bin
-   Comandos de ejecucion para el Tren:   ./tren tren1.confgghgg
-   Coma
-   
-   
-   
-   
-2- Clonar este repositorio: git clone https://github.com/MauroPignatta/TP-Trenes-y-estaciones 
+2-	Crear el directorio “Trenes y Estaciones” donde Ud quiera
 
-3- Ingresar hasta el siguiente directorio:
-Escritorio \ TP-Trenes-y-estaciones
-4- Ejecutar ./estacion
-5- Ejecutar ./tren <configTrenes.txt>
+3-	Ingresar al directorio o carpeta creada
 
-´´´
+4-	Clonar este repositorio con el siguiente comando: 
+-	git clone git clone https://github.com/MauroPignatta/TP-Trenes-y-estaciones
+
+5-	Instalar NCurses con el siguiente comando:
+-	sudo apt-get install libncurses5-dev
+-	sudo apt-get install libncursesw5-dev
+
+6-	Ingresando al sub directorio “bin” 
+
+7-	Ya puede ejecutar el programa de Estaciones con el siguiente comando:
+-	Para la Estación: ./estación estacion1.conf
+
+8-	Abrir otra Terminal para ejecutar el programa de Tren con el siguiente comando:
+-	Para cada Tren: ./tren tren1.conf
+
+9-	Por cada Estación que desee agregar, deberá repetir el punto 7 completo.
+
+10-	Por cada Tren que desee agregar, deberá repetir el punto 8 completo.
