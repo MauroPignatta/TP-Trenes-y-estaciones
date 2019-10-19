@@ -45,12 +45,12 @@ int main(int argc, char** argv) {
     while(1)
     {
         memset(mensaje, '\0', sizeMsj);
-        wgetnstr(pWin.pCmdWindow, mensaje, sizeMsj);
+        wgetnstr(pWin.pCmdWindow, mensaje, 20);
 
         if(! strcmp(mensaje, "help"))
         {
-            clearLogWindow(pWin.pLogWindow);
-            printHelp(&pWin);
+           	clearLogWindow(pWin.pLogWindow);
+        	printHelp(&pWin);
         }
 
         else if(!strcmp(mensaje, "registrarse"))
@@ -91,8 +91,16 @@ int main(int argc, char** argv) {
         else if(!strcmp(mensaje, "partir"))
         {
             clearLogWindow(pWin.pLogWindow);
+            printMessage(&pWin,"A donde desea viajar?",WHITE);
+			wgetnstr(pWin.pLogWindow, tren.estDestino, 20);
+			char solicitud[sizeMsj]="3;";
+	    	send(client,solicitud,strlen(solicitud),0);
+	    	recv(client,solicitud,sizeMsj,0);
+			tren.tiempoRestante=atoi(solicitud);
+			partir(&tren);
             trencitoViajando(pWin.pLogWindow);
             printMessage(&pWin, "", WHITE);
+            exit(EXIT_SUCCESS);
         }
 
         else  if(!strcmp(mensaje, "estado"))
@@ -111,19 +119,9 @@ int main(int argc, char** argv) {
 
         clearCmdWindow(pWin.pCmdWindow);
 
-        /*
-        switch(mensaje[0]){
-            case '3':
-				printf("A dónde desea viajar?\n");
-				gets(tren.estDestino);
-				char solicitud[sizeMsj]="3;";
-	    		send(client,solicitud,strlen(solicitud),0);
-	    		recv(client,solicitud,sizeMsj,0);
-				tren.tiempoRestante=atoi(solicitud);
-				partir(&tren);//partir
-                break;
-        }
-        */
+        
+        
+        
     }
 
     unInitUserInterface(&pWin);
