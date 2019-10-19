@@ -18,5 +18,9 @@ estacion: estacion.c $(SRCFILES) $(HEADERS)
 tren: tren.c $(SRCFILES) $(HEADERS)
 	$(CC) $(LIB) tren.c $(SRCTREN) -o bin/tren $(CFLAG)
 
+debug: tren.c estacion.c $(SRCFILES) $(HEADERS)
+	$(CC) -g $(LIB) estacion.c $(SRCEST) -o bin/DEBUGestacion $(CFLAG) -lpthread
+	$(CC) -g $(LIB) tren.c $(SRCTREN) -o bin/DEBUGtren $(CFLAG)
+
 clean: 
 	rm -f bin/*

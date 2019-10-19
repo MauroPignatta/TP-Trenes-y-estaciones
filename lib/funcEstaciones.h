@@ -3,6 +3,7 @@
 
 #include "funcTrenes.h"
 #define MAX_TREN 10
+#define MAX_ESTACIONES 5
 
 typedef struct 
 {
