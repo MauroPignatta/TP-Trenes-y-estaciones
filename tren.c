@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
 			partir(&tren);
             trencitoViajando(pWin.pLogWindow);
             printMessage(&pWin, "", WHITE);
-            exit(EXIT_SUCCESS);
+            return(EXIT_SUCCESS);
         }
 
         else  if(!strcmp(mensaje, "estado"))
@@ -119,9 +119,6 @@ int main(int argc, char** argv) {
 
         clearCmdWindow(pWin.pCmdWindow);
 
-        
-        
-        
     }
 
     unInitUserInterface(&pWin);

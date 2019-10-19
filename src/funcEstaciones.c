@@ -138,8 +138,8 @@ void estadoDelTren (ESTACION estacion, char * mensaje)
         strcpy(mensaje, "No se encuentra registrado.");
     }
 }
-void cargarCombustible(int *combustible){
-    
+void cargarCombustible(int *combustible)
+{
     *combustible=500;
 }
 
