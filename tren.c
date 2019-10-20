@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
     free(nomArchivo);
     
     /* Devuelve el socket ya configurado */
-    int client = CrearSocketCliente();
+    int client = CrearSocketCliente("../config/Red1.txt");
     send(client, "tren", 5, 0);
 
     char mensaje[sizeMsj];

@@ -17,11 +17,11 @@
 
 char * FormatearNombreArchivo( char * Palabra);
 
-void obtenerDatosRed(char* IP, int *Puerto);
+void obtenerDatosRed(char* IP, int *Puerto, char * confRed);
 
-int CrearSocketServer();
+int CrearSocketServer(char * confRed);
 
-int CrearSocketCliente();
+int CrearSocketCliente(char * confRed);
 
 #endif	// CONEXION_H
 

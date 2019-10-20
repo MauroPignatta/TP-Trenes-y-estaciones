@@ -15,6 +15,7 @@ int miPos;
 int cantTrenes = 0;
 int cantEstaciones = 0;
 int trenesRegistrados = 0;
+int clientEst[MAX_ESTACION];
 
 void getInput();
 
@@ -37,7 +38,7 @@ int main(int argc, char** argv)
     char mensaje[sizeMsj];
     
     //Devuelve el socket ya configurado
-    int server = CrearSocketServer();
+    int server = CrearSocketServer("../config/Red1.txt");
     
     int maxfd = server + MaxClientes;
     fd_set master;
@@ -46,7 +47,6 @@ int main(int argc, char** argv)
     
     //Variables con los datos para la conexion
     int clientTrenes[MAX_TREN];
-    int clientEst[MAX_ESTACION - 1]; //Resto uno ya que es la estacion propia
     int clientActual = -1;
 
     memset(clientTrenes , -1, sizeof(clientTrenes));
@@ -199,9 +199,16 @@ void mostrarEstaciones(ST_APP_WINDOW *pWin, ESTACION est[])
 	printLog(pWin, "", WHITE);
 }
 
+
+
 void getInput()
 {
 	char comandos[46];
+	char IP[16];
+	int Puerto;
+	struct sockaddr_in conectarEstaciones;
+    conectarEstaciones.sin_family = AF_INET;
+    
     while(1)
     {
         wgetnstr(pWin.pCmdWindow, comandos, 20);
@@ -241,6 +248,22 @@ void getInput()
       	else if (!strcmp(comandos, "mostrar"))
       	{
       		mostrarEstaciones(&pWin, estaciones);
+      	}
+
+      	else if (!strcmp(comandos, "buscar"))
+      	{
+      		for(int i  = 0; i < MAX_ESTACION; i ++)
+      		{
+      			if (i != miPos)
+      			{
+      				sprintf(comandos, "../config/Red%d.txt", i + 1);
+      				obtenerDatosRed(IP, &Puerto, comandos);
+      				conectarEstaciones.sin_addr.s_addr = inet_addr(IP);
+    				conectarEstaciones.sin_port = htons(Puerto);
+    				connect(clientEst[i], (void *) &conectarEstaciones, sizeof(conectarEstaciones));
+
+      			}
+      		}
       	}
 
       	else

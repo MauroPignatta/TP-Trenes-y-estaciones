@@ -31,10 +31,10 @@ char *  FormatearNombreArchivo(char * Palabra)
 }
 
 
-void obtenerDatosRed(char* IP, int *Puerto)
+void obtenerDatosRed(char* IP, int *Puerto, char * confRed)
 {
     /* Abro el archivo */
-    FILE * Red = fopen("../config/configRed.txt","r");
+    FILE * Red = fopen(confRed,"r");
     if (!Red)
     {
         printf("Error al abrir archivo de configuracion de red\n");
@@ -50,13 +50,14 @@ void obtenerDatosRed(char* IP, int *Puerto)
     fclose(Red);
 }
 
-int CrearSocketServer()
+int CrearSocketServer(char * confRed)
 {
     char * IP = (char*) malloc(sizeIP);
     int Puerto;
     
     /* Obtiene los datos del archivo de config. y los almacenas en las variables*/
-    obtenerDatosRed(IP, &Puerto);
+    obtenerDatosRed(IP, &Puerto, confRed);
+    free(IP);
     
     //crea el socket
     int server = socket(AF_INET, SOCK_STREAM, 0);
@@ -84,13 +85,14 @@ int CrearSocketServer()
     return server;
 }
 
-int CrearSocketCliente()
+int CrearSocketCliente(char * confRed)
 {
     char * IP = (char*) malloc(sizeIP);
     int Puerto;
     
     /* Obtiene los datos del archivo de config. y los almacenas en las variables*/
-    obtenerDatosRed(IP, &Puerto);
+    obtenerDatosRed(IP, &Puerto, confRed);
+    free(IP);
     
     /* Creamos el socket*/
     int cliente = socket(AF_INET, SOCK_STREAM, 0);
