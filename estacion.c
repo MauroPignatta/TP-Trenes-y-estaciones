@@ -15,7 +15,7 @@ int miPos;
 int cantTrenes = 0;
 int cantEstaciones = 0;
 int trenesRegistrados = 0;
-int clientEst[MAX_ESTACION];
+int server;
 
 void getInput();
 
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
     char mensaje[sizeMsj];
     
     //Devuelve el socket ya configurado
-    int server = CrearSocketServer("../config/Red1.txt");
+    server = CrearSocketServer("../config/Red1.txt");
     
     int maxfd = server + MaxClientes;
     fd_set master;
@@ -47,6 +47,7 @@ int main(int argc, char** argv)
     
     //Variables con los datos para la conexion
     int clientTrenes[MAX_TREN];
+    int clientEst[MAX_ESTACION];
     int clientActual = -1;
 
     memset(clientTrenes , -1, sizeof(clientTrenes));
@@ -97,6 +98,7 @@ int main(int argc, char** argv)
             }
             else
             {
+            	printRegistro(&pWin,"Se conecto un nuevo tren", WHITE);
             	clientEst[cantEstaciones] = clientActual;
             	cantEstaciones ++;
             }
@@ -204,10 +206,6 @@ void mostrarEstaciones(ST_APP_WINDOW *pWin, ESTACION est[])
 void getInput()
 {
 	char comandos[46];
-	char IP[16];
-	int Puerto;
-	struct sockaddr_in conectarEstaciones;
-    conectarEstaciones.sin_family = AF_INET;
     
     while(1)
     {
@@ -252,6 +250,12 @@ void getInput()
 
       	else if (!strcmp(comandos, "buscar"))
       	{
+      		int cont = 0;
+			char IP[16];
+			int Puerto;
+      		clearWindow(pWin.pLogWindow);
+			struct sockaddr_in conectarEstaciones;
+		    conectarEstaciones.sin_family = AF_INET;
       		for(int i  = 0; i < MAX_ESTACION; i ++)
       		{
       			if (i != miPos)
@@ -260,10 +264,15 @@ void getInput()
       				obtenerDatosRed(IP, &Puerto, comandos);
       				conectarEstaciones.sin_addr.s_addr = inet_addr(IP);
     				conectarEstaciones.sin_port = htons(Puerto);
-    				connect(clientEst[i], (void *) &conectarEstaciones, sizeof(conectarEstaciones));
-
+    				if (connect(server, (void *) &conectarEstaciones, sizeof(conectarEstaciones)) == 0)
+    				{
+    					printLog(&pWin, "Estacion encontrada", WHITE);
+    					cont ++;
+    				}
       			}
       		}
+      		if (cont == 0)
+      			printLog(&pWin, "No se encontraron Estaciones", WHITE);
       	}
 
       	else
