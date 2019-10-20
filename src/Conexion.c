@@ -2,12 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void  FormatearNombreArchivo( char * Palabra)
+char *  FormatearNombreArchivo(char * Palabra)
 {	
-    int i = 0; 
+    int primerLetra = 1; 
+    char * aux = Palabra;
     while (*Palabra)
 	{
-		if ( !i )
+		if ( primerLetra )
 		{
 			*Palabra = toupper(*Palabra);
 		}
@@ -15,9 +16,18 @@ void  FormatearNombreArchivo( char * Palabra)
 		{
 			*Palabra = tolower(*Palabra);
 		}
-		i = 1;
+		primerLetra = 0;
 		Palabra++;
 	}
+    char * nArchivo = malloc(30);
+    if(!nArchivo)
+    {
+        printf("Ocurrio un error\n");
+        exit(EXIT_FAILURE);
+    }
+    strcpy(nArchivo, "../config/");
+    strcat(nArchivo, aux);
+    return nArchivo;
 }
 
 

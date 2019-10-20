@@ -59,4 +59,6 @@ void printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[], int cantTrenes);
 
 void unInitUserInterface(ST_APP_WINDOW *);
 
+
+
 #endif

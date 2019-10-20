@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <unistd.h>
 #include "lib/funcEstaciones.h"
 #include "lib/Conexion.h"
 #include "lib/est_interface.h"
@@ -9,8 +10,10 @@
 
 /* Variables globales que usa el hilo */
 ST_APP_WINDOW pWin;
-ESTACION estacion;
+ESTACION estaciones[MAX_ESTACION];
+int miPos;
 int cantTrenes = 0;
+int cantEstaciones = 0;
 int trenesRegistrados = 0;
 
 void getInput();
@@ -25,13 +28,12 @@ int main(int argc, char** argv)
         exit(3);
     } 
 
-    FormatearNombreArchivo(argv[1]);
-    char nomArchivo[20] = "../config/";
-    strcat(nomArchivo, argv[1]);
-
-    //Declaro la estacion y le asigno los datos segun el archivo de conf.
-    estacion = ObtenerDatosEstacion(nomArchivo);
-    
+    //Obtengo los datos de las estaciones. 
+    char *nomArchivo = FormatearNombreArchivo(argv[1]);
+    miPos = ObtenerDatosMiEstacion(nomArchivo, estaciones); 
+    free(nomArchivo);
+    ObtenerOtrasEstaciones(estaciones, miPos);
+	
     char mensaje[sizeMsj];
     
     //Devuelve el socket ya configurado
@@ -42,9 +44,14 @@ int main(int argc, char** argv)
     FD_ZERO(&master);
     FD_SET(server, &master);
     
-    //vector con los datos para la conexion
-    int client[MaxClientes]; 
-    memset(client , -1, sizeof(client));
+    //Variables con los datos para la conexion
+    int clientTrenes[MAX_TREN];
+    int clientEst[MAX_ESTACION - 1]; //Resto uno ya que es la estacion propia
+    int clientActual = -1;
+
+    memset(clientTrenes , -1, sizeof(clientTrenes));
+    memset(clientEst , -1, sizeof(clientEst));
+
     int regCorrecto;
 
     //Aca empieza a correr ncurses
@@ -52,7 +59,7 @@ int main(int argc, char** argv)
     drawUserInterface(&pWin);
 
     // Uso el mensaje para ponerle el titulo con el nombre de la estacion
-    sprintf(mensaje, " Estacion %s " , estacion.nombre);
+    sprintf(mensaje, " Estacion %s " , estaciones[miPos].nombre);
     
     printWindowTitle(pWin.pAppFrame, mensaje);
     printWindowTitle(pWin.pLogFrame, "### Log ###");
@@ -70,40 +77,52 @@ int main(int argc, char** argv)
     while (1)
     {
         fd_set copy = master;
+        int seQuienHablo = 0;
         int nready = select(maxfd, &copy, NULL, NULL, NULL); 
         
 	   // si es un cliente nuevo
         if ( FD_ISSET(server, &copy))
         {
-            /* Falta preparar / mejorar el mensaje de bienvenida */
-            sprintf(mensaje,"Bienvenido a la estacion %s", estacion.nombre);
-            printRegistro(&pWin,"Se conecto un nuevo tren", WHITE);
+            /* acepta al nuevo cliente */
+            clientActual = accept(server, 0, 0);
+            recv(clientActual, mensaje, sizeof(mensaje), 0);
 
-            /* acepta al nuevo tren y le envia el mensaje de bienvenida*/
-            client[cantTrenes] = accept(server, 0, 0);
-            send(client[cantTrenes], mensaje, strlen(mensaje), 0);
-
+            if (!strcmp(mensaje, "tren"))
+            {
+            	printRegistro(&pWin,"Se conecto un nuevo tren", WHITE);
+            	sprintf(mensaje,"Bienvenido a la estacion %s", estaciones[miPos].nombre);
+            	clientTrenes[cantTrenes] = clientActual;
+            	send(clientTrenes[cantTrenes], mensaje, strlen(mensaje), 0);
+            	cantTrenes++;
+            }
+            else
+            {
+            	clientEst[cantEstaciones] = clientActual;
+            	cantEstaciones ++;
+            }
             /* lo agrega al fd */
-            FD_SET(client[cantTrenes],&master);
-            cantTrenes++;
+            FD_SET(clientActual ,&master);
+            
         }
         else // si ya lo conoce
         {
-            for(int i = 0; i < cantTrenes; i ++)
+        	seQuienHablo = 0;
+            for(int i = 0; i < cantTrenes && !seQuienHablo; i ++) //Busco quien me hablo en los trenes
             {
-                if (FD_ISSET(client[i], &copy))
+                if (FD_ISSET(clientTrenes[i], &copy))
                 {
+                	seQuienHablo = 1;
                     memset(mensaje,'\0',sizeMsj);
                     // Recibo el mensaje
-                    int bytes = recv(client[i], mensaje, sizeof(mensaje), 0 );
+                    int bytes = recv(clientTrenes[i], mensaje, sizeof(mensaje), 0 );
                     
 		            //  Para saber si el cliente se desconecto 
                     if (bytes <= 0)
                     {
                         printRegistro(&pWin,"Se desconecto un tren", WHITE);
-                        estacion.tren[i].ID = 0;
+                        estaciones[miPos].tren[i].ID = 0;
                         trenesRegistrados --;
-                        FD_CLR(client[i],&master);
+                        FD_CLR(clientTrenes[i],&master);
                     }
                     else
                     {
@@ -112,8 +131,8 @@ int main(int argc, char** argv)
                         {
                             case '1':
                                 /*Registro al tren*/
-                                regCorrecto = registrarTren(&estacion, mensaje);
-                                sprintf(mensaje,"1;%s;Te has registrado correctamente", estacion.nombre);
+                                regCorrecto = registrarTren(&estaciones[miPos], mensaje);
+                                sprintf(mensaje,"1;%s;Te has registrado correctamente", estaciones[miPos].nombre);
 
                                 /*Comprueba que el tren se haya registrado*/
                                 if (!regCorrecto)
@@ -126,7 +145,7 @@ int main(int argc, char** argv)
                                     trenesRegistrados++;
                                 }
                                 /*Envio una respuesta al tren*/
-                                send(client[i], mensaje, sizeMsj, 0);
+                                send(clientTrenes[i], mensaje, sizeMsj, 0);
                                 break;
                                
                             case '2':
@@ -142,7 +161,7 @@ int main(int argc, char** argv)
 
                                 estadoDelTren(estacion ,mensaje);
                                 puts("Estado enviado");
-                                send(client[i], mensaje, strlen(mensaje), 0);
+                                send(clientTrenes[i], mensaje, strlen(mensaje), 0);
                                 */
                                 break;
                                 
@@ -153,9 +172,31 @@ int main(int argc, char** argv)
                     }
                 }
             }
+            for(int i = 0; i < cantEstaciones && !seQuienHablo; i ++) //Busco quien me hablo entre las estaciones
+            {
+            	if (FD_ISSET(clientEst[i], &copy))
+                {
+
+                }	
+            }
         }
     }
     return (EXIT_SUCCESS);
+}
+
+/* Esta funcion la hice para probar si andaba bien la funcion
+ObtenerOtrasEstaciones, la dejo porque puede llegar a servir */
+void mostrarEstaciones(ST_APP_WINDOW *pWin, ESTACION est[])
+{
+	char aux[sizeMsj];
+	for(int i = 0; i < MAX_ESTACION; i++)
+	{
+		clearWindow(pWin->pLogWindow);
+		sprintf(aux,"ID:%d\nnom:%sDis:%d",est[i].ID, est[i].nombre, est[i].distancia);
+		printLog(pWin, aux, WHITE);
+		sleep(2);
+	}
+	printLog(pWin, "", WHITE);
 }
 
 void getInput()
@@ -177,7 +218,7 @@ void getInput()
       		clearWindow(pWin.pLogWindow);
       		if(trenesRegistrados > 0)
       		{
-      			printEstadoTrenes(&pWin, estacion.tren, trenesRegistrados);
+      			printEstadoTrenes(&pWin, estaciones[miPos].tren, trenesRegistrados);
       			printLog(&pWin,"", WHITE);
       		}
       		else
@@ -195,6 +236,11 @@ void getInput()
       	else if (!strcmp(comandos, "clearreg"))
       	{
       		clearWindow(pWin.pRegWindow);
+      	}
+
+      	else if (!strcmp(comandos, "mostrar"))
+      	{
+      		mostrarEstaciones(&pWin, estaciones);
       	}
 
       	else

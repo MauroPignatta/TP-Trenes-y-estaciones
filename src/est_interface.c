@@ -109,7 +109,7 @@ void printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[], int cantTrenes)
     char command[6] = " ";
 
     int posTrenes[cantTrenes];
-    buscarTrenes(trenes , posTrenes );
+    buscarTrenes(trenes , posTrenes);
 
     int y = getmaxy(pWin->pLogWindow);
 
@@ -159,3 +159,4 @@ void unInitUserInterface(ST_APP_WINDOW *pWindow){
     clear();
     endwin();
 }
+

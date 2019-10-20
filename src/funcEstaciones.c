@@ -4,25 +4,46 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-ESTACION ObtenerDatosEstacion(char * nomArchivo)
+void ObtenerOtrasEstaciones(ESTACION est[],int miPos)
+{
+    char nombreArchivo[30];
+    FILE* configEst;
+    for (int i = 0; i < MAX_ESTACION; i++)
+    {
+        if( i != miPos)
+        {
+            sprintf(nombreArchivo, "../config/Estacion%d.conf", i + 1);
+            configEst = fopen(nombreArchivo, "r");
+            fscanf(configEst ,"Nombre: %s\n",est[i].nombre);
+            fscanf(configEst ,"Distancia: %d\n", &est[i].distancia);
+            fscanf(configEst ,"ID: %d\n", &est[i].ID);
+            fclose(configEst);
+        }
+    }
+}
+
+int ObtenerDatosMiEstacion(char * nomArchivo, ESTACION est[])
 {
     FILE * configEst = fopen(nomArchivo,"r") ;
-    ESTACION est;
+    ESTACION estAux;
     if(!configEst)
     {
         printf("Error al abrir archivo de configuracion.\n");
         exit(1);
     }
     
-    fscanf(configEst ,"Nombre: %s\n",est.nombre);
-    fscanf(configEst ,"Distancia: %d", &est.distancia);
-    
+    fscanf(configEst ,"Nombre: %s\n",estAux.nombre);
+    fscanf(configEst ,"Distancia: %d\n", &estAux.distancia);
+    fscanf(configEst ,"ID: %d\n", &estAux.ID);
     for(int i = 0; i < MAX_TREN; i++)
     { 
-        memset(&est.tren[i], 0,sizeof(TREN));
+        memset(&estAux.tren[i], 0,sizeof(TREN));
     }
+    int MyPos = estAux.ID -1;
+    est[MyPos] = estAux;
+
     fclose(configEst);
-    return est;
+    return MyPos;
 }
 
 /* Devuelve un vector con las posiciones del vector de trenes

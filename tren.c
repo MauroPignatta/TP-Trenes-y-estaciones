@@ -15,13 +15,13 @@ int main(int argc, char** argv) {
         exit(3);
     }
 
-    FormatearNombreArchivo(argv[1]);
-    char nomArchivo[20] = "../config/";
-    strcat(nomArchivo, argv[1]);
+    char *nomArchivo = FormatearNombreArchivo(argv[1]);
     TREN tren = inicializarTren(nomArchivo);
+    free(nomArchivo);
     
     /* Devuelve el socket ya configurado */
     int client = CrearSocketCliente();
+    send(client, "tren", 5, 0);
 
     char mensaje[sizeMsj];
 
@@ -37,8 +37,7 @@ int main(int argc, char** argv) {
     printWindowTitle(pWin.pLogFrame, "### Log ###");
     printWindowTitle(pWin.pCmdFrame, "### Comandos ###");
 
-
-    recv(client, mensaje, sizeMsj, 0);
+    recv(client, mensaje, sizeMsj, 0);  // Recibo el mensaje de Bienvenido a la estacion <nombre estacion>
     printMessage(&pWin, mensaje, WHITE);
     wmove(pWin.pCmdWindow, 0,0);
 
