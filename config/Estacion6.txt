@@ -1,0 +1,2 @@
+Nombre: Tokyo
+Distancia: 10
