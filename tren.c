@@ -9,7 +9,7 @@
 int main(int argc, char** argv) {
 
     if(argc != 3){
-        printf("\nuso: ./estacion <Nombre archivo Conf Tren> <Nombre archivo Conf Red>\n");
+        printf("\nuso: ./tren <Nombre archivo Conf Tren> <Nombre archivo Conf Red>\n");
         exit(3);
     }
 

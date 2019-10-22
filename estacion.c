@@ -229,7 +229,7 @@ void getInput()
       		if (printEstadoTrenes(&pWin, estaciones[miPos].tren) == 0)
       		{
       			clearWindow(pWin.pLogWindow);
-      			printLog(&pWin,"No hay trenes en la estacion.", WHITE);
+      			printLog(&pWin,"No hay trenes registrados en la estacion.", WHITE);
       		}
       	}
 
