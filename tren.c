@@ -93,13 +93,15 @@ int main(int argc, char** argv) {
             clearLogWindow(pWin.pLogWindow);
             printMessage(&pWin,"A donde desea viajar?",WHITE);
 			wgetnstr(pWin.pLogWindow, tren.estDestino, 20);
-			char solicitud[sizeMsj]="3;";
+			trencitoViajando(pWin.pLogWindow);
+			/*char solicitud[sizeMsj]="3;";
 	    	send(client,solicitud,strlen(solicitud),0);
 	    	recv(client,solicitud,sizeMsj,0);
-			tren.tiempoRestante=atoi(solicitud);
+			tren.tiempoRestante=atoi(solicitud);*/
 			partir(&tren);
-            trencitoViajando(pWin.pLogWindow);
+            
             printMessage(&pWin, "", WHITE);
+            clearLogWindow(pWin.pLogWindow);
             return(EXIT_SUCCESS);
         }
 
