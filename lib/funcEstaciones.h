@@ -5,12 +5,15 @@
 #define MAX_TREN 10
 #define MAX_ESTACION 5
 
+#define esEstacion(x) x == '2'
+
 typedef struct 
 {
 	int ID;
-	char nombre[30];
+	char nombre[max_nombre_est];
 	int distancia;
-	TREN tren[MAX_TREN];	
+	int online;
+	TREN tren[MAX_TREN];
 }ESTACION;
 
 /* Abre el archivo de configuracion pasado como argumento y lo guarda 
@@ -37,8 +40,11 @@ void estadoDelTren (ESTACION estacion, char * mensaje);
 
 /* Devuelve un vector con las posiciones del vector de trenes
 en las que se encuentran */
-void buscarTrenes( TREN trenes[] ,int posTrenes[]);
+int buscarTrenes( TREN trenes[] ,int posTrenes[]);
 
-
+/*Devuelve la posicion en la que se encuentra el tren
+en el vector de trenes de la estacion, o -1 si no se
+encuentra*/
+int BuscarTrenPorID(ESTACION estacion, int idTren);
 
 #endif	// FUNCESTACIONES_H

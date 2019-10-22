@@ -12,46 +12,42 @@
 ST_APP_WINDOW pWin;
 ESTACION estaciones[MAX_ESTACION];
 int miPos;
-int cantTrenes = 0;
+int n = 0;
 int cantEstaciones = 0;
-int trenesRegistrados = 0;
 int server;
 
 void getInput();
 
 int main(int argc, char** argv) 
 { 
-    system("clear");
-    
     if (argc != 2)
     {
-    	printf("Ingrese el nombre del archivo de conf. como parametro\n");
+    	printf("\nuso: ./estacion <Nombre archivo Conf Estacion>\n");
         exit(3);
     } 
 
+    system("clear");
+
     //Obtengo los datos de las estaciones. 
-    char *nomArchivo = FormatearNombreArchivo(argv[1]);
-    miPos = ObtenerDatosMiEstacion(nomArchivo, estaciones); 
-    free(nomArchivo);
+    char *nomArchivoEst = FormatearNombreArchivo(argv[1]);
+    miPos = ObtenerDatosMiEstacion(nomArchivoEst, estaciones); 
+    free(nomArchivoEst);
+
     ObtenerOtrasEstaciones(estaciones, miPos);
 	
     char mensaje[sizeMsj];
+    sprintf(mensaje,"../config/Red%d.conf", miPos + 1);
+
+    server = CrearSocketServer(mensaje);  //Devuelve el socket ya configurado
     
-    //Devuelve el socket ya configurado
-    server = CrearSocketServer("../config/Red1.txt");
-    
-    int maxfd = server + MaxClientes;
+    int maxfd = server + MaxClientes + 1;
     fd_set master;
     FD_ZERO(&master);
     FD_SET(server, &master);
     
     //Variables con los datos para la conexion
-    int clientTrenes[MAX_TREN];
-    int clientEst[MAX_ESTACION];
-    int clientActual = -1;
-
-    memset(clientTrenes , -1, sizeof(clientTrenes));
-    memset(clientEst , -1, sizeof(clientEst));
+    int client[MaxClientes];
+    memset(client , -1, sizeof(client));
 
     int regCorrecto;
 
@@ -79,133 +75,143 @@ int main(int argc, char** argv)
     {
         fd_set copy = master;
         int seQuienHablo = 0;
-        int nready = select(maxfd, &copy, NULL, NULL, NULL); 
+        int bytesRecibidos = 0;
+        int TrenID = 0;
+        int posEst = -1;
+    	int posTren = 0;
+    	char opcion; 
+    	memset(mensaje,'\0',sizeMsj);
+
+        select(maxfd, &copy, NULL, NULL, NULL); 
         
 	   // si es un cliente nuevo
         if ( FD_ISSET(server, &copy))
         {
             /* acepta al nuevo cliente */
-            clientActual = accept(server, 0, 0);
-            recv(clientActual, mensaje, sizeof(mensaje), 0);
+            client[n] = accept(server, 0, 0);
+            recv(client[n], mensaje, sizeMsj, 0);
 
-            if (!strcmp(mensaje, "tren"))
+            if ( esTren( mensaje[0]) )
             {
             	printRegistro(&pWin,"Se conecto un nuevo tren", WHITE);
             	sprintf(mensaje,"Bienvenido a la estacion %s", estaciones[miPos].nombre);
-            	clientTrenes[cantTrenes] = clientActual;
-            	send(clientTrenes[cantTrenes], mensaje, strlen(mensaje), 0);
-            	cantTrenes++;
+            	send(client[n], mensaje, strlen(mensaje), 0);
             }
-            else
+            else if ( esEstacion( mensaje[0]) )
             {
-            	printRegistro(&pWin,"Se conecto un nuevo tren", WHITE);
-            	clientEst[cantEstaciones] = clientActual;
-            	cantEstaciones ++;
+            	printRegistro(&pWin,"Se conecto una Estacion", WHITE);
             }
             /* lo agrega al fd */
-            FD_SET(clientActual ,&master);
-            
+            FD_SET(client[n] ,&master);
+            n++;
         }
         else // si ya lo conoce
         {
         	seQuienHablo = 0;
-            for(int i = 0; i < cantTrenes && !seQuienHablo; i ++) //Busco quien me hablo en los trenes
+            for(int i = 0; i < MaxClientes && !seQuienHablo; i ++) //Busco quien me hablo
             {
-                if (FD_ISSET(clientTrenes[i], &copy))
+                if (FD_ISSET(client[i], &copy))
                 {
                 	seQuienHablo = 1;
-                    memset(mensaje,'\0',sizeMsj);
                     // Recibo el mensaje
-                    int bytes = recv(clientTrenes[i], mensaje, sizeof(mensaje), 0 );
+                    bytesRecibidos = recv(client[i], mensaje, sizeMsj, 0 ); // recibo el mensaje que me dice si es tren o estacion.
                     
 		            //  Para saber si el cliente se desconecto 
-                    if (bytes <= 0)
+                    if (bytesRecibidos <= 0) // si el cliente se desconecta haciendo ctrl + c, no vamos a poder saber quien era
                     {
-                        printRegistro(&pWin,"Se desconecto un tren", WHITE);
-                        estaciones[miPos].tren[i].ID = 0;
-                        trenesRegistrados --;
-                        FD_CLR(clientTrenes[i],&master);
+                        printRegistro(&pWin,"Se desconecto algo", WHITE);
+                        FD_CLR(client[i], &master);
                     }
+
                     else
-                    {
-                        char opcion = mensaje[0];
-                        switch (opcion)
-                        {
-                            case '1':
-                                /*Registro al tren*/
-                                regCorrecto = registrarTren(&estaciones[miPos], mensaje);
-                                sprintf(mensaje,"1;%s;Te has registrado correctamente", estaciones[miPos].nombre);
+					{
+	                    if ( esTren ( mensaje[0] )) //compruebo si me hablo un tren
+	                    {
+	                        opcion = mensaje[2];
+	                        switch (opcion)
+	                        {
+	                            case '1':
+	                                /*Registro al tren*/
+	                                regCorrecto = registrarTren(&estaciones[miPos], mensaje);
+	                                sprintf(mensaje,"1;%s;Te has registrado correctamente", estaciones[miPos].nombre);
 
-                                /*Comprueba que el tren se haya registrado*/
-                                if (!regCorrecto)
-                                {
-                                    printRegistro(&pWin,"No se pudo registrar a un\ntren: Ya registrado.", WHITE);
-                                    strcpy(mensaje,"2;No te has podido registrar: Ya existe un tren con el mismo ID.");
-                                }
-                                else{
-                                    printRegistro(&pWin,"Un tren se ha registrado", WHITE);
-                                    trenesRegistrados++;
-                                }
-                                /*Envio una respuesta al tren*/
-                                send(clientTrenes[i], mensaje, sizeMsj, 0);
-                                break;
-                               
-                            case '2':
-                                // solicitar anden
-                                break;
-                                
-                            case '3':
-                                // partir
-                                break;
-                                
-                            case '4':
-                                /* Esto va a haber que cambiarlo, no borrar por ahora.
+	                                /*Comprueba que el tren se haya registrado*/
+	                                if (!regCorrecto)
+	                                {
+	                                    printRegistro(&pWin,"No se pudo registrar a un\ntren: Ya registrado.", WHITE);
+	                                    strcpy(mensaje,"2;No te has podido registrar: Ya existe un tren con el mismo ID.");
+	                                }
+	                                else{
+	                                    printRegistro(&pWin,"Un tren se ha registrado", WHITE);
+	                                }
+	                                /*Envio una respuesta al tren*/
+	                                send(client[i], mensaje, sizeMsj, 0);
+	                                break;
+	                               
+	                            case '2':
+	                                // solicitar anden
+	                                break;
+	                                
+	                            case '3':
+	                                // partir
+	                                break;
+	                                
+	                            case '4':
+	                                /* Esto va a haber que cambiarlo, no borrar por ahora.
 
-                                estadoDelTren(estacion ,mensaje);
-                                puts("Estado enviado");
-                                send(clientTrenes[i], mensaje, strlen(mensaje), 0);
-                                */
-                                break;
-                                
-                            default:
-                                printf("Nunca deberia salir por el default\n");
-                                printf("Si ves este mensaje, hay algo que esta mal\n");
-                        }
-                    }
+	                                estadoDelTren(estacion ,mensaje);
+	                                puts("Estado enviado");
+	                                send(clientTrenes[i], mensaje, strlen(mensaje), 0);
+	                                */
+	                                break;
+	                            case '5':	//Agrego este para cuando un tren quiere desconectarse
+	                            	
+	                            	sscanf(mensaje, "1;5;%d", &TrenID);
+	                            	posTren = BuscarTrenPorID(estaciones[miPos], TrenID);
+
+	                            	if (posTren != -1)
+	                            		estaciones[miPos].tren[posTren].ID = 0;
+	                            	
+			                        printRegistro(&pWin,"Se desconecto un tren", WHITE);
+			                        FD_CLR(client[i], &master);
+
+	                            	break;
+	                        }
+	                    }
+		                else if ( esEstacion( mensaje[0] )) // si el mensaje recibido es de una estacion
+		                {
+		                	opcion = mensaje[2];
+
+		                	switch (opcion)
+	                        {
+
+	                        	case '5': //exit
+	                        		sscanf(mensaje, "2;5;%d", &posEst);
+	                            	estaciones[posEst].online = 0;
+
+	                            	//bytesRecibidos = recv(client[i], mensaje, sizeMsj, 0);
+
+	                            	//if (bytesRecibidos <= 0)
+				                    //{
+				                        printRegistro(&pWin,"Se desconecto una estacion", WHITE);
+				                        FD_CLR(client[i], &master);
+				                    //}
+	                        		break;
+                        	}
+		                }
+		            }
                 }
-            }
-            for(int i = 0; i < cantEstaciones && !seQuienHablo; i ++) //Busco quien me hablo entre las estaciones
-            {
-            	if (FD_ISSET(clientEst[i], &copy))
-                {
-
-                }	
             }
         }
     }
     return (EXIT_SUCCESS);
 }
 
-/* Esta funcion la hice para probar si andaba bien la funcion
-ObtenerOtrasEstaciones, la dejo porque puede llegar a servir */
-void mostrarEstaciones(ST_APP_WINDOW *pWin, ESTACION est[])
-{
-	char aux[sizeMsj];
-	for(int i = 0; i < MAX_ESTACION; i++)
-	{
-		clearWindow(pWin->pLogWindow);
-		sprintf(aux,"ID:%d\nnom:%sDis:%d",est[i].ID, est[i].nombre, est[i].distancia);
-		printLog(pWin, aux, WHITE);
-		sleep(2);
-	}
-	printLog(pWin, "", WHITE);
-}
-
-
-
 void getInput()
 {
-	char comandos[46];
+	char comandos[20];
+	char mensaje[sizeMsj];
+	int serverEst[MAX_ESTACION];
     
     while(1)
     {
@@ -218,19 +224,45 @@ void getInput()
       		printHelp(&pWin);
       	}
 
-      	else if (!strcmp(comandos, "estado"))
+      	else if (!strcmp(comandos, "estado tren"))
       	{
-      		clearWindow(pWin.pLogWindow);
-      		if(trenesRegistrados > 0)
+      		if (printEstadoTrenes(&pWin, estaciones[miPos].tren) == 0)
       		{
-      			printEstadoTrenes(&pWin, estaciones[miPos].tren, trenesRegistrados);
-      			printLog(&pWin,"", WHITE);
-      		}
-      		else
-      		{
+      			clearWindow(pWin.pLogWindow);
       			printLog(&pWin,"No hay trenes en la estacion.", WHITE);
       		}
       	}
+
+      	else if (!strcmp(comandos, "estado est"))
+      	{
+      		printEstadoEstaciones(&pWin, estaciones);
+      	}
+
+      	else if (!strcmp(comandos, "buscar est"))
+      	{
+      		clearWindow(pWin.pLogWindow);
+      		printLog(&pWin, "Buscando estaciones...", WHITE);
+      		int cont = 0;
+      		for(int i  = 0; i < MAX_ESTACION; i ++)
+      		{
+      			if (i != miPos)
+      			{
+      				sprintf(mensaje, "../config/Red%d.conf", i + 1);
+      				if (serverEst[i] = conectarEstacion(mensaje))
+      				{
+      					cont ++ ;
+      					send(serverEst[i], "2", sizeMsj, 0);
+      					estaciones[i].online = 1;
+      				}
+      			}
+      		}
+      		clearWindow(pWin.pLogWindow);
+      		if (cont == 0)
+      			printLog(&pWin, "No se encontraron estaciones", WHITE);
+      		else
+      			printLog(&pWin, "Se encontraron estaciones", WHITE);
+      	}
+
 
       	else if (!strcmp(comandos, "clearlog"))
       	{
@@ -243,36 +275,18 @@ void getInput()
       		clearWindow(pWin.pRegWindow);
       	}
 
-      	else if (!strcmp(comandos, "mostrar"))
+      	else if (!strcmp(comandos, "exit"))
       	{
-      		mostrarEstaciones(&pWin, estaciones);
-      	}
-
-      	else if (!strcmp(comandos, "buscar"))
-      	{
-      		int cont = 0;
-			char IP[16];
-			int Puerto;
       		clearWindow(pWin.pLogWindow);
-			struct sockaddr_in conectarEstaciones;
-		    conectarEstaciones.sin_family = AF_INET;
-      		for(int i  = 0; i < MAX_ESTACION; i ++)
+      		printLog(&pWin, "Saliendo...", WHITE);
+  			sprintf(mensaje, "2;5;%d", miPos);
+      		for(int i = 0; i < MAX_ESTACION; i++)
       		{
       			if (i != miPos)
-      			{
-      				sprintf(comandos, "../config/Red%d.txt", i + 1);
-      				obtenerDatosRed(IP, &Puerto, comandos);
-      				conectarEstaciones.sin_addr.s_addr = inet_addr(IP);
-    				conectarEstaciones.sin_port = htons(Puerto);
-    				if (connect(server, (void *) &conectarEstaciones, sizeof(conectarEstaciones)) == 0)
-    				{
-    					printLog(&pWin, "Estacion encontrada", WHITE);
-    					cont ++;
-    				}
-      			}
-      		}
-      		if (cont == 0)
-      			printLog(&pWin, "No se encontraron Estaciones", WHITE);
+					send(serverEst[i], mensaje, sizeMsj, 0);
+	  		}
+	  		unInitUserInterface(&pWin);
+      		exit(EXIT_SUCCESS);
       	}
 
       	else

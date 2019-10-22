@@ -23,5 +23,7 @@ int CrearSocketServer(char * confRed);
 
 int CrearSocketCliente(char * confRed);
 
+int conectarEstacion(char * confRed);
+
 #endif	// CONEXION_H
 

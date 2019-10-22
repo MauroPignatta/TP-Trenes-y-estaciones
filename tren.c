@@ -8,20 +8,22 @@
 
 int main(int argc, char** argv) {
 
-    system("clear");
-
-    if(argc!=2){
-        printf("Ingrese el nombre del archivo de conf. como parametro\n");
+    if(argc != 3){
+        printf("\nuso: ./estacion <Nombre archivo Conf Tren> <Nombre archivo Conf Red>\n");
         exit(3);
     }
 
-    char *nomArchivo = FormatearNombreArchivo(argv[1]);
-    TREN tren = inicializarTren(nomArchivo);
-    free(nomArchivo);
+    system("clear");
+
+    char *nomArchivoTren = FormatearNombreArchivo(argv[1]);
+    TREN tren = inicializarTren(nomArchivoTren);
+    free(nomArchivoTren);
     
     /* Devuelve el socket ya configurado */
-    int client = CrearSocketCliente("../config/Red1.txt");
-    send(client, "tren", 5, 0);
+    char *nomArchivoRed = FormatearNombreArchivo(argv[2]);
+    int client = CrearSocketCliente(nomArchivoRed);
+    send(client, "1", sizeMsj, 0);
+    free(nomArchivoRed);
 
     char mensaje[sizeMsj];
 
@@ -61,10 +63,10 @@ int main(int argc, char** argv) {
             }
             else
             {
-                registrarse(mensaje, tren);
+                armarMensajeRegistrarse(tren, mensaje);
                 send(client, mensaje, strlen(mensaje), 0);
+
                 recv(client, mensaje, sizeMsj, 0);
-			
                 char * token = NULL;
                 token = strtok(mensaje,";");
 
@@ -99,6 +101,14 @@ int main(int argc, char** argv) {
             clearLogWindow(pWin.pLogWindow);
             armarMensajeEstadoDelTren(tren, mensaje);
             printMessage(&pWin, mensaje, WHITE);
+        }
+
+        else  if(!strcmp(mensaje, "exit"))
+        {
+            armarMensajeExit(tren, mensaje);
+            send(client, mensaje, strlen(mensaje), 0);
+            unInitUserInterface(&pWin);
+            exit(EXIT_SUCCESS);
         }
 
         else

@@ -57,7 +57,6 @@ int CrearSocketServer(char * confRed)
     
     /* Obtiene los datos del archivo de config. y los almacenas en las variables*/
     obtenerDatosRed(IP, &Puerto, confRed);
-    free(IP);
     
     //crea el socket
     int server = socket(AF_INET, SOCK_STREAM, 0);
@@ -71,6 +70,7 @@ int CrearSocketServer(char * confRed)
     dirServer.sin_family = AF_INET;
     dirServer.sin_addr.s_addr = inet_addr(IP);
     dirServer.sin_port = htons(Puerto);
+    free(IP);
     
     //comprobar error
     if ( bind(server, (struct sockaddr*) &dirServer,sizeof (dirServer)) != 0)
@@ -79,7 +79,7 @@ int CrearSocketServer(char * confRed)
         exit(2);
     }
     
-    listen(server, MaxClientes);
+    listen(server, MaxClientes + 1);
     printf("Esperando conexiones entrantes...\n");
     
     return server;
@@ -92,7 +92,6 @@ int CrearSocketCliente(char * confRed)
     
     /* Obtiene los datos del archivo de config. y los almacenas en las variables*/
     obtenerDatosRed(IP, &Puerto, confRed);
-    free(IP);
     
     /* Creamos el socket*/
     int cliente = socket(AF_INET, SOCK_STREAM, 0);
@@ -102,12 +101,40 @@ int CrearSocketCliente(char * confRed)
     dirServer.sin_family = AF_INET;
     dirServer.sin_addr.s_addr = inet_addr(IP);
     dirServer.sin_port = htons(Puerto);
+    free(IP);
     
     /* Conectamos al servidor*/
     if (connect(cliente, (void *)&dirServer, sizeof(dirServer)) != 0)
     {
         perror("No se pudo conectar con el servidor");
         exit(2);
+    }
+    
+    return cliente;
+}
+
+int conectarEstacion(char * confRed)
+{
+    char * IP = (char*) malloc(sizeIP);
+    int Puerto;
+    
+    /* Obtiene los datos del archivo de config. y los almacenas en las variables*/
+    obtenerDatosRed(IP, &Puerto, confRed);
+    
+    /* Creamos el socket*/
+    int cliente = socket(AF_INET, SOCK_STREAM, 0);
+    
+    /* En esta struct se guardan los datos del servidor*/
+    struct sockaddr_in dirServer;
+    dirServer.sin_family = AF_INET;
+    dirServer.sin_addr.s_addr = inet_addr(IP);
+    dirServer.sin_port = htons(Puerto);
+    free(IP);
+    
+    /* Conectamos al servidor*/
+    if (connect(cliente, (void *) &dirServer, sizeof(dirServer)) != 0)
+    {
+        return 0;
     }
     
     return cliente;

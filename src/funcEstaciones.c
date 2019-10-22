@@ -18,6 +18,7 @@ void ObtenerOtrasEstaciones(ESTACION est[],int miPos)
             fscanf(configEst ,"Distancia: %d\n", &est[i].distancia);
             fscanf(configEst ,"ID: %d\n", &est[i].ID);
             fclose(configEst);
+            est[i].online = 0;
         }
     }
 }
@@ -41,24 +42,25 @@ int ObtenerDatosMiEstacion(char * nomArchivo, ESTACION est[])
     }
     int MyPos = estAux.ID -1;
     est[MyPos] = estAux;
-
+    est[MyPos].online = 2;
     fclose(configEst);
     return MyPos;
 }
 
 /* Devuelve un vector con las posiciones del vector de trenes
 en las que se encuentran */
-void buscarTrenes( TREN trenes[] ,int posTrenes[])
+int buscarTrenes( TREN trenes[] ,int posTrenes[])
 {
-    int j = 0;
+    int cantEncontada = 0;
     for(int i = 0; i < MAX_TREN; i++)
     {
         if(trenes[i].ID != 0)
         {
-            posTrenes[j] = i;
-            j++;
+            posTrenes[cantEncontada] = i;
+            cantEncontada++;
         }
     }
+    return cantEncontada;
 }
 
 /*Devuelve la posicion en la que se encuentra el tren
@@ -96,10 +98,9 @@ int registrarTren(ESTACION * estacion, char * mensaje)
     int i = BuscarPosVacia(estacion);
     if(i == -1)
     {
-        printf("No queda espacio para mas trenes");
         return 0;
     }
-    mensaje = mensaje + 2;
+    mensaje = mensaje + 4;
     
     //token ahora contiene el ID
     char * token = strtok(mensaje, ";");
@@ -107,7 +108,6 @@ int registrarTren(ESTACION * estacion, char * mensaje)
     int yaExisteID = BuscarTrenPorID(*estacion, ID);
     if (yaExisteID != -1)
     {
-    	printf("\nYa hay un tren con ese ID registrado.");
     	return 0;
     }
     
@@ -140,25 +140,6 @@ void finalizarTren()
 
 }
 
-void estadoDelTren (ESTACION estacion, char * mensaje)
-{
-    int idTren;
-    mensaje = mensaje + 2;
-    sscanf(mensaje, "%d", &idTren);
-    int pos = BuscarTrenPorID(estacion, idTren);
-    if (pos != -1)
-    {
-        mensaje = mensaje - 2;
-        sprintf(mensaje,"%d;%d;%s;%s;%s;%d;",
-                estacion.tren[pos].ID, estacion.tren[pos].combustible,
-                estacion.tren[pos].modelo, estacion.tren[pos].estOrigen,
-                estacion.tren[pos].estDestino, estacion.tren[pos].tiempoRestante);
-    }
-    else
-    {
-        strcpy(mensaje, "No se encuentra registrado.");
-    }
-}
 void cargarCombustible(int *combustible){
     
     *combustible=500;
