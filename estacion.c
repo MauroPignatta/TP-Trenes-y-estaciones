@@ -8,14 +8,15 @@
 #include "lib/est_interface.h"
 #include "lib/est_commands.h"
 
-/* Variables globales que usa el hilo */
+/* Variables globales que usan los hilos */
 ST_APP_WINDOW pWin;
 ESTACION estaciones[MAX_ESTACION];
 int miPos;
-int n = 0;
 
+/* Funcion para el hilo que se encarga de la interfaz grafica */
 void InterfazGrafica();
 
+/* Funcion para el hilo que se encarga de la conexion servidor-cliente */
 void ConexionServer();
 
 int main(int argc, char** argv) 
@@ -25,6 +26,8 @@ int main(int argc, char** argv)
     	printf("\nuso: ./estacion <Nombre archivo Conf Estacion>\n");
         exit(3);
     } 
+
+    system("clear");
 
     //Obtengo los datos de las estaciones. 
     char *nomArchivoEst = FormatearNombreArchivo(argv[1]);
@@ -41,10 +44,12 @@ int main(int argc, char** argv)
     pthread_t Conexion;
     wmove(pWin.pCmdWindow, 0,0);
     pthread_create(&Conexion, NULL,(void*) ConexionServer ,NULL);
-    
+
+    /* Espero a que los hilos "terminen" cosa que no va a pasar nunca porque son infinitos,
+    pero si no pongo esto el main sigue viaje, llega al return y termina la ejecucion */ 
     pthread_join(Conexion, NULL);
     pthread_join(Interfaz, NULL);
-    
+ 
     return (EXIT_SUCCESS);
 }
 
@@ -168,6 +173,7 @@ void ConexionServer()
     //Variables con los datos para la conexion
     int client[MaxClientes];
     memset(client , -1, sizeof(client));
+	int n = 0;
 
     while (1)
     {
