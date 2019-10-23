@@ -1,4 +1,4 @@
-####**TP-Trenes-y-estaciones.**
+####**TP-Trenes-y-estaciones.** 
 
 ###**Instalación y Ejecución del Programa:**
 
@@ -17,7 +17,7 @@ Para Plataformas Linux
 -	sudo apt-get install libncurses5-dev
 -	sudo apt-get install libncursesw5-dev
 
-6-	Ingresando al sub directorio “bin” 
+6-	Ingresando al sub directorio “bin”
 
 7-	Ya puede ejecutar el programa de Estaciones con el siguiente comando:
 -	Para la Estación: ./estación <nombre del archivo de configuración de estaciones>
