@@ -1,8 +1,8 @@
 all: estacion tren
 	
-SRCTREN = src/tren_commands.c src/tren_interface.c src/Conexion.c src/funcTrenes.c
+SRCTREN = src/tren_interface.c src/Conexion.c src/funcTrenes.c
 
-SRCEST = src/est_commands.c src/est_interface.c src/Conexion.c src/funcEstaciones.c
+SRCEST = src/est_interface.c src/Conexion.c src/funcEstaciones.c
 
 HEADERS = $(wildcard lib/*.h)
 

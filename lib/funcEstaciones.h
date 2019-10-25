@@ -1,11 +1,11 @@
 #ifndef FUNCESTACIONES_H
 #define FUNCESTACIONES_H
 
-#include "funcTrenes.h"
 #define MAX_TREN 10
 #define MAX_ESTACION 5
-
 #define esEstacion(x) x == '2'
+
+#include "funcTrenes.h"
 
 typedef struct 
 {
@@ -15,6 +15,9 @@ typedef struct
 	int online;
 	TREN tren[MAX_TREN];
 }ESTACION;
+
+ESTACION estaciones[MAX_ESTACION];
+int miPos;
 
 /* Abre el archivo de configuracion pasado como argumento y lo guarda 
 en la posicion del vector de estaciones que correspanda, 
@@ -46,5 +49,8 @@ int buscarTrenes( TREN trenes[] ,int posTrenes[]);
 en el vector de trenes de la estacion, o -1 si no se
 encuentra*/
 int BuscarTrenPorID(ESTACION estacion, int idTren);
+
+/* Funcion para el hilo que se encarga de la conexion servidor-cliente */
+void ConexionServer();
 
 #endif	// FUNCESTACIONES_H

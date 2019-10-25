@@ -4,7 +4,6 @@
 #include "lib/Conexion.h"
 #include "lib/funcTrenes.h"
 #include "lib/tren_interface.h"
-#include "lib/tren_commands.h"
 
 int main(int argc, char** argv) {
 

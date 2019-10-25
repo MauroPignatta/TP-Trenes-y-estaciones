@@ -1,8 +1,10 @@
 #ifndef USER_INTERFACE_H
 #define USER_INTERFACE_H
 
-#include <curses.h>
 #include "funcEstaciones.h"
+#include <curses.h>
+#include <unistd.h>
+#include <stdlib.h>
 
 #define LINE_LENGTH 80
 #define VIEW_WIN_WIDTH 0
@@ -21,8 +23,10 @@ typedef struct {
     WINDOW *pRegWindow; 
 } ST_APP_WINDOW;
 
-typedef enum {RED=1, GREEN, BLUE, WHITE,} COLOUR;
+/* Variable global para la interfaz grafica */
+ST_APP_WINDOW pWin;
 
+typedef enum {RED=1, GREEN, BLUE, WHITE,} COLOUR;
 
 /**
  * Crea las ventanas de la app. Asocia colores con las ventanas
@@ -60,5 +64,14 @@ int printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[]);
 void unInitUserInterface(ST_APP_WINDOW *);
 
 void printEstadoEstaciones(ST_APP_WINDOW *pWin, ESTACION est[]);
+
+void printHelp(ST_APP_WINDOW *pAppWin);
+
+void clearWindow(WINDOW *pWin);
+
+void clearCmdWindow(WINDOW *pWin);
+
+/* Funcion para el hilo que se encarga de la interfaz grafica */
+void InterfazGrafica();
 
 #endif

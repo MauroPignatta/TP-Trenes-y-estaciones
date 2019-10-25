@@ -2,6 +2,7 @@
 #define USER_INTERFACE_H
 
 #include <curses.h>
+#include <unistd.h>
 
 #define LINE_LENGTH 80
 #define VIEW_WIN_WIDTH 0
@@ -51,5 +52,17 @@ void printWindowTitle(WINDOW *pWin, const char * message);
 void printMessage(ST_APP_WINDOW *pWindow, const char * message, COLOUR colour);
 
 void unInitUserInterface(ST_APP_WINDOW *);
+
+//Limpia la pantalla de los comandos
+void clearCmdWindow(WINDOW *pWin);
+
+//Limpia la pantalla del Log
+void clearLogWindow(WINDOW *pWin);
+
+//Imprime los comandos que el usuario puede usar
+void printHelp(ST_APP_WINDOW *pAppWin);
+
+//Despues cambiamos esto jaja
+void trencitoViajando(WINDOW *pLogWindow);
 
 #endif
