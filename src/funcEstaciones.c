@@ -135,16 +135,9 @@ void enviarTren()
 	
 }
 	
-
-
 void finalizarTren()
 {
 
-}
-
-void cargarCombustible(int *combustible){
-    
-    *combustible=500;
 }
 
 void ConexionServer()
