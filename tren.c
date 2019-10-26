@@ -90,17 +90,17 @@ int main(int argc, char** argv) {
         
         else if(!strcmp(mensaje, "partir"))
         {
-            clearLogWindow(pWin.pLogWindow);
-            printMessage(&pWin,"A donde desea viajar?",WHITE);
-			wgetnstr(pWin.pLogWindow, tren.estDestino, 20);
-			char solicitud[sizeMsj]="3;";
+            	clearLogWindow(pWin.pLogWindow);
+            	printMessage(&pWin,"A donde desea viajar?",WHITE);
+		wgetnstr(pWin.pLogWindow, tren.estDestino, 20);
+		char solicitud[sizeMsj]="3;"; //No hace falta esta variable, se puede usar el mensaje y no gastamos memoria
 	    	send(client,solicitud,strlen(solicitud),0);
 	    	recv(client,solicitud,sizeMsj,0);
-			tren.tiempoRestante=atoi(solicitud);
-			partir(&tren);
-            trencitoViajando(pWin.pLogWindow);
-            printMessage(&pWin, "", WHITE);
-            exit(EXIT_SUCCESS);
+		tren.tiempoRestante=atoi(solicitud);
+		partir(&tren);
+            	trencitoViajando(pWin.pLogWindow);
+            	printMessage(&pWin, "", WHITE);
+            	exit(EXIT_SUCCESS);
         }
 
         else  if(!strcmp(mensaje, "estado"))
