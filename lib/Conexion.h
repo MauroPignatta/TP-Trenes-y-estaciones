@@ -8,19 +8,22 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <ctype.h>
+#include <string.h>
 
 #define sizeIP sizeof(char) * 16
 #define sizePORT sizeof(char) * 6
 #define sizeMsj 1024
 #define MaxClientes 15
 
-void  FormatearNombreArchivo( char * Palabra);
+char * FormatearNombreArchivo( char * Palabra);
 
-void obtenerDatosRed(char* IP, int *Puerto);
+void obtenerDatosRed(char* IP, int *Puerto, char * confRed);
 
-int CrearSocketServer();
+int CrearSocketServer(char * confRed);
 
-int CrearSocketCliente();
+int CrearSocketCliente(char * confRed);
+
+int conectarEstacion(char * confRed);
 
 #endif	// CONEXION_H
 

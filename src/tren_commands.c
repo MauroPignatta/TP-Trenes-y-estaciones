@@ -11,7 +11,8 @@ ERROR printHelp(ST_APP_WINDOW *pAppWin){
     strncat(msg, "* registrarse: Registra al tren en la estacion.\n", 53);
     strncat(msg, "* anden: Solicita el anden\n", 40);
     strncat(msg, "* partir: Viaja a la nueva estacion.\n", 42);
-    strncat(msg, "* estado: Muestra el estado del tren.", 41);
+    strncat(msg, "* estado: Muestra el estado del tren.\n", 40);
+    strncat(msg, "* exit: Sale de la apps", 23);
     printMessage(pAppWin, msg, WHITE);
     return ERR_OK;
 }

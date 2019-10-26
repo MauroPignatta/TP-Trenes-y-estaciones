@@ -51,7 +51,6 @@ void initUserInterface(ST_APP_WINDOW *pWindow)
     wbkgd(pWindow->pCmdFrame, COLOR_PAIR(WHITE));
     
     // activa el scroll en la ventana de Log
-    scrollok(pWindow->pLogWindow, TRUE);
     scrollok(pWindow->pRegWindow, TRUE);
     cbreak();
 }
@@ -103,13 +102,17 @@ void printRegistro(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour){
     wrefresh(pWindow->pCmdWindow);
 }
 
-void printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[], int cantTrenes)
+int printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[])
 {
     int j = 0;
     char command[6] = " ";
+    int posTrenes[MAX_TREN];
+    int cantTrenes = buscarTrenes(trenes , posTrenes);
 
-    int posTrenes[cantTrenes];
-    buscarTrenes(trenes , posTrenes );
+    if (cantTrenes == 0)
+    {
+        return 0;
+    }
 
     int y = getmaxy(pWin->pLogWindow);
 
@@ -117,14 +120,15 @@ void printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[], int cantTrenes)
     {
         if (j < cantTrenes)
         {
-            wprintw(pWin->pLogWindow,"Estado: Tren %d\n\n", j + 1);
+            werase(pWin->pLogWindow);
+            mvwprintw(pWin->pLogWindow, 0, 0,"Estado: Tren %d\n\n", j + 1);
             wprintw(pWin->pLogWindow,"ID: %d\n",trenes[posTrenes[j]].ID);
             wprintw(pWin->pLogWindow,"Combustible restante: %d\n",trenes[posTrenes[j]].combustible);
             wprintw(pWin->pLogWindow,"Modelo: %s\n",trenes[posTrenes[j]].modelo);
             wprintw(pWin->pLogWindow,"Estacion Actual: %s\n",trenes[posTrenes[j]].estOrigen);
             wprintw(pWin->pLogWindow,"Estacion Destino: %s\n",trenes[posTrenes[j]].estDestino);
             wprintw(pWin->pLogWindow,"Tiempo de viaje restante: %d\n\n",trenes[posTrenes[j]].tiempoRestante);
-            wprintw(pWin->pLogWindow,"<- ant\t\t Pagina %d/%d \t\tsig ->\n",j + 1, cantTrenes);
+            mvwprintw(pWin->pLogWindow, y-2 , 0,"<- ant\t\t Pagina %d/%d \t\tsig ->\n",j + 1, cantTrenes);
             mvwprintw(pWin->pLogWindow, y-1 , 0, "Escriba \"back\" para volver.");
             wrefresh(pWin->pLogWindow);
 
@@ -146,12 +150,65 @@ void printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[], int cantTrenes)
                     j++;
                 }
             }
-            werase(pWin->pLogWindow);
             werase(pWin->pCmdWindow);
         }
     }
+    werase(pWin->pLogWindow);
+    werase(pWin->pCmdWindow);
+    printLog(pWin, "", WHITE);
+    return cantTrenes;
 }
 
+void printEstadoEstaciones(ST_APP_WINDOW *pWin, ESTACION est[])
+{
+    int i = 0;
+    char command[6] = " ";
+    char EstConectada[6];
+    int y = getmaxy(pWin->pLogWindow);
+
+    while (strcmp(command, "back"))
+    {
+        if (est[i].online == 2)
+            strcpy(EstConectada, "Local");
+        else if(est[i].online == 1)
+            strcpy(EstConectada, "Si");
+        else if(est[i].online == 0)
+            strcpy(EstConectada, "No");
+
+        werase(pWin->pLogWindow);
+        wprintw(pWin->pLogWindow,"Estado estaciones: \n\n");
+        wprintw(pWin->pLogWindow,"Nombre: %s\n",est[i].nombre);
+        wprintw(pWin->pLogWindow,"ID: %d\n",est[i].ID);
+        wprintw(pWin->pLogWindow,"Distancia: %d KM\n",est[i].distancia);
+        wprintw(pWin->pLogWindow,"Conectada: %s\n", EstConectada);
+        mvwprintw(pWin->pLogWindow, y-2 , 0,"<- ant\t\t Pagina %d/%d \t\tsig ->\n",i + 1, MAX_ESTACION);
+        mvwprintw(pWin->pLogWindow, y-1 , 0, "Escriba \"back\" para volver.");
+        wrefresh(pWin->pLogWindow);
+
+        wgetnstr(pWin->pCmdWindow, command, 5);
+        wrefresh(pWin->pCmdWindow);
+
+        if (!strcmp(command, "ant"))
+        {
+            if (i > 0)
+            {
+                i--;
+            }
+        }
+
+        else if (!strcmp(command, "sig"))
+        {
+            if( i < MAX_ESTACION - 1)
+            {
+                i++;
+            }
+        }
+        werase(pWin->pCmdWindow);
+    }
+    werase(pWin->pLogWindow);
+    werase(pWin->pCmdWindow);
+    printLog(pWin, "", WHITE);
+}
 
 void unInitUserInterface(ST_APP_WINDOW *pWindow){
     delwin(pWindow->pLogWindow);
@@ -159,3 +216,4 @@ void unInitUserInterface(ST_APP_WINDOW *pWindow){
     clear();
     endwin();
 }
+

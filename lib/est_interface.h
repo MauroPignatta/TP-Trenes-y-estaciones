@@ -55,8 +55,10 @@ void printLog(ST_APP_WINDOW *pWindow, const char * message, COLOUR colour);
 
 void printRegistro(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour);
 
-void printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[], int cantTrenes);
+int printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[]);
 
 void unInitUserInterface(ST_APP_WINDOW *);
+
+void printEstadoEstaciones(ST_APP_WINDOW *pWin, ESTACION est[]);
 
 #endif
