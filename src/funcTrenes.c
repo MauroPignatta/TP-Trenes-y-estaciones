@@ -73,7 +73,8 @@ void armarMensajeExit(TREN tren, char * mensaje)
 {
     sprintf(mensaje, "1;5;%d", tren.ID);
 }
-
-
+void armarMensajePartir(TREN tren, char * mensaje){
+    sprintf(mensaje,"1;3;%d",tren.ID);
+}
 
 

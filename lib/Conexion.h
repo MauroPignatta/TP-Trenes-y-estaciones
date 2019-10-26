@@ -25,5 +25,8 @@ int CrearSocketCliente(char * confRed);
 
 int conectarEstacion(char * confRed);
 
+void ConexionServer();
+/* Funcion para el hilo que se encarga de la conexion servidor-cliente */
+
 #endif	// CONEXION_H
 

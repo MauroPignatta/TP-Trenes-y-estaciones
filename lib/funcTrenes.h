@@ -30,5 +30,7 @@ void armarMensajeRegistrarse(TREN tren,char *mensaje);
 
 void armarMensajeExit(TREN tren, char * mensaje);
 
+void armarMensajePartir(TREN tren, char * mensaje);
+
 #endif	// FUNCTRENES_H
 
