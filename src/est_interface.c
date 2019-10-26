@@ -1,4 +1,6 @@
 #include "../lib/est_interface.h"
+#include "../lib/Conexion.h"
+#include "../lib/funcEstaciones.h"
 #include <string.h>
 
 void initUserInterface(ST_APP_WINDOW *pWindow)
@@ -51,7 +53,6 @@ void initUserInterface(ST_APP_WINDOW *pWindow)
     wbkgd(pWindow->pCmdFrame, COLOR_PAIR(WHITE));
     
     // activa el scroll en la ventana de Log
-    scrollok(pWindow->pLogWindow, TRUE);
     scrollok(pWindow->pRegWindow, TRUE);
     cbreak();
 }
@@ -74,6 +75,35 @@ void drawUserInterface(ST_APP_WINDOW *pWindow){
     // Dibuja el marco de la ventana de Reg
     box(pWindow->pRegFrame, ACS_VLINE, ACS_HLINE);
     wrefresh(pWindow->pRegFrame);
+}
+
+void clearWindow(WINDOW *pWin){
+    werase(pWin);
+    wrefresh(pWin);
+}
+
+/**
+ * Limpia la ventana de comandos.
+ * 
+ * @param pWin ventana de comandos
+ * @return ERR_OK
+ */
+void clearCmdWindow(WINDOW *pWin){
+    werase(pWin);
+}
+
+void printHelp(ST_APP_WINDOW *pAppWin){
+    char msg[1024];
+    memset(msg, '\0', 1024);
+    strncpy(msg, "Comandos de la Estacion\n", 26);
+    strncat(msg, "Comandos permitidos:\n\n", 25);
+    strncat(msg, "* estado tren: Muestra estado de trenes.\n", 43);
+    strncat(msg, "* estado est: Muestra estado de estaciones.\n", 46);
+    strncat(msg, "* buscar est: Buscar y conecta estaciones.\n", 45);
+    strncat(msg, "* clearlog: Limpia la pantalla de log.\n", 41);
+    strncat(msg, "* clearreg: Limpia la pantalla de registros.\n", 45);
+    strncat(msg, "* exit: Sale de la aplicacion.", 31);
+    printLog(pAppWin, msg, WHITE);
 }
 
 void printWindowTitle(WINDOW *pWin, const char * message){
@@ -103,13 +133,17 @@ void printRegistro(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour){
     wrefresh(pWindow->pCmdWindow);
 }
 
-void printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[], int cantTrenes)
+int printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[])
 {
     int j = 0;
     char command[6] = " ";
+    int posTrenes[MAX_TREN];
+    int cantTrenes = buscarTrenes(trenes , posTrenes);
 
-    int posTrenes[cantTrenes];
-    buscarTrenes(trenes , posTrenes );
+    if (cantTrenes == 0)
+    {
+        return 0;
+    }
 
     int y = getmaxy(pWin->pLogWindow);
 
@@ -117,14 +151,15 @@ void printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[], int cantTrenes)
     {
         if (j < cantTrenes)
         {
-            wprintw(pWin->pLogWindow,"Estado: Tren %d\n\n", j + 1);
+            werase(pWin->pLogWindow);
+            mvwprintw(pWin->pLogWindow, 0, 0,"Estado: Tren %d\n\n", j + 1);
             wprintw(pWin->pLogWindow,"ID: %d\n",trenes[posTrenes[j]].ID);
             wprintw(pWin->pLogWindow,"Combustible restante: %d\n",trenes[posTrenes[j]].combustible);
             wprintw(pWin->pLogWindow,"Modelo: %s\n",trenes[posTrenes[j]].modelo);
             wprintw(pWin->pLogWindow,"Estacion Actual: %s\n",trenes[posTrenes[j]].estOrigen);
             wprintw(pWin->pLogWindow,"Estacion Destino: %s\n",trenes[posTrenes[j]].estDestino);
             wprintw(pWin->pLogWindow,"Tiempo de viaje restante: %d\n\n",trenes[posTrenes[j]].tiempoRestante);
-            wprintw(pWin->pLogWindow,"<- ant\t\t Pagina %d/%d \t\tsig ->\n",j + 1, cantTrenes);
+            mvwprintw(pWin->pLogWindow, y-2 , 0,"<- ant\t\t Pagina %d/%d \t\tsig ->\n",j + 1, cantTrenes);
             mvwprintw(pWin->pLogWindow, y-1 , 0, "Escriba \"back\" para volver.");
             wrefresh(pWin->pLogWindow);
 
@@ -146,16 +181,174 @@ void printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[], int cantTrenes)
                     j++;
                 }
             }
-            werase(pWin->pLogWindow);
             werase(pWin->pCmdWindow);
         }
     }
+    werase(pWin->pLogWindow);
+    werase(pWin->pCmdWindow);
+    printLog(pWin, "", WHITE);
+    return cantTrenes;
 }
 
+void printEstadoEstaciones(ST_APP_WINDOW *pWin, ESTACION est[])
+{
+    int i = 0;
+    char command[6] = " ";
+    char EstConectada[6];
+    int y = getmaxy(pWin->pLogWindow);
+
+    while (strcmp(command, "back"))
+    {
+        if (est[i].online == 2)
+            strcpy(EstConectada, "Local");
+        else if(est[i].online == 1)
+            strcpy(EstConectada, "Si");
+        else if(est[i].online == 0)
+            strcpy(EstConectada, "No");
+
+        werase(pWin->pLogWindow);
+        wprintw(pWin->pLogWindow,"Estado estaciones: \n\n");
+        wprintw(pWin->pLogWindow,"Nombre: %s\n",est[i].nombre);
+        wprintw(pWin->pLogWindow,"ID: %d\n",est[i].ID);
+        wprintw(pWin->pLogWindow,"Distancia: %d KM\n",est[i].distancia);
+        wprintw(pWin->pLogWindow,"Conectada: %s\n", EstConectada);
+        mvwprintw(pWin->pLogWindow, y-2 , 0,"<- ant\t\t Pagina %d/%d \t\tsig ->\n",i + 1, MAX_ESTACION);
+        mvwprintw(pWin->pLogWindow, y-1 , 0, "Escriba \"back\" para volver.");
+        wrefresh(pWin->pLogWindow);
+
+        wgetnstr(pWin->pCmdWindow, command, 5);
+        wrefresh(pWin->pCmdWindow);
+
+        if (!strcmp(command, "ant"))
+        {
+            if (i > 0)
+            {
+                i--;
+            }
+        }
+
+        else if (!strcmp(command, "sig"))
+        {
+            if( i < MAX_ESTACION - 1)
+            {
+                i++;
+            }
+        }
+        werase(pWin->pCmdWindow);
+    }
+    werase(pWin->pLogWindow);
+    werase(pWin->pCmdWindow);
+    printLog(pWin, "", WHITE);
+}
 
 void unInitUserInterface(ST_APP_WINDOW *pWindow){
     delwin(pWindow->pLogWindow);
     delwin(pWindow->pCmdWindow);
     clear();
     endwin();
+}
+
+void InterfazGrafica()
+{
+     //Aca empieza a correr ncurses
+    initUserInterface(&pWin);
+    drawUserInterface(&pWin);
+    mvwprintw(pWin.pLogWindow, getmaxy(pWin.pLogWindow) -1 , 0 , "Escriba \"help\" para obtener informacion.");
+    wrefresh(pWin.pLogWindow);
+
+    char mensaje[sizeMsj];
+
+    sprintf(mensaje, " Estacion %s " , estaciones[miPos].nombre);
+    
+    printWindowTitle(pWin.pAppFrame, mensaje);
+    printWindowTitle(pWin.pLogFrame, "### Log ###");
+    printWindowTitle(pWin.pRegFrame, "### Registro ###");
+    printWindowTitle(pWin.pCmdFrame, "### Comandos ###");
+
+    char comandos[20];
+    int serverEst[MAX_ESTACION];
+    
+    while(1)
+    {
+        wgetnstr(pWin.pCmdWindow, comandos, 20);
+        clearCmdWindow(pWin.pCmdWindow);
+
+        if (!strcmp(comandos, "help"))
+        {
+            clearWindow(pWin.pLogWindow);
+            printHelp(&pWin);
+        }
+
+        else if (!strcmp(comandos, "estado tren"))
+        {
+            if (printEstadoTrenes(&pWin, estaciones[miPos].tren) == 0)
+            {
+                clearWindow(pWin.pLogWindow);
+                printLog(&pWin,"No hay trenes registrados en la estacion.", WHITE);
+            }
+        }
+
+        else if (!strcmp(comandos, "estado est"))
+        {
+            printEstadoEstaciones(&pWin, estaciones);
+        }
+
+        else if (!strcmp(comandos, "buscar est"))
+        {
+            clearWindow(pWin.pLogWindow);
+            printLog(&pWin, "Buscando estaciones...", WHITE);
+            int cont = 0;
+            for(int i  = 0; i < MAX_ESTACION; i ++)
+            {
+                if (i != miPos)
+                {
+                    sprintf(mensaje, "../config/Red%d.conf", i + 1);
+                    if (serverEst[i] = conectarEstacion(mensaje))
+                    {
+                        cont ++ ;
+                        send(serverEst[i], "2", sizeMsj, 0);
+                        estaciones[i].online = 1;
+                    }
+                }
+            }
+            clearWindow(pWin.pLogWindow);
+            if (cont == 0)
+                printLog(&pWin, "No se encontraron estaciones", WHITE);
+            else
+                printLog(&pWin, "Se encontraron estaciones", WHITE);
+        }
+
+
+        else if (!strcmp(comandos, "clearlog"))
+        {
+            clearWindow(pWin.pLogWindow);
+            printLog(&pWin,"", WHITE);
+        }
+
+        else if (!strcmp(comandos, "clearreg"))
+        {
+            clearWindow(pWin.pRegWindow);
+        }
+
+        else if (!strcmp(comandos, "exit"))
+        {
+            clearWindow(pWin.pLogWindow);
+            printLog(&pWin, "Saliendo...", WHITE);
+            sprintf(mensaje, "2;5;%d", miPos);
+            for(int i = 0; i < MAX_ESTACION; i++)
+            {
+                if (i != miPos)
+                    send(serverEst[i], mensaje, sizeMsj, 0);
+            }
+            unInitUserInterface(&pWin);
+            exit(EXIT_SUCCESS);
+        }
+
+        else
+        {
+            clearWindow(pWin.pLogWindow);
+            strcat(comandos, " no es un comando valido.");
+            printLog(&pWin, comandos, WHITE);
+        }
+    }
 }

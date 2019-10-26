@@ -4,24 +4,25 @@
 #include "lib/Conexion.h"
 #include "lib/funcTrenes.h"
 #include "lib/tren_interface.h"
-#include "lib/tren_commands.h"
 
 int main(int argc, char** argv) {
 
-    system("clear");
-
-    if(argc!=2){
-        printf("Ingrese el nombre del archivo de conf. como parametro\n");
+    if(argc != 3){
+        printf("\nuso: ./tren <Nombre archivo Conf Tren> <Nombre archivo Conf Red>\n");
         exit(3);
     }
 
-    FormatearNombreArchivo(argv[1]);
-    char nomArchivo[20] = "../config/";
-    strcat(nomArchivo, argv[1]);
-    TREN tren = inicializarTren(nomArchivo);
+    system("clear");
+
+    char *nomArchivoTren = FormatearNombreArchivo(argv[1]);
+    TREN tren = inicializarTren(nomArchivoTren);
+    free(nomArchivoTren);
     
     /* Devuelve el socket ya configurado */
-    int client = CrearSocketCliente();
+    char *nomArchivoRed = FormatearNombreArchivo(argv[2]);
+    int client = CrearSocketCliente(nomArchivoRed);
+    send(client, "1", sizeMsj, 0);
+    free(nomArchivoRed);
 
     char mensaje[sizeMsj];
 
@@ -37,8 +38,7 @@ int main(int argc, char** argv) {
     printWindowTitle(pWin.pLogFrame, "### Log ###");
     printWindowTitle(pWin.pCmdFrame, "### Comandos ###");
 
-
-    recv(client, mensaje, sizeMsj, 0);
+    recv(client, mensaje, sizeMsj, 0);  // Recibo el mensaje de Bienvenido a la estacion <nombre estacion>
     printMessage(&pWin, mensaje, WHITE);
     wmove(pWin.pCmdWindow, 0,0);
 
@@ -62,10 +62,10 @@ int main(int argc, char** argv) {
             }
             else
             {
-                registrarse(mensaje, tren);
+                armarMensajeRegistrarse(tren, mensaje);
                 send(client, mensaje, strlen(mensaje), 0);
+
                 recv(client, mensaje, sizeMsj, 0);
-			
                 char * token = NULL;
                 token = strtok(mensaje,";");
 
@@ -108,6 +108,14 @@ int main(int argc, char** argv) {
             clearLogWindow(pWin.pLogWindow);
             armarMensajeEstadoDelTren(tren, mensaje);
             printMessage(&pWin, mensaje, WHITE);
+        }
+
+        else  if(!strcmp(mensaje, "exit"))
+        {
+            armarMensajeExit(tren, mensaje);
+            send(client, mensaje, strlen(mensaje), 0);
+            unInitUserInterface(&pWin);
+            exit(EXIT_SUCCESS);
         }
 
         else
