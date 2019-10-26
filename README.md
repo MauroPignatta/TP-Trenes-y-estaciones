@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-## TP-Trenes-y-estaciones
-
-### Instalación y Ejecución del Programa:
-=======
-   # Programa Trenes y Estaciones
+# Programa Trenes y Estaciones
 
 ## Instalación y Ejecución del Programa:
->>>>>>> 2ecc1387c1ef73e2f79954fcd7e7819a6edf2a81
 
 Para Plataformas Linux
 
