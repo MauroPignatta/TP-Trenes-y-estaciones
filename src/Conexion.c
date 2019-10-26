@@ -1,13 +1,15 @@
 #include "../lib/Conexion.h"
+#include "../lib/est_interface.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-void  FormatearNombreArchivo( char * Palabra)
+char *  FormatearNombreArchivo(char * Palabra)
 {	
-    int i = 0; 
+    int primerLetra = 1; 
+    char * aux = Palabra;
     while (*Palabra)
 	{
-		if ( !i )
+		if ( primerLetra )
 		{
 			*Palabra = toupper(*Palabra);
 		}
@@ -15,16 +17,25 @@ void  FormatearNombreArchivo( char * Palabra)
 		{
 			*Palabra = tolower(*Palabra);
 		}
-		i = 1;
+		primerLetra = 0;
 		Palabra++;
 	}
+    char * nArchivo = malloc(30);
+    if(!nArchivo)
+    {
+        printf("Ocurrio un error\n");
+        exit(EXIT_FAILURE);
+    }
+    strcpy(nArchivo, "../config/");
+    strcat(nArchivo, aux);
+    return nArchivo;
 }
 
 
-void obtenerDatosRed(char* IP, int *Puerto)
+void obtenerDatosRed(char* IP, int *Puerto, char * confRed)
 {
     /* Abro el archivo */
-    FILE * Red = fopen("../config/configRed.txt","r");
+    FILE * Red = fopen(confRed,"r");
     if (!Red)
     {
         printf("Error al abrir archivo de configuracion de red\n");
@@ -40,13 +51,13 @@ void obtenerDatosRed(char* IP, int *Puerto)
     fclose(Red);
 }
 
-int CrearSocketServer()
+int CrearSocketServer(char * confRed)
 {
     char * IP = (char*) malloc(sizeIP);
     int Puerto;
     
     /* Obtiene los datos del archivo de config. y los almacenas en las variables*/
-    obtenerDatosRed(IP, &Puerto);
+    obtenerDatosRed(IP, &Puerto, confRed);
     
     //crea el socket
     int server = socket(AF_INET, SOCK_STREAM, 0);
@@ -60,6 +71,7 @@ int CrearSocketServer()
     dirServer.sin_family = AF_INET;
     dirServer.sin_addr.s_addr = inet_addr(IP);
     dirServer.sin_port = htons(Puerto);
+    free(IP);
     
     //comprobar error
     if ( bind(server, (struct sockaddr*) &dirServer,sizeof (dirServer)) != 0)
@@ -68,19 +80,19 @@ int CrearSocketServer()
         exit(2);
     }
     
-    listen(server, MaxClientes);
+    listen(server, MaxClientes + 1);
     printf("Esperando conexiones entrantes...\n");
     
     return server;
 }
 
-int CrearSocketCliente()
+int CrearSocketCliente(char * confRed)
 {
     char * IP = (char*) malloc(sizeIP);
     int Puerto;
     
     /* Obtiene los datos del archivo de config. y los almacenas en las variables*/
-    obtenerDatosRed(IP, &Puerto);
+    obtenerDatosRed(IP, &Puerto, confRed);
     
     /* Creamos el socket*/
     int cliente = socket(AF_INET, SOCK_STREAM, 0);
@@ -90,12 +102,40 @@ int CrearSocketCliente()
     dirServer.sin_family = AF_INET;
     dirServer.sin_addr.s_addr = inet_addr(IP);
     dirServer.sin_port = htons(Puerto);
+    free(IP);
     
     /* Conectamos al servidor*/
     if (connect(cliente, (void *)&dirServer, sizeof(dirServer)) != 0)
     {
         perror("No se pudo conectar con el servidor");
         exit(2);
+    }
+    
+    return cliente;
+}
+
+int conectarEstacion(char * confRed)
+{
+    char * IP = (char*) malloc(sizeIP);
+    int Puerto;
+    
+    /* Obtiene los datos del archivo de config. y los almacenas en las variables*/
+    obtenerDatosRed(IP, &Puerto, confRed);
+    
+    /* Creamos el socket*/
+    int cliente = socket(AF_INET, SOCK_STREAM, 0);
+    
+    /* En esta struct se guardan los datos del servidor*/
+    struct sockaddr_in dirServer;
+    dirServer.sin_family = AF_INET;
+    dirServer.sin_addr.s_addr = inet_addr(IP);
+    dirServer.sin_port = htons(Puerto);
+    free(IP);
+    
+    /* Conectamos al servidor*/
+    if (connect(cliente, (void *) &dirServer, sizeof(dirServer)) != 0)
+    {
+        return 0;
     }
     
     return cliente;
