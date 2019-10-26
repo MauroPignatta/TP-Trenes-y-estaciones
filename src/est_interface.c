@@ -100,6 +100,7 @@ void printHelp(ST_APP_WINDOW *pAppWin){
     strncat(msg, "* estado tren: Muestra estado de trenes.\n", 43);
     strncat(msg, "* estado est: Muestra estado de estaciones.\n", 46);
     strncat(msg, "* buscar est: Buscar y conecta estaciones.\n", 45);
+    strncat(msg, "* partir tren: Permite migrar un tren.\n", 41);
     strncat(msg, "* clearlog: Limpia la pantalla de log.\n", 41);
     strncat(msg, "* clearreg: Limpia la pantalla de registros.\n", 45);
     strncat(msg, "* exit: Sale de la aplicacion.", 31);
@@ -247,6 +248,9 @@ void unInitUserInterface(ST_APP_WINDOW *pWindow){
     clear();
     endwin();
 }
+/*void armarListaEstDiponibles(mensaje){
+
+} */               
 
 void InterfazGrafica()
 {
@@ -315,7 +319,10 @@ void InterfazGrafica()
             if (cont == 0)
                 printLog(&pWin, "No se encontraron estaciones", WHITE);
             else
-                printLog(&pWin, "Se encontraron estaciones", WHITE);
+                printLog(&pWin, "Se encontraron estaciones", WHITE);   
+
+                //Armar y mostrar la lista de estaciones disponibles 
+
         }
 
 
@@ -343,6 +350,25 @@ void InterfazGrafica()
             unInitUserInterface(&pWin);
             exit(EXIT_SUCCESS);
         }
+        /*else if (!strcmp(comandos, "partir tren"))
+        {
+            clearLogWindow(pWin.pLogWindow);
+            armarListaEstDiponibles(mensaje);                
+
+            printLog(&pWin, "A dónde desea viajar?", WHITE);
+            printLog(&pWin, mensaje, WHITE);
+            wgetnstr(pWin.pCmdWindow, comandos, 20);
+
+            //char solicitud[sizeMsj]="3;";
+            send(client,solicitud,strlen(solicitud),0);
+            recv(client,solicitud,sizeMsj,0);
+            tren.tiempoRestante=atoi(solicitud);
+            partir(&tren);
+            
+            trencitoViajando(pWin.pLogWindow);
+            printMessage(&pWin, "", WHITE);
+            break;
+        }*/
 
         else
         {

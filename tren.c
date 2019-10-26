@@ -88,12 +88,7 @@ int main(int argc, char** argv) {
             printMessage(&pWin, "Todavia no implementado.", WHITE);
         }
         
-        else if(!strcmp(mensaje, "partir"))
-        {
-            clearLogWindow(pWin.pLogWindow);
-            trencitoViajando(pWin.pLogWindow);
-            printMessage(&pWin, "", WHITE);
-        }
+        
 
         else  if(!strcmp(mensaje, "estado"))
         {
@@ -119,19 +114,7 @@ int main(int argc, char** argv) {
 
         clearCmdWindow(pWin.pCmdWindow);
 
-        /*
-        switch(mensaje[0]){
-            case '3':
-				printf("A dónde desea viajar?\n");
-				gets(tren.estDestino);
-				char solicitud[sizeMsj]="3;";
-	    		send(client,solicitud,strlen(solicitud),0);
-	    		recv(client,solicitud,sizeMsj,0);
-				tren.tiempoRestante=atoi(solicitud);
-				partir(&tren);//partir
-                break;
-        }
-        */
+        
     }
 
     unInitUserInterface(&pWin);
