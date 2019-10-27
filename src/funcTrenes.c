@@ -5,7 +5,8 @@
 #include <time.h>
 #include "../lib/Conexion.h"
 
-FILE * openFile(char * nombreArchivo){
+FILE * openFile(char * nombreArchivo)
+{
     FILE *ptr = fopen(nombreArchivo,"r");
     if(ptr == NULL){
         printf("No se pudo abrir el archivo de configuracion\n");
@@ -14,9 +15,8 @@ FILE * openFile(char * nombreArchivo){
     return ptr;
 }
 
-
-
-TREN inicializarTren(char *arch){
+TREN inicializarTren(char *arch)
+{
     
     FILE *tren = openFile(arch);
     TREN aux;
@@ -36,20 +36,29 @@ TREN inicializarTren(char *arch){
     return aux;
 }
 
-void armarMensajeRegistrarse(TREN tren,char * mensaje){
-    sprintf(mensaje , "1;1;%d;%d;%s;%s;%s;",
-        tren.ID, tren.combustible, tren.modelo,
-            tren.estDestino, tren.estOrigen );
-}
-
-void solicitarPasoAnden(){
+void solicitarPasoAnden()
+{
     
 }
-void partir(TREN tren){
+
+void partir(TREN tren)
+{
     for(int i=tren.tiempoRestante;i>0;i--){
     sleep(1);       
     tren.tiempoRestante--;
     }   
+}
+
+void cargarCombustible(int *combustible)
+{
+    *combustible=500;
+}
+
+void armarMensajeRegistrarse(TREN tren,char * mensaje)
+{
+    sprintf(mensaje , "1;1;%d;%d;%s;%s;%s;",
+        tren.ID, tren.combustible, tren.modelo,
+            tren.estDestino, tren.estOrigen );
 }
 
 void armarMensajeEstadoDelTren(TREN t, char * mensaje)
@@ -73,8 +82,11 @@ void armarMensajeExit(TREN tren, char * mensaje)
 {
     sprintf(mensaje, "1;5;%d", tren.ID);
 }
+<<<<<<< HEAD
 void armarMensajePartir(TREN tren, char * mensaje){
     sprintf(mensaje,"1;3;%d",tren.ID);
 }
 
 
+=======
+>>>>>>> trainsThings

@@ -140,4 +140,3 @@ int conectarEstacion(char * confRed)
     
     return cliente;
 }
-

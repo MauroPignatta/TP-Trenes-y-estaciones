@@ -1,6 +1,6 @@
-####**TP-Trenes-y-estaciones.** 
+# Programa Trenes y Estaciones
 
-###**Instalación y Ejecución del Programa:**
+## Instalación y Ejecución del Programa:
 
 Para Plataformas Linux
 

@@ -135,16 +135,9 @@ void enviarTren()
 	
 }
 	
-
-
 void finalizarTren()
 {
 
-}
-
-void cargarCombustible(int *combustible){
-    
-    *combustible=500;
 }
 
 void ConexionServer()
@@ -246,19 +239,36 @@ void ConexionServer()
                                     // solicitar anden
                                     break;
                                     
-                                case '3':
-                                    // partir
+                                /*case '3':
+                                    
+                                        if(!strcmp(mensaje, "partir"))
+                                        {
+                                            clearLogWindow(pWin.pLogWindow);
+                                            printf("A dónde desea viajar?\n");
+
+                                            printLog(&pWin, mensaje, WHITE);
+                                            gets(tren.estDestino);
+                                            char solicitud[sizeMsj]="3;";
+                                            send(client,solicitud,strlen(solicitud),0);
+                                            recv(client,solicitud,sizeMsj,0);
+                                            tren.tiempoRestante=atoi(solicitud);
+                                            partir(&tren);
+                                            
+                                            trencitoViajando(pWin.pLogWindow);
+                                            printMessage(&pWin, "", WHITE);
+                                            break;
+                                        }    
                                     break;
                                     
                                 case '4':
-                                    /* Esto va a haber que cambiarlo, no borrar por ahora.
+                                     Esto va a haber que cambiarlo, no borrar por ahora.
 
                                     estadoDelTren(estacion ,mensaje);
                                     puts("Estado enviado");
                                     send(clientTrenes[i], mensaje, strlen(mensaje), 0);
-                                    */
-                                    break;
-                                case '5':   //Agrego este para cuando un tren quiere desconectarse
+                                    
+                                    break;*/
+                                case '3':   //Agrego este para cuando un tren quiere desconectarse
                                     
                                     sscanf(mensaje, "1;5;%d", &TrenID);
                                     posTren = BuscarTrenPorID(estaciones[miPos], TrenID);

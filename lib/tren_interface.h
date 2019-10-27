@@ -1,6 +1,12 @@
 #ifndef USER_INTERFACE_H
 #define USER_INTERFACE_H
 
+/* 
+* Integrantes:
+* Alejandro Ugobono, Ezequiel Pirrota, Facundo Palacios,
+* Gonzalo Fernandez, Mauro Pignata, Mariano Wiñar.
+*/
+
 #include <curses.h>
 #include <unistd.h>
 
@@ -20,7 +26,6 @@ typedef struct {
 } ST_APP_WINDOW;
 
 typedef enum {RED = 1, GREEN, BLUE, WHITE} COLOUR;
-
 
 /**
  * Crea las ventanas de la app. Asocia colores con las ventanas
@@ -43,26 +48,70 @@ typedef enum {RED = 1, GREEN, BLUE, WHITE} COLOUR;
  * 
  * @param ST_APP_WINDOW * puntero a estructura que contiene las ventanas
  */
+
 void initUserInterface(ST_APP_WINDOW *);
+
+/*
+* Funcion que Dibuja el Marco de la App, Ventana Log, Ventana Cmd, Ventana Reg,
+* @param ST_APP_WINDOW * puntero a estructura que contiene las ventanas
+*/
 
 void drawUserInterface(ST_APP_WINDOW *);
 
+/*
+* Funcion que imprime en la pantalla tipo Log en la parte superior
+* @param * pWindow puntero a la estructura que contiene las ventanas
+* @param * message contiene el mensaje a imprimir
+* @param colour de la estructura tipo enum con los colores a utilizar
+*/
+
 void printWindowTitle(WINDOW *pWin, const char * message);
+
+/*
+* Funcion Imprime mensaje
+* @param * pWindow puntero a la estructura que contiene las ventanas
+* @param * message contiene el mensaje a imprimir
+* @param colour de la estructura tipo enum con los colores a utilizar
+*/
 
 void printMessage(ST_APP_WINDOW *pWindow, const char * message, COLOUR colour);
 
+/*
+* Funcion que inicia el usuario de la interfaz grafica
+* @param * variable global para la interfaz grafica
+*/
+
 void unInitUserInterface(ST_APP_WINDOW *);
 
-//Limpia la pantalla de los comandos
+/*
+* Funcion que limpia la ventana de comandos
+* @param * pWin variable global, ventana de comandos
+* @return ERR_OK
+*/
+
 void clearCmdWindow(WINDOW *pWin);
 
-//Limpia la pantalla del Log
+/*
+* Funcion que limpia la ventana de comandos y hace un refresco de pantalla
+* Limpia la pantalla del Log
+* @param * pWin variable global, ventana de comandos
+* @return ERR_OK
+*/
+
 void clearLogWindow(WINDOW *pWin);
 
-//Imprime los comandos que el usuario puede usar
+/*
+* Funcion que imprime la Ayuda del programa
+* @param * pAppWin representa la Variable global para la interfaz grafica
+*/
+
 void printHelp(ST_APP_WINDOW *pAppWin);
 
-//Despues cambiamos esto jaja
+/*
+* Funcion Muestra el Tren viajando
+* @param * pLogWindow representa la Variable global
+*/
+
 void trencitoViajando(WINDOW *pLogWindow);
 
 #endif
