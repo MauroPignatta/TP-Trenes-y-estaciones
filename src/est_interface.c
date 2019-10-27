@@ -299,9 +299,9 @@ void InterfazGrafica()
         else if (!strcmp(comandos, "buscar est"))
         {
             clearWindow(pWin.pLogWindow);
+            char auxMensaje[50];
             printLog(&pWin, "Buscando estaciones...", WHITE);
             int cont = 0;
-            char auxMensaje[50];
             for(int i  = 0; i < MAX_ESTACION; i ++)
             {
                 if (i != miPos)
@@ -312,7 +312,10 @@ void InterfazGrafica()
                         cont ++ ;
                         send(serverEst[i], "2", sizeMsj, 0);
                         estaciones[i].online = 1;
+
                         sprintf(auxMensaje, estaciones[i].nombre);
+
+
                     }
                 }
             }
@@ -320,10 +323,12 @@ void InterfazGrafica()
             if (cont == 0)
                 printLog(&pWin, "No se encontraron estaciones", WHITE);
             else
+
                 printLog(&pWin, "Se encontraron estaciones", WHITE);
                 printLog(&pWin, "Las estaciones disponibles son: \n", WHITE);      
             	printLog(&pWin, auxMensaje, WHITE);   	
-                //Armar y mostrar la lista de estaciones disponibles 
+                
+
 
         }
 
@@ -352,25 +357,46 @@ void InterfazGrafica()
             unInitUserInterface(&pWin);
             exit(EXIT_SUCCESS);
         }
-        /*else if (!strcmp(comandos, "partir tren"))
+        else if (!strcmp(comandos, "partir tren"))
         {
-            clearLogWindow(pWin.pLogWindow);
-                            
+
+            clearLogWindow(pWin.pLogWindow);                
+            int trenTime=0;
+            char solicitud[50];
+            send(client,solicitud,50,0);
+            recv(client,solicitud,50,0);
+            trenTime=atoi(solicitud);
 
             printLog(&pWin, "A dónde desea viajar?", WHITE);
-            printLog(&pWin, mensaje, WHITE);
-            wgetnstr(pWin.pCmdWindow, comandos, 20);
+            wgetnstr(pWin.pCmdWindow, solicitud, 20);
+            for(int i  = 0; i < MAX_ESTACION; i ++)
+            {
+                if (i != miPos)
+                {
+                    
+                    if (strcmp(solicitud,estaciones[i].nombre)&&estaciones[i].online == 1)
+                    {
+                        trenTime+=estaciones[i].distancia;
 
+                    }
+                }
+            }
+            send(client,atoi(trenTime),strlen(solicitud),0);
             //char solicitud[sizeMsj]="3;";
-            send(client,solicitud,strlen(solicitud),0);
-            /*recv(client,solicitud,sizeMsj,0);
-            tren.tiempoRestante=atoi(solicitud);
-            partir(&tren);
             
+            //send(serverEst[i], "2", sizeMsj, 0);
+            
+            //no borrar por las dudas
+            /*send(client,solicitud,strlen(solicitud),0);
+            recv(client,solicitud,sizeMsj,0);
+            tiempoRestante=atoi(solicitud);*/
+
+            //esto de abajo va en algun lugar de tren
+            /*partir(&tren);
             trencitoViajando(pWin.pLogWindow);
-            printMessage(&pWin, "", WHITE);
+            printMessage(&pWin, "", WHITE);*/
             break;
-        }*/
+        }
 
         else
         {
