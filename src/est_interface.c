@@ -272,6 +272,7 @@ void InterfazGrafica()
     
     while(1)
     {
+        memset(mensaje ,'\0', sizeMsj);
     	mvwprintw(pWin.pLogWindow, getmaxy(pWin.pLogWindow) -1 , 0 , "Escriba \"help\" para obtener informacion.");
         wgetnstr(pWin.pCmdWindow, comandos, 20);
         clearCmdWindow(pWin.pCmdWindow);
@@ -299,23 +300,21 @@ void InterfazGrafica()
         else if (!strcmp(comandos, "buscar est"))
         {
             clearWindow(pWin.pLogWindow);
-            char auxMensaje[50];
+            char nombreArchivo[21];
             printLog(&pWin, "Buscando estaciones...", WHITE);
             int cont = 0;
             for(int i  = 0; i < MAX_ESTACION; i ++)
             {
                 if (i != miPos)
                 {
-                    sprintf(mensaje, "../config/Red%d.conf", i + 1);
-                    if (serverEst[i] = conectarEstacion(mensaje))
+                    sprintf(nombreArchivo, "../config/Red%d.conf", i + 1);
+                    if (serverEst[i] = conectarEstacion(nombreArchivo))
                     {
-                        cont ++ ;
+                        cont ++;
                         send(serverEst[i], "2", sizeMsj, 0);
                         estaciones[i].online = 1;
-
-                        sprintf(auxMensaje, estaciones[i].nombre);
-
-
+                        strcat(mensaje, estaciones[i].nombre);
+                        strcat(mensaje, "\n");
                     }
                 }
             }
@@ -323,12 +322,11 @@ void InterfazGrafica()
             if (cont == 0)
                 printLog(&pWin, "No se encontraron estaciones", WHITE);
             else
-
+            {
                 printLog(&pWin, "Se encontraron estaciones", WHITE);
                 printLog(&pWin, "Las estaciones disponibles son: \n", WHITE);      
-            	printLog(&pWin, auxMensaje, WHITE);   	
-                
-
+            	printLog(&pWin, mensaje, WHITE);   	
+            }
 
         }
 
@@ -357,6 +355,8 @@ void InterfazGrafica()
             unInitUserInterface(&pWin);
             exit(EXIT_SUCCESS);
         }
+
+/*
         else if (!strcmp(comandos, "partir tren"))
         {
 
@@ -387,17 +387,17 @@ void InterfazGrafica()
             //send(serverEst[i], "2", sizeMsj, 0);
             
             //no borrar por las dudas
-            /*send(client,solicitud,strlen(solicitud),0);
+            send(client,solicitud,strlen(solicitud),0);
             recv(client,solicitud,sizeMsj,0);
             tiempoRestante=atoi(solicitud);*/
 
             //esto de abajo va en algun lugar de tren
             /*partir(&tren);
             trencitoViajando(pWin.pLogWindow);
-            printMessage(&pWin, "", WHITE);*/
+            printMessage(&pWin, "", WHITE);
             break;
         }
-
+*/
         else
         {
             clearWindow(pWin.pLogWindow);
