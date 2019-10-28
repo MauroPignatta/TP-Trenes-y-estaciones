@@ -300,14 +300,14 @@ void InterfazGrafica()
         else if (!strcmp(comandos, "buscar est"))
         {
             clearWindow(pWin.pLogWindow);
-            char nombreArchivo[21];
+            char nombreArchivo[25];
             printLog(&pWin, "Buscando estaciones...", WHITE);
             int cont = 0;
             for(int i  = 0; i < MAX_ESTACION; i ++)
             {
                 if (i != miPos)
                 {
-                    sprintf(nombreArchivo, "../config/Red%d.conf", i + 1);
+                    sprintf(nombreArchivo, "../config/red/Red%d.conf", i + 1);
                     if (serverEst[i] = conectarEstacion(nombreArchivo))
                     {
                         cont ++;
@@ -373,8 +373,7 @@ void InterfazGrafica()
             {
                 if (i != miPos)
                 {
-                    
-                    if (strcmp(solicitud,estaciones[i].nombre)&&estaciones[i].online == 1)
+                    if (strcmp(solicitud,estaciones[i].nombre) && estaciones[i].online == 1)
                     {
                         trenTime+=estaciones[i].distancia;
 

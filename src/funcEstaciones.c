@@ -8,13 +8,13 @@
 
 void ObtenerOtrasEstaciones(ESTACION est[],int miPos)
 {
-    char nombreArchivo[30];
+    char nombreArchivo[40];
     FILE* configEst;
     for (int i = 0; i < MAX_ESTACION; i++)
     {
         if( i != miPos)
         {
-            sprintf(nombreArchivo, "../config/Estacion%d.conf", i + 1);
+            sprintf(nombreArchivo, "../config/estacion/Estacion%d.conf", i + 1);
             configEst = fopen(nombreArchivo, "r");
             fscanf(configEst ,"Nombre: %s\n",est[i].nombre);
             fscanf(configEst ,"Distancia: %d\n", &est[i].distancia);
@@ -143,7 +143,7 @@ void finalizarTren()
 void ConexionServer()
 {
     char mensaje[sizeMsj];
-    sprintf(mensaje,"../config/Red%d.conf", miPos + 1);
+    sprintf(mensaje,"../config/red/Red%d.conf", miPos + 1);
 
     int server = CrearSocketServer(mensaje);  //Devuelve el socket ya configurado
     

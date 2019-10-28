@@ -14,16 +14,16 @@ int main(int argc, char** argv) {
 
     system("clear");
 
-    char *nomArchivoTren = FormatearNombreArchivo(argv[1]);
-    TREN tren = inicializarTren(nomArchivoTren);
-    free(nomArchivoTren);
+    char nomArchivo[40] = "../config/tren/";
+    strcat(nomArchivo, FormatearNombreArchivo(argv[1]));
+    TREN tren = inicializarTren(nomArchivo);
     
     /* Devuelve el socket ya configurado */
-    char *nomArchivoRed = FormatearNombreArchivo(argv[2]);
-    int client = CrearSocketCliente(nomArchivoRed);
+    strcpy(nomArchivo, "../config/red/");
+    strcat(nomArchivo, FormatearNombreArchivo(argv[2]));
+    int client = CrearSocketCliente(nomArchivo);
     send(client, "1", sizeMsj, 0);
-    free(nomArchivoRed);
-
+    
     char mensaje[sizeMsj];
 
     /* Flag para que un tren no pueda registrarse 2 veces*/

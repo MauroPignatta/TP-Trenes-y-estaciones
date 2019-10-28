@@ -16,10 +16,10 @@ int main(int argc, char** argv)
     system("clear");
 
     //Obtengo los datos de las estaciones. 
-    char *nomArchivoEst = FormatearNombreArchivo(argv[1]);
-    miPos = ObtenerDatosMiEstacion(nomArchivoEst, estaciones); 
+    char nomArchivoEst[40] = "../config/estacion/";
+    strcat(nomArchivoEst, FormatearNombreArchivo(argv[1]));
+    miPos = ObtenerDatosMiEstacion( nomArchivoEst, estaciones); 
     ObtenerOtrasEstaciones(estaciones, miPos);
-    free(nomArchivoEst);
 
     /* Hilo para la interfaz grafica */
     pthread_t Interfaz;
