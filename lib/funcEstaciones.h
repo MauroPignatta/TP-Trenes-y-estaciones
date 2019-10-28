@@ -9,7 +9,9 @@
 
 #define MAX_TREN 10
 #define MAX_ESTACION 5
+
 #define esEstacion(x) x == '2'
+#define estacionConectada(y) y == 1
 
 #include "funcTrenes.h"
 
@@ -21,6 +23,7 @@ typedef struct
 	char nombre[max_nombre_est];
 	int distancia;
 	int online;
+	int nCliente;
 	TREN tren[MAX_TREN];
 }ESTACION;
 
@@ -105,5 +108,15 @@ int BuscarTrenPorID(ESTACION estacion, int idTren);
 */
 
 void ConexionServer();
+
+
+
+
+/* Busca a la estacion por el nombre
+Devuelve la pos si la encuentrao -1 si no la encuentra*/
+int buscarEstacionPorNombre(char * mensaje);
+
+
+int mensajeListadoEstDisp(char * mensaje);
 
 #endif	// FUNCESTACIONES_H

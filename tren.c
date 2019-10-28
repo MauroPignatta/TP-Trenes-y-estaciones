@@ -15,12 +15,12 @@ int main(int argc, char** argv) {
     system("clear");
 
     char nomArchivo[40] = "../config/tren/";
-    strcat(nomArchivo, FormatearNombreArchivo(argv[1]));
+    strcat(nomArchivo, FormatearNombre(argv[1]));
     TREN tren = inicializarTren(nomArchivo);
     
     /* Devuelve el socket ya configurado */
     strcpy(nomArchivo, "../config/red/");
-    strcat(nomArchivo, FormatearNombreArchivo(argv[2]));
+    strcat(nomArchivo, FormatearNombre(argv[2]));
     int client = CrearSocketCliente(nomArchivo);
     send(client, "1", sizeMsj, 0);
     
@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
                 printMessage(&pWin, token, WHITE);
             }
         }
-        
+
         else if(!strcmp(mensaje, "anden"))
         {
             //solicitar anden
@@ -88,8 +88,27 @@ int main(int argc, char** argv) {
             printMessage(&pWin, "Todavia no implementado.", WHITE);
         }
         
-        
+        else if(!strcmp(mensaje, "partir"))
+        {
+            armarMensajePartir(tren, mensaje);
+            send(client, mensaje, sizeMsj, 0);
 
+            recv(client, mensaje, sizeMsj, 0);
+
+            clearLogWindow(pWin.pLogWindow);
+            printMessage(&pWin, mensaje, WHITE);
+
+            if (strcmp(mensaje, "No hay estaciones disponibles"))
+            {
+                clearLogWindow(pWin.pLogWindow);
+                printMessage(&pWin, mensaje, WHITE);
+
+                clearCmdWindow(pWin.pCmdWindow);
+                wgetnstr(pWin.pCmdWindow, mensaje, sizeMsj);
+                send(client, mensaje, sizeMsj, 0);
+            }
+        }
+        
         else  if(!strcmp(mensaje, "estado"))
         {
             clearLogWindow(pWin.pLogWindow);
@@ -113,8 +132,6 @@ int main(int argc, char** argv) {
         }
 
         clearCmdWindow(pWin.pCmdWindow);
-
-        
     }
 
     unInitUserInterface(&pWin);

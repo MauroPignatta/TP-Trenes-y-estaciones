@@ -44,7 +44,7 @@ void solicitarPasoAnden()
 void partir(TREN tren)
 {
     for(int i=tren.tiempoRestante;i>0;i--){
-    sleep(1);       
+    sleep(1);  
     tren.tiempoRestante--;
     }   
 }
@@ -76,6 +76,11 @@ void armarMensajeEstadoDelTren(TREN t, char * mensaje)
     sprintf(mensaje,"Estacion Destino: %s\n",t.estDestino);
     mensaje += strlen(mensaje);
     sprintf(mensaje,"Tiempo de viaje restante: %d\n",t.tiempoRestante);
+}
+
+void armarMensajePartir(TREN tren ,char * mensaje)
+{
+    sprintf(mensaje, "1;3;%d", tren.ID);
 }
 
 void armarMensajeExit(TREN tren, char * mensaje)

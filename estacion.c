@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 
     //Obtengo los datos de las estaciones. 
     char nomArchivoEst[40] = "../config/estacion/";
-    strcat(nomArchivoEst, FormatearNombreArchivo(argv[1]));
+    strcat(nomArchivoEst, FormatearNombre(argv[1]));
     miPos = ObtenerDatosMiEstacion( nomArchivoEst, estaciones); 
     ObtenerOtrasEstaciones(estaciones, miPos);
 

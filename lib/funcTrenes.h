@@ -9,6 +9,7 @@
 
 #define max_nombre_est 30
 #define esTren(x) x == '1'
+#define noHayEstacionesDisponible(x) x == '0'
 
 /* Estructura de datos para Trenes */
 
@@ -75,6 +76,13 @@ void armarMensajeEstadoDelTren(TREN t, char * mensaje);
 */
 
 void armarMensajeExit(TREN tren, char * mensaje);
+
+/*
+* Funcion Arma el mensaje para indicarle a la estacion que quiere partir el tren
+* @param TREN tren una variable del tipo TREN
+* @param char * mensaje la variable del mensaje a enviar
+*/
+void armarMensajePartir(TREN tren ,char * mensaje);
 
 #endif	// FUNCTRENES_H
 

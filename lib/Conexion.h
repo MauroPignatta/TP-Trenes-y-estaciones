@@ -27,7 +27,7 @@
 * return el nombre formateado primera en Mayuscula 
 * y las demas en minusculas
 */
-char * FormatearNombreArchivo( char * Palabra);
+char * FormatearNombre( char * Palabra);
 
 /*
 * Funcion que obtiene IP y Puerto de la red de servicios.

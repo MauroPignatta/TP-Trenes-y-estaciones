@@ -130,14 +130,45 @@ int registrarTren(ESTACION * estacion, char * mensaje)
     return 1;
 }
 
-void enviarTren()
+int mensajeListadoEstDisp(char * mensaje)
 {
-	
+    strcpy(mensaje, "Las estaciones disponibles son:\n\n");
+    int cont = 0;
+    for(int i = 0; i < MAX_ESTACION; i++)
+    {
+        if (i != miPos)
+        {
+            if ( estacionConectada (estaciones[i].online))
+            {
+                cont ++;
+                strcat(mensaje, estaciones[i].nombre);
+                strcat(mensaje, "\n");
+            }
+        }
+    }
+    if (cont == 0)
+    {
+        strcpy(mensaje, "No hay estaciones disponibles");
+    }
+    return cont;
 }
-	
-void finalizarTren()
-{
 
+/* Busca a la estacion por el nombre
+Devuelve la pos si la encuentrao -1 si no la encuentra*/
+int buscarEstacionPorNombre(char * mensaje)
+{
+    int pos = -1;
+    for(int i = 0; i < MAX_ESTACION; i++)
+    {
+        if (i != miPos)
+        {
+            if ( !strcat(mensaje, estaciones[i].nombre ))
+            {
+                pos = i;
+            }
+        }
+    }
+    return pos;
 }
 
 void ConexionServer()
@@ -186,6 +217,9 @@ void ConexionServer()
             }
             else if ( esEstacion( mensaje[0]) )
             {
+                sscanf(mensaje, "2;%d", &posEst); //recibo el id de estacion en el mensaje
+                posEst = posEst  - 1;           //Saco la pos por PUP
+                estaciones[posEst].nCliente = n;    //Guardo el numero de cliente
                 printRegistro(&pWin,"Se conecto una Estacion", WHITE);
             }
             /* lo agrega al fd */
@@ -239,27 +273,32 @@ void ConexionServer()
                                     // solicitar anden
                                     break;
                                     
-                                /*case '3':
-                                    
-                                        if(!strcmp(mensaje, "partir"))
-                                        {
-                                            clearLogWindow(pWin.pLogWindow);
-                                            printf("A dónde desea viajar?\n");
+                                case '3':
+                                    printRegistro(&pWin,"Un tren quiere partir", WHITE);
+                                    sscanf(mensaje, "1;3;%d", &TrenID); //recibo el id del tren
+                                    posTren = BuscarTrenPorID(estaciones[miPos], TrenID); //busco al tren
 
-                                            printLog(&pWin, mensaje, WHITE);
-                                            gets(tren.estDestino);
-                                            char solicitud[sizeMsj]="3;";
-                                            send(client,solicitud,strlen(solicitud),0);
-                                            recv(client,solicitud,sizeMsj,0);
-                                            tren.tiempoRestante=atoi(solicitud);
-                                            partir(&tren);
-                                            
-                                            trencitoViajando(pWin.pLogWindow);
-                                            printMessage(&pWin, "", WHITE);
-                                            break;
-                                        }    
+                                    int cantEstDisp = mensajeListadoEstDisp(mensaje); //armo un listado de las estaciones disponibles
+                                    send(client[i], mensaje, sizeMsj, 0); // envio el listado
+
+                                    if (cantEstDisp != 0)
+                                    {
+                                        recv(client[i], mensaje, sizeMsj, 0); // recibo la estacion donde quiere ir
+                                        FormatearNombre(mensaje);
+                                        posEst = buscarEstacionPorNombre(mensaje);
+
+                                        if( posEst > -1 && estacionConectada(estaciones[posEst].online) )
+                                        {
+
+                                        }
+                                        else //Si eligio una estacion que no es valida
+                                        {
+                                            strcpy(mensaje, "La estacion elegida no es valida, intente nuevamente");
+                                            send(client[i], mensaje, sizeMsj, 0);
+                                        }
+                                    }
                                     break;
-                                    
+                                /*   
                                 case '4':
                                      Esto va a haber que cambiarlo, no borrar por ahora.
 

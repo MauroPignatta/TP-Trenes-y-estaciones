@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char * FormatearNombreArchivo(char * Palabra)
+char * FormatearNombre(char * Palabra)
 {	
     int primerLetra = 1; 
     char * aux = Palabra;

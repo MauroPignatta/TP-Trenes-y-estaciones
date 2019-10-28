@@ -273,7 +273,6 @@ void InterfazGrafica()
     while(1)
     {
         memset(mensaje ,'\0', sizeMsj);
-    	mvwprintw(pWin.pLogWindow, getmaxy(pWin.pLogWindow) -1 , 0 , "Escriba \"help\" para obtener informacion.");
         wgetnstr(pWin.pCmdWindow, comandos, 20);
         clearCmdWindow(pWin.pCmdWindow);
 
@@ -303,6 +302,10 @@ void InterfazGrafica()
             char nombreArchivo[25];
             printLog(&pWin, "Buscando estaciones...", WHITE);
             int cont = 0;
+
+            char mensajeIdEst[5];
+            sprintf(mensajeIdEst, "2;%d", estaciones[miPos].ID);
+
             for(int i  = 0; i < MAX_ESTACION; i ++)
             {
                 if (i != miPos)
@@ -311,7 +314,7 @@ void InterfazGrafica()
                     if (serverEst[i] = conectarEstacion(nombreArchivo))
                     {
                         cont ++;
-                        send(serverEst[i], "2", sizeMsj, 0);
+                        send(serverEst[i], mensajeIdEst, sizeMsj, 0);
                         estaciones[i].online = 1;
                         strcat(mensaje, estaciones[i].nombre);
                         strcat(mensaje, "\n");
