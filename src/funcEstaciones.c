@@ -268,7 +268,7 @@ void ConexionServer()
                                     send(clientTrenes[i], mensaje, strlen(mensaje), 0);
                                     
                                     break;*/
-                                case '3':   //Agrego este para cuando un tren quiere desconectarse
+                                case '5':   //Agrego este para cuando un tren quiere desconectarse
                                     
                                     sscanf(mensaje, "1;5;%d", &TrenID);
                                     posTren = BuscarTrenPorID(estaciones[miPos], TrenID);
