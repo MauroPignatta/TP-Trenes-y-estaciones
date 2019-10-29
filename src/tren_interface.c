@@ -92,14 +92,14 @@ void clearCmdWindow(WINDOW *pWin){
     werase(pWin);
 }
 
-void trencitoViajando(WINDOW *pLogWindow)
+void DibujarTrenViajando(WINDOW *pLogWindow, int * tiempoRestante)
 {
     int y = getmaxy(pLogWindow)/ 2;
     int x = 18;
     int fixX = 0;
-    for(int i = 0 ; i < 18; i ++)
+    while(*tiempoRestante > 0)
     {
-        mvwprintw(pLogWindow, 0 , 0, "Viajando...\n");
+        mvwprintw(pLogWindow, 0 , 0, "Viajando...\nTiempo Restante: %d", * tiempoRestante);
         mvwprintw(pLogWindow, y    , x, "    o x o x o x o . . .\n");
         mvwprintw(pLogWindow, y + 1, x, "   o      _____            _______________ ___=====__T___\n");
         mvwprintw(pLogWindow, y + 2, x, " .][__n_n_|DD[  ====_____  |    |.\\/.|   | |   |_|     |_\n");
@@ -108,7 +108,8 @@ void trencitoViajando(WINDOW *pLogWindow)
         mvwprintw(pLogWindow, y + 5, fixX, "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-");
         wrefresh(pLogWindow);
         x--;
-        usleep(150000);
+        (*tiempoRestante) -- ;
+        usleep(350000);
         werase(pLogWindow);
     }
     wrefresh(pLogWindow);

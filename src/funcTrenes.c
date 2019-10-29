@@ -17,21 +17,15 @@ FILE * openFile(char * nombreArchivo)
 
 TREN inicializarTren(char *arch)
 {
-    
     FILE *tren = openFile(arch);
     TREN aux;
-    
     fscanf(tren, "ID: %d\n", &aux.ID);
-    
     fscanf(tren, "Combustible: %d\n",&aux.combustible);
-
     fscanf(tren, "Modelo: %s", aux.modelo);
-   
     aux.tiempoRestante = 0;
     strcpy(aux.estDestino,"A asignar");
     strcpy(aux.estOrigen,"A asignar");
-    aux.registrado = 0;
-    aux.nCliente = -1;
+    aux.migrado = 0;
     fclose(tren);
     return aux;
 }

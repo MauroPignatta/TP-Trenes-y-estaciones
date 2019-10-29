@@ -83,7 +83,7 @@ int BuscarTrenPorID(ESTACION estacion, int idTren)
 /*Busca la primer posicion vacia en el vector de trenes
 y devuelve la posicion, o -1 en caso de no haber
 lugares vacios.*/
-int BuscarPosVacia(ESTACION* estacion)
+int BuscarPosVacia(ESTACION * estacion)
 {
     int encontrado = -1;
     int i = 0;
@@ -100,7 +100,7 @@ int registrarTren(ESTACION * estacion, char * mensaje)
     int i = BuscarPosVacia(estacion);
     if(i == -1)
     {
-        return 0;
+        return -1;
     }
     mensaje = mensaje + 4;
     
@@ -110,7 +110,7 @@ int registrarTren(ESTACION * estacion, char * mensaje)
     int yaExisteID = BuscarTrenPorID(*estacion, ID);
     if (yaExisteID != -1)
     {
-    	return 0;
+    	return -1;
     }
     
     estacion->tren[i].ID = atoi(token);
@@ -127,7 +127,7 @@ int registrarTren(ESTACION * estacion, char * mensaje)
     strcpy(estacion->tren[i].estOrigen, estacion->nombre);
     estacion->tren[i].tiempoRestante = 0;
     strcpy(estacion->tren[i].estDestino, "A asignar");
-    return 1;
+    return i;
 }
 
 int mensajeListadoEstDisp(char * mensaje)
@@ -162,13 +162,31 @@ int buscarEstacionPorNombre(char * mensaje)
     {
         if (i != miPos)
         {
-            if ( !strcat(mensaje, estaciones[i].nombre ))
+            if ( !strcmp(mensaje, estaciones[i].nombre ))
             {
                 pos = i;
             }
         }
     }
     return pos;
+}
+
+void prepararEnvioTren(char *mensaje , int posTren)
+{
+    TREN tren = estaciones[miPos].tren[posTren];
+    sprintf(mensaje, "2;3;%d;%d;%s", tren.ID, tren.combustible, tren.modelo);
+}
+
+int calcularTiempoDeViaje(int posEstacionDestino)
+{
+    int tiempo = 0;
+    int direccion = miPos < posEstacionDestino ? 1 : -1;
+    int i = miPos;
+    while (i != posEstacionDestino)
+    {
+        tiempo += estaciones[i += direccion].distancia;
+    }
+    return tiempo;
 }
 
 void ConexionServer()
@@ -217,9 +235,8 @@ void ConexionServer()
             }
             else if ( esEstacion( mensaje[0]) )
             {
-                sscanf(mensaje, "2;%d", &posEst); //recibo el id de estacion en el mensaje
-                posEst = posEst  - 1;           //Saco la pos por PUP
-                estaciones[posEst].nCliente = n;    //Guardo el numero de cliente
+                //sscanf(mensaje, "2;%d", &posEst);   //recibo el id de estacion en el mensaje
+               // estaciones[posEst].nCliente = n;    //Guardo el numero de cliente
                 printRegistro(&pWin,"Se conecto una Estacion", WHITE);
             }
             /* lo agrega al fd */
@@ -257,7 +274,7 @@ void ConexionServer()
                                     sprintf(mensaje,"1;%s;Te has registrado correctamente", estaciones[miPos].nombre);
 
                                     /*Comprueba que el tren se haya registrado*/
-                                    if (!regCorrecto)
+                                    if (regCorrecto == -1)
                                     {
                                         printRegistro(&pWin,"No se pudo registrar a un\ntren: Ya registrado.", WHITE);
                                         strcpy(mensaje,"2;No te has podido registrar: Ya existe un tren con el mismo ID.");
@@ -274,7 +291,6 @@ void ConexionServer()
                                     break;
                                     
                                 case '3':
-                                    printRegistro(&pWin,"Un tren quiere partir", WHITE);
                                     sscanf(mensaje, "1;3;%d", &TrenID); //recibo el id del tren
                                     posTren = BuscarTrenPorID(estaciones[miPos], TrenID); //busco al tren
 
@@ -283,17 +299,26 @@ void ConexionServer()
 
                                     if (cantEstDisp != 0)
                                     {
+                                        printRegistro(&pWin,"Un tren quiere partir", WHITE);
                                         recv(client[i], mensaje, sizeMsj, 0); // recibo la estacion donde quiere ir
                                         FormatearNombre(mensaje);
                                         posEst = buscarEstacionPorNombre(mensaje);
 
-                                        if( posEst > -1 && estacionConectada(estaciones[posEst].online) )
+                                        if( posEst >= 0 && estacionConectada(estaciones[posEst].online) )
                                         {
+                                            strcpy(mensaje, "OK");
+                                            send(client[i], mensaje, sizeMsj, 0);
 
+                                            int tiempo = calcularTiempoDeViaje( posEst );
+                                            sprintf(mensaje, "%d", tiempo);
+                                            send(client[i], mensaje, sizeMsj, 0);
+
+                                            prepararEnvioTren(mensaje, posTren);
+                                            send(serverEst[posEst], mensaje, sizeMsj, 0);
                                         }
                                         else //Si eligio una estacion que no es valida
                                         {
-                                            strcpy(mensaje, "La estacion elegida no es valida, intente nuevamente");
+                                            strcpy(mensaje, "La estacion elegida no es valida, intente nuevamente.");
                                             send(client[i], mensaje, sizeMsj, 0);
                                         }
                                     }
@@ -308,7 +333,6 @@ void ConexionServer()
                                     
                                     break;*/
                                 case '5':   //Agrego este para cuando un tren quiere desconectarse
-                                    
                                     sscanf(mensaje, "1;5;%d", &TrenID);
                                     posTren = BuscarTrenPorID(estaciones[miPos], TrenID);
 
@@ -317,7 +341,6 @@ void ConexionServer()
                                     
                                     printRegistro(&pWin,"Se desconecto un tren", WHITE);
                                     FD_CLR(client[i], &master);
-
                                     break;
                             }
                         }
@@ -327,19 +350,18 @@ void ConexionServer()
 
                             switch (opcion)
                             {
+                                case '3': //Recibo un tren
+                                    printRegistro(&pWin,"Ha llegado un nuevo tren", WHITE);
+                                    posTren = registrarTren(&estaciones[miPos], mensaje);
+                                    estaciones[miPos].tren[posTren].migrado = 1;
+                                break;
 
                                 case '5': //exit
                                     sscanf(mensaje, "2;5;%d", &posEst);
                                     estaciones[posEst].online = 0;
-
-                                    //bytesRecibidos = recv(client[i], mensaje, sizeMsj, 0);
-
-                                    //if (bytesRecibidos <= 0)
-                                    //{
-                                        printRegistro(&pWin,"Se desconecto una estacion", WHITE);
-                                        FD_CLR(client[i], &master);
-                                    //}
-                                    break;
+                                    printRegistro(&pWin,"Se desconecto una estacion", WHITE);
+                                    FD_CLR(client[i], &master);
+                                break;
                             }
                         }
                     }

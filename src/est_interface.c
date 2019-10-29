@@ -268,7 +268,6 @@ void InterfazGrafica()
     printWindowTitle(pWin.pCmdFrame, "### Comandos ###");
 
     char comandos[20];
-    int serverEst[MAX_ESTACION];
     
     while(1)
     {
@@ -303,8 +302,8 @@ void InterfazGrafica()
             printLog(&pWin, "Buscando estaciones...", WHITE);
             int cont = 0;
 
-            char mensajeIdEst[5];
-            sprintf(mensajeIdEst, "2;%d", estaciones[miPos].ID);
+            char mensajeIdEst[6];
+            sprintf(mensajeIdEst, "2;%d", miPos);
 
             for(int i  = 0; i < MAX_ESTACION; i ++)
             {

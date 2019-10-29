@@ -8,6 +8,7 @@
 */
 
 #define max_nombre_est 30
+#define restarCombustible(x) 4 * x
 #define esTren(x) x == '1'
 #define noHayEstacionesDisponible(x) x == '0'
 
@@ -20,8 +21,7 @@ typedef struct{
     char estOrigen[max_nombre_est];
     char estDestino[max_nombre_est];
     int tiempoRestante;
-    int nCliente;
-    int registrado;
+    int migrado;
 }TREN;
 
 /*

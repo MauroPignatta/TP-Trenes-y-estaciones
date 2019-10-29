@@ -110,8 +110,9 @@ void printHelp(ST_APP_WINDOW *pAppWin);
 /*
 * Funcion Muestra el Tren viajando
 * @param * pLogWindow representa la Variable global
+* @param * TREN Para actualizar el tiempo de viaje del tren.
 */
 
-void trencitoViajando(WINDOW *pLogWindow);
+void DibujarTrenViajando(WINDOW *pLogWindow, int * tiempoRestante);
 
 #endif

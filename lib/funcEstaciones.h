@@ -27,6 +27,7 @@ typedef struct
 	TREN tren[MAX_TREN];
 }ESTACION;
 
+int serverEst[MAX_ESTACION];
 ESTACION estaciones[MAX_ESTACION];
 int miPos;
 
