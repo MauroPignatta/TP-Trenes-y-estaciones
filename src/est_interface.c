@@ -386,6 +386,7 @@ void InterfazGrafica()
                         	prepararEnvioTren(mensaje , posTren);
                         	send(serverEst[posEst], mensaje, sizeMsj,0);
                         	estaciones[miPos].tren[posTren].ID = 0;
+				estaciones[miPos].tren[posTren].migrado = 0;
 
                         	clearWindow(pWin.pLogWindow);
 	            			printLog(&pWin, "Tren Enviado.", WHITE);
