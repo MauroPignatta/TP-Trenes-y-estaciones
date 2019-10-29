@@ -97,7 +97,7 @@ int BuscarPosVacia(ESTACION * estacion)
 
 void mostrarTrenesMigrados(char * mensaje)
 {   
-    char ID[4];
+    char ID[13];
     strcpy(mensaje, "Elija el ID del tren que quiere viajar: \n\n");
     for(int i = 0; i < MAX_TREN; i++)
     {
