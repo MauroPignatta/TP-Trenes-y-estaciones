@@ -52,11 +52,18 @@ int CrearSocketServer(char * confRed);
 */
 int CrearSocketCliente(char * confRed);
 
-/*
-* Funcion que crea la Conexion de la Estacion
-* @param * confRed es el puntero del archivo de configuracion del Servidor
-* return int cliente formateado para la conexion
-*/
+/**
+ * Funcion que crea la Conexion de la Estacion
+ * @param * confRed es el puntero del archivo de configuracion del Servidor
+ * return int cliente formateado para la conexion
+ */
 int conectarEstacion(char * confRed);
+
+/**
+ * Obtiene el nombre del archivo de conf de Red segun el nombre de la estacion a conectarse
+ * @param * nombreEstacion puntero al argumento con el nombre de la estacion a conectarse
+ * @param * archConfigRed puntero a char donde se va a guardar el nombre del archivo de conf de red
+ */
+void obtenerConfRed(char * nombreEstacion , char * archConfigRed);
 
 #endif	// CONEXION_H

@@ -8,7 +8,7 @@
 int main(int argc, char** argv) {
 
     if(argc != 3){
-        printf("\nuso: ./tren <Nombre archivo Conf Tren> <Nombre archivo Conf Red>\n");
+        printf("\nuso: ./tren <Nombre archivo Conf Tren> <Nombre de Estacion a conectarse>\n");
         exit(3);
     }
 
@@ -19,8 +19,7 @@ int main(int argc, char** argv) {
     TREN tren = inicializarTren(nomArchivo);
     
     /* Devuelve el socket ya configurado */
-    strcpy(nomArchivo, "../config/red/");
-    strcat(nomArchivo, FormatearNombre(argv[2]));
+    obtenerConfRed(FormatearNombre(argv[2]) , nomArchivo);
     int client = CrearSocketCliente(nomArchivo);
     send(client, "1", sizeMsj, 0);
     
@@ -34,7 +33,8 @@ int main(int argc, char** argv) {
     initUserInterface(&pWin);
     drawUserInterface(&pWin);
     
-    printWindowTitle(pWin.pAppFrame, " Tren ");
+    sprintf(mensaje, " Tren %d ",tren.ID);
+    printWindowTitle(pWin.pAppFrame, mensaje);
     printWindowTitle(pWin.pLogFrame, "### Log ###");
     printWindowTitle(pWin.pCmdFrame, "### Comandos ###");
 
@@ -116,7 +116,7 @@ int main(int argc, char** argv) {
                         tren.tiempoRestante = atoi(mensaje);
                         tren.combustible -= restarCombustible(tren.tiempoRestante);
                         DibujarTrenViajando(pWin.pLogWindow, &tren.tiempoRestante);
-
+                        
                         armarMensajeExit(tren, mensaje);
                         send(client, mensaje, strlen(mensaje), 0);
                         unInitUserInterface(&pWin);

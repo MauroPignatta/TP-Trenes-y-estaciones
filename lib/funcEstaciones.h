@@ -60,32 +60,6 @@ void ObtenerOtrasEstaciones(ESTACION est[],int miPos);
 int registrarTren(ESTACION *estacion, char * mensaje);
 
 /*
-* Funcion Envia el Tren a otra estacion
-* @param 
-* @param 
-*/
-
-void enviarTren();
-
-/*
-* Funcion Finaliza el Proceso Tren que se elija
-* @param 
-* @param 
-*/
-
-void finalizarTren();
-
-/*
-* Funcion 
-* @param 
-* @param 
-*/
-
-/* VER SI HAY QUE DEJARLA O PASAR A TRENES*/
-
-void estadoDelTren (ESTACION estacion, char * mensaje);
-
-/*
 * Funcion Devuelve un vector con las posiciones del vector de trenes en las que se encuentran
 * @param TREN trenes es el vector de trenes
 * @param int posTrenes indica la posicion de los trenes encontrados
@@ -111,13 +85,23 @@ int BuscarTrenPorID(ESTACION estacion, int idTren);
 void ConexionServer();
 
 
-
-
 /* Busca a la estacion por el nombre
 Devuelve la pos si la encuentrao -1 si no la encuentra*/
 int buscarEstacionPorNombre(char * mensaje);
 
-
+/**
+ * Copia las estaciones disponible para viajar en el mensaje.
+ * 
+ * @param * mensaje puntero a char donde se van a copiar las estaciones disponible
+ * @return devuelve la cantidad de estaciones que estan disponibles para viajar
+ */
 int mensajeListadoEstDisp(char * mensaje);
+
+/**
+ * Copia los trenes que migraron al mensaje
+ * 
+ * @param * mensaje puntero a char donde se van a copiar los trenes
+ */
+void mostrarTrenesMigrados(char * mensaje);
 
 #endif	// FUNCESTACIONES_H

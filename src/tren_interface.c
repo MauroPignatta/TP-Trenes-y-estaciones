@@ -109,7 +109,7 @@ void DibujarTrenViajando(WINDOW *pLogWindow, int * tiempoRestante)
         wrefresh(pLogWindow);
         x--;
         (*tiempoRestante) -- ;
-        usleep(350000);
+        usleep(500000);
         werase(pLogWindow);
     }
     wrefresh(pLogWindow);

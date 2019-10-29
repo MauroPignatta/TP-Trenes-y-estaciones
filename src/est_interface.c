@@ -152,6 +152,10 @@ int printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[])
     {
         if (j < cantTrenes)
         {
+            char migrado[3] = "No";
+            if (trenes[posTrenes[j]].migrado == 1)
+                strcpy(migrado, "Si");
+
             werase(pWin->pLogWindow);
             mvwprintw(pWin->pLogWindow, 0, 0,"Estado: Tren %d\n\n", j + 1);
             wprintw(pWin->pLogWindow,"ID: %d\n",trenes[posTrenes[j]].ID);
@@ -159,7 +163,8 @@ int printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[])
             wprintw(pWin->pLogWindow,"Modelo: %s\n",trenes[posTrenes[j]].modelo);
             wprintw(pWin->pLogWindow,"Estacion Actual: %s\n",trenes[posTrenes[j]].estOrigen);
             wprintw(pWin->pLogWindow,"Estacion Destino: %s\n",trenes[posTrenes[j]].estDestino);
-            wprintw(pWin->pLogWindow,"Tiempo de viaje restante: %d\n\n",trenes[posTrenes[j]].tiempoRestante);
+            wprintw(pWin->pLogWindow,"Tiempo de viaje restante: %d\n",trenes[posTrenes[j]].tiempoRestante);
+            wprintw(pWin->pLogWindow,"Migrado: %s\n\n", migrado);
             mvwprintw(pWin->pLogWindow, y-2 , 0,"<- ant\t\t Pagina %d/%d \t\tsig ->\n",j + 1, cantTrenes);
             mvwprintw(pWin->pLogWindow, y-1 , 0, "Escriba \"back\" para volver.");
             wrefresh(pWin->pLogWindow);
@@ -358,51 +363,23 @@ void InterfazGrafica()
             exit(EXIT_SUCCESS);
         }
 
-/*
         else if (!strcmp(comandos, "partir tren"))
         {
+            clearWindow(pWin.pLogWindow);
 
-            clearLogWindow(pWin.pLogWindow);                
-            int trenTime=0;
-            char solicitud[50];
-            send(client,solicitud,50,0);
-            recv(client,solicitud,50,0);
-            trenTime=atoi(solicitud);
+            mostrarTrenesMigrados(mensaje);
+            printLog(&pWin, mensaje, WHITE);
+        //    elegirTren();
 
-            printLog(&pWin, "A dónde desea viajar?", WHITE);
-            wgetnstr(pWin.pCmdWindow, solicitud, 20);
-            for(int i  = 0; i < MAX_ESTACION; i ++)
-            {
-                if (i != miPos)
-                {
-                    if (strcmp(solicitud,estaciones[i].nombre) && estaciones[i].online == 1)
-                    {
-                        trenTime+=estaciones[i].distancia;
+           // elegirEstDestino();
 
-                    }
-                }
-            }
-            send(client,atoi(trenTime),strlen(solicitud),0);
-            //char solicitud[sizeMsj]="3;";
-            
-            //send(serverEst[i], "2", sizeMsj, 0);
-            
-            //no borrar por las dudas
-            send(client,solicitud,strlen(solicitud),0);
-            recv(client,solicitud,sizeMsj,0);
-            tiempoRestante=atoi(solicitud);*/
-
-            //esto de abajo va en algun lugar de tren
-            /*partir(&tren);
-            trencitoViajando(pWin.pLogWindow);
-            printMessage(&pWin, "", WHITE);
-            break;
+         //   enviarTren();
         }
-*/
+
         else
         {
-            clearWindow(pWin.pLogWindow);
             strcat(comandos, " no es un comando valido.");
+            clearWindow(pWin.pLogWindow);
             printLog(&pWin, comandos, WHITE);
         }
     }

@@ -95,6 +95,20 @@ int BuscarPosVacia(ESTACION * estacion)
     return encontrado;
 }
 
+void mostrarTrenesMigrados(char * mensaje)
+{   
+    char ID[4];
+    strcpy(mensaje, "Elija el ID del tren que quiere viajar: \n\n");
+    for(int i = 0; i < MAX_TREN; i++)
+    {
+        if(estaciones[miPos].tren[i].migrado == 1)
+        {
+            sprintf(ID,"Tren ID: %d\n", estaciones[miPos].tren[i].ID);
+            strcat(mensaje, ID);
+        }
+    }
+}
+
 int registrarTren(ESTACION * estacion, char * mensaje)
 {
     int i = BuscarPosVacia(estacion);
@@ -132,7 +146,8 @@ int registrarTren(ESTACION * estacion, char * mensaje)
 
 int mensajeListadoEstDisp(char * mensaje)
 {
-    strcpy(mensaje, "Las estaciones disponibles son:\n\n");
+    strcpy(mensaje, "Elija la estacion a la cual quiere viajar:\n\n");
+    strcat(mensaje, "Las estaciones disponibles son:\n");
     int cont = 0;
     for(int i = 0; i < MAX_ESTACION; i++)
     {
@@ -310,6 +325,7 @@ void ConexionServer()
                                             send(client[i], mensaje, sizeMsj, 0);
 
                                             int tiempo = calcularTiempoDeViaje( posEst );
+                                            estaciones[miPos].tren[posTren].combustible -= restarCombustible(tiempo);
                                             sprintf(mensaje, "%d", tiempo);
                                             send(client[i], mensaje, sizeMsj, 0);
 
