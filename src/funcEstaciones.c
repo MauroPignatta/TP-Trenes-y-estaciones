@@ -95,18 +95,56 @@ int BuscarPosVacia(ESTACION * estacion)
     return encontrado;
 }
 
-void mostrarTrenesMigrados(char * mensaje)
+int mostrarTrenesMigrados(char * mensaje)
 {   
-    char ID[4];
+    char ID[13];
+    int cantTrenesMigrados = 0;
     strcpy(mensaje, "Elija el ID del tren que quiere viajar: \n\n");
     for(int i = 0; i < MAX_TREN; i++)
     {
         if(estaciones[miPos].tren[i].migrado == 1)
         {
+            cantTrenesMigrados ++ ;
             sprintf(ID,"Tren ID: %d\n", estaciones[miPos].tren[i].ID);
             strcat(mensaje, ID);
         }
     }
+    return cantTrenesMigrados;
+}
+
+/*Pide al usuario que ingrese el tren que quiere que viaje
+y devuelve la posicion del tren en el vector, o -1 en caso de que el tren
+elegido no sea valido.*/
+int elegirTren()
+{
+    char opcion[4];
+    clearCmdWindow(pWin.pCmdWindow);
+    wgetnstr(pWin.pCmdWindow, opcion, 3);
+    clearCmdWindow(pWin.pCmdWindow);
+    int ID = atoi(opcion);
+    int pos = BuscarTrenPorID(estaciones[miPos] , ID);
+
+    if (pos == -1 || estaciones[miPos].tren[pos].migrado == 0)
+    {
+        return -1;
+    }
+
+    return pos;
+}
+
+int elegirEstDestino()
+{
+    char opcion[30];
+    clearCmdWindow(pWin.pCmdWindow);
+    wgetnstr(pWin.pCmdWindow, opcion, 29);
+    clearCmdWindow(pWin.pCmdWindow);
+    FormatearNombre(opcion);
+    int pos = buscarEstacionPorNombre(opcion);
+
+    if (pos == -1 || estaciones[pos].online == 0)
+        return -1;
+
+    return pos;
 }
 
 int registrarTren(ESTACION * estacion, char * mensaje)
@@ -250,8 +288,6 @@ void ConexionServer()
             }
             else if ( esEstacion( mensaje[0]) )
             {
-                //sscanf(mensaje, "2;%d", &posEst);   //recibo el id de estacion en el mensaje
-               // estaciones[posEst].nCliente = n;    //Guardo el numero de cliente
                 printRegistro(&pWin,"Se conecto una Estacion", WHITE);
             }
             /* lo agrega al fd */

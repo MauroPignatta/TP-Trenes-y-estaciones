@@ -366,14 +366,53 @@ void InterfazGrafica()
         else if (!strcmp(comandos, "partir tren"))
         {
             clearWindow(pWin.pLogWindow);
+            int cantTrenesMigrados = mostrarTrenesMigrados(mensaje);
+            if (cantTrenesMigrados > 0)
+            {
+	            printLog(&pWin, mensaje, WHITE);
+	            int posTren = elegirTren();
+	            if (posTren != -1)
+	            {
+	            	int cantEstDisp = mensajeListadoEstDisp(mensaje);
+	            	if (cantEstDisp > 0)
+	            	{
+	            		clearWindow(pWin.pLogWindow);
+	            		printLog(&pWin, mensaje, WHITE);
+	            		int posEst = elegirEstDestino();
+	            		if (posEst != -1)
+	            		{
+	            			int tiempo = calcularTiempoDeViaje(posEst);
+                        	estaciones[miPos].tren[posTren].combustible -= restarCombustible(tiempo);
+                        	prepararEnvioTren(mensaje , posTren);
+                        	send(serverEst[posEst], mensaje, sizeMsj,0);
+                        	estaciones[miPos].tren[posTren].ID = 0;
 
-            mostrarTrenesMigrados(mensaje);
-            printLog(&pWin, mensaje, WHITE);
-        //    elegirTren();
-
-           // elegirEstDestino();
-
-         //   enviarTren();
+                        	clearWindow(pWin.pLogWindow);
+	            			printLog(&pWin, "Tren Enviado.", WHITE);
+	            		}
+	            		else 
+            			{
+            				clearWindow(pWin.pLogWindow);
+	            			printLog(&pWin, "La estacion elegida no es valida. Intente nuevamente", WHITE);
+	        	 		}
+	            	}
+	            	else
+	            	{
+	            		clearWindow(pWin.pLogWindow);
+	            		printLog(&pWin, "No hay estaciones para viajar. Intente nuevamente mas tarde", WHITE);
+	            	}
+	            }
+	         	else
+	         	{
+	         		clearWindow(pWin.pLogWindow);
+	            	printLog(&pWin, "El tren elegido no es valido. Intente nuevamente", WHITE);
+	         	}
+	        }
+	        else 
+	        {
+	        	clearWindow(pWin.pLogWindow);
+            	printLog(&pWin, "No hay trenes que la estacion controle", WHITE);
+	        }
         }
 
         else

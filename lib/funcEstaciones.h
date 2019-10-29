@@ -86,7 +86,7 @@ void ConexionServer();
 
 
 /* Busca a la estacion por el nombre
-Devuelve la pos si la encuentrao -1 si no la encuentra*/
+Devuelve la pos si la encuentra o -1 si no la encuentra*/
 int buscarEstacionPorNombre(char * mensaje);
 
 /**
@@ -101,7 +101,39 @@ int mensajeListadoEstDisp(char * mensaje);
  * Copia los trenes que migraron al mensaje
  * 
  * @param * mensaje puntero a char donde se van a copiar los trenes
+ * @return devuelve la cantidad de trenes migrados
  */
-void mostrarTrenesMigrados(char * mensaje);
+int mostrarTrenesMigrados(char * mensaje);
+
+/**
+ * Pide al usuario que ingrese el tren que quiere que viaje
+ * 
+ * @return posicion del tren elegido en el vector o -1 en caso de que el tren elegido no sea valido 
+ */
+int elegirTren();
+
+/**
+ * Pide al usuario que ingrese la estacion donde quiere viajar
+ * 
+ * @return posicion la estacion elegida o -1 en caso de que no sea valida
+ */
+int elegirEstDestino();
+
+/**
+ * Calcula el tiempo basandose en la distancia entre una estacion y otra
+ * 
+ * @param  posEstacionDestino La posicion en el vector de estacion a la cual se quiere dirigir el tren
+ * @return Tiempo de viaje
+ */
+int calcularTiempoDeViaje(int posEstacionDestino);
+
+/**
+ * Prepara el mensaje para enviar un tren de una estacion a otra
+ * 
+ * @param * mensaje puntero a char copia el mensaje a enviar
+ * @param * posTren Para saber que tren hay que enviar
+ */
+void prepararEnvioTren(char *mensaje , int posTren);
+
 
 #endif	// FUNCESTACIONES_H
