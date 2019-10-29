@@ -72,67 +72,70 @@ int buscarTrenes( TREN trenes[] ,int posTrenes[]);
 * Funcion Busca un Tren en el vector de trenes
 * @param ESTACION estacion variable del tipo ESTACION
 * @param int idTren es el numero de tren a buscar
-* @return Devuelve la posicion en la que se encuentra el tren en el 
-* vector de trenes de la estacion, o -1 si no se encuentra
+* @return Devuelve la posicion en la que se encuentra el tren en el vector de trenes de la estacion, o -1 si no se encuentra
 */
 
 int BuscarTrenPorID(ESTACION estacion, int idTren);
 
 /*
-* Funcion Funcion para el hilo que se encarga de la conexion servidor-cliente.
+* Funcion para el hilo que se encarga de la conexion servidor-cliente
+* @param
 */
 
 void ConexionServer();
 
+/*
+* Funcion Busca a la estacion por el nombre
+* @param char * mensaje donde tiene el nombre de la estacion a buscar
+* @return Devuelve la pos si la encuentra o -1 si no la encuentra
+*/
 
-/* Busca a la estacion por el nombre
-Devuelve la pos si la encuentra o -1 si no la encuentra*/
 int buscarEstacionPorNombre(char * mensaje);
 
-/**
- * Copia las estaciones disponible para viajar en el mensaje.
- * 
- * @param * mensaje puntero a char donde se van a copiar las estaciones disponible
- * @return devuelve la cantidad de estaciones que estan disponibles para viajar
- */
+/*
+* Funcion que Copia las estaciones disponibles para viajar
+* @param * mensaje puntero a char donde se van a copiar las estaciones disponibles
+* @return devuelve la cantidad de estaciones que estan disponibles para viajar
+*/
+
 int mensajeListadoEstDisp(char * mensaje);
 
-/**
- * Copia los trenes que migraron al mensaje
- * 
- * @param * mensaje puntero a char donde se van a copiar los trenes
- * @return devuelve la cantidad de trenes migrados
- */
+/*
+* Funcion que Copia los trenes que migraron al mensaje* 
+* @param * mensaje puntero a char donde se van a copiar los trenes
+* @return devuelve la cantidad de trenes migrados
+*/
+
 int mostrarTrenesMigrados(char * mensaje);
 
-/**
- * Pide al usuario que ingrese el tren que quiere que viaje
- * 
- * @return posicion del tren elegido en el vector o -1 en caso de que el tren elegido no sea valido 
- */
+/*
+* Funcion que Pide al usuario que ingrese el tren que quiere que viaje
+* @return posicion del tren elegido en el vector o -1 en caso de que el tren elegido no sea valido 
+*/
+
 int elegirTren();
 
-/**
- * Pide al usuario que ingrese la estacion donde quiere viajar
- * 
- * @return posicion la estacion elegida o -1 en caso de que no sea valida
- */
+/*
+* Funcion Pide al usuario que ingrese la estacion donde quiere viajar* 
+* @return posicion la estacion elegida o -1 en caso de que no sea valida
+*/
+
 int elegirEstDestino();
 
-/**
- * Calcula el tiempo basandose en la distancia entre una estacion y otra
- * 
- * @param  posEstacionDestino La posicion en el vector de estacion a la cual se quiere dirigir el tren
- * @return Tiempo de viaje
- */
+/*
+* Funcion Calcula el tiempo basandose en la distancia entre una estacion y otra* 
+* @param  posEstacionDestino La posicion en el vector de estacion a la cual se quiere dirigir el tren
+* @return Tiempo de viaje
+*/
+
 int calcularTiempoDeViaje(int posEstacionDestino);
 
-/**
- * Prepara el mensaje para enviar un tren de una estacion a otra
- * 
- * @param * mensaje puntero a char copia el mensaje a enviar
- * @param * posTren Para saber que tren hay que enviar
- */
+/*
+* Funcion Prepara el mensaje para enviar un tren de una estacion a otra
+* @param * mensaje puntero a char copia el mensaje a enviar
+* @param * posTren Para saber que tren hay que enviar
+*/
+
 void prepararEnvioTren(char *mensaje , int posTren);
 
 

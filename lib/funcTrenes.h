@@ -34,7 +34,7 @@ TREN inicializarTren(char *arch);
 
 /*
 * Funcion Solicita el Tren a la Estacion si tiene Anden libre o no
-* @param 
+* @param Falta terminar///////
 */
 
 void solicitarPasoAnden();
@@ -82,6 +82,7 @@ void armarMensajeExit(TREN tren, char * mensaje);
 * @param TREN tren una variable del tipo TREN
 * @param char * mensaje la variable del mensaje a enviar
 */
+
 void armarMensajePartir(TREN tren ,char * mensaje);
 
 #endif	// FUNCTRENES_H
