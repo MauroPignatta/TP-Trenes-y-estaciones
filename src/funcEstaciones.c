@@ -283,8 +283,9 @@ void ConexionServer()
             if ( esTren( mensaje[0]) )
             {
                 printRegistro(&pWin,"Se conecto un nuevo tren", WHITE);
+                memset(mensaje,'\0',sizeMsj);
                 sprintf(mensaje,"Bienvenido a la estacion %s", estaciones[miPos].nombre);
-                send(client[n], mensaje, strlen(mensaje), 0);
+                send(client[n], mensaje, sizeMsj, 0);
             }
             else if ( esEstacion( mensaje[0]) )
             {
