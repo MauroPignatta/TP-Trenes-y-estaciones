@@ -393,19 +393,19 @@ void InterfazGrafica()
 	            		else 
             			{
             				clearWindow(pWin.pLogWindow);
-	            			printLog(&pWin, "La estacion elegida no es valida. Intente nuevamente", WHITE);
+	            			printLog(&pWin, "La estacion elegida no es valida. \nIntente nuevamente", WHITE);
 	        	 		}
 	            	}
 	            	else
 	            	{
 	            		clearWindow(pWin.pLogWindow);
-	            		printLog(&pWin, "No hay estaciones para viajar. Intente nuevamente mas tarde", WHITE);
+	            		printLog(&pWin, "No hay estaciones para viajar. \nIntente nuevamente mas tarde", WHITE);
 	            	}
 	            }
 	         	else
 	         	{
 	         		clearWindow(pWin.pLogWindow);
-	            	printLog(&pWin, "El tren elegido no es valido. Intente nuevamente", WHITE);
+	            	printLog(&pWin, "El tren elegido no es valido. \nIntente nuevamente", WHITE);
 	         	}
 	        }
 	        else 
