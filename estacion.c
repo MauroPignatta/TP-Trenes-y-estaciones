@@ -24,7 +24,7 @@ int main(int argc, char** argv)
     /* Hilo para la interfaz grafica */
     pthread_t Interfaz;
     wmove(pWin.pCmdWindow, 0,0);
-    pthread_create(&Interfaz, NULL,(void*) InterfazGrafica ,NULL);
+    pthread_create(&Interfaz, NULL,(void*) InterfazGrafica ,(void *) argv);
 
     /* Hilo para la conexion */
     pthread_t Conexion;

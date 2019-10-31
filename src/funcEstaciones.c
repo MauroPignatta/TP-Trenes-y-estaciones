@@ -242,8 +242,9 @@ int calcularTiempoDeViaje(int posEstacionDestino)
     return tiempo;
 }
 
-void ConexionServer()
+void ConexionServer(void * argumento)
 {
+    char ** argv = (char **) argumento;
     char mensaje[sizeMsj];
     sprintf(mensaje,"../config/red/Red%d.conf", miPos + 1);
 
@@ -407,6 +408,13 @@ void ConexionServer()
                                     printRegistro(&pWin,"Ha llegado un nuevo tren", WHITE);
                                     posTren = registrarTren(&estaciones[miPos], mensaje);
                                     estaciones[miPos].tren[posTren].migrado = 1;
+                                    sprintf(mensaje, "tren %d",estaciones[miPos].tren[posTren].ID);
+
+                                    if (fork() == 0)
+                                    {
+                                        strcpy(argv[0], mensaje);
+                                    }
+
                                 break;
 
                                 case '5': //exit
