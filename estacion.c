@@ -24,12 +24,12 @@ int main(int argc, char** argv)
     /* Hilo para la interfaz grafica */
     pthread_t Interfaz;
     wmove(pWin.pCmdWindow, 0,0);
-    pthread_create(&Interfaz, NULL,(void*) InterfazGrafica ,(void *) argv);
+    pthread_create(&Interfaz, NULL,(void*) InterfazGrafica , NULL);
 
     /* Hilo para la conexion */
     pthread_t Conexion;
     wmove(pWin.pCmdWindow, 0,0);
-    pthread_create(&Conexion, NULL,(void*) ConexionServer ,NULL);
+    pthread_create(&Conexion, NULL,(void*) ConexionServer ,(void *) argv);
 
     /* Espero a que los hilos "terminen" cosa que no va a pasar nunca porque son infinitos,
     pero si no pongo esto el main sigue viaje, llega al return y termina la ejecucion */ 

@@ -2,6 +2,7 @@
 #include "../lib/funcTrenes.h"
 #include "../lib/est_interface.h"
 #include "../lib/Conexion.h"
+#include <signal.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -102,7 +103,7 @@ int mostrarTrenesMigrados(char * mensaje)
     strcpy(mensaje, "Elija el ID del tren que quiere viajar: \n\n");
     for(int i = 0; i < MAX_TREN; i++)
     {
-        if(estaciones[miPos].tren[i].migrado == 1)
+        if(estaciones[miPos].tren[i].migrado != 0)
         {
             cantTrenesMigrados ++ ;
             sprintf(ID,"Tren ID: %d\n", estaciones[miPos].tren[i].ID);
@@ -407,12 +408,20 @@ void ConexionServer(void * argumento)
                                 case '3': //Recibo un tren
                                     printRegistro(&pWin,"Ha llegado un nuevo tren", WHITE);
                                     posTren = registrarTren(&estaciones[miPos], mensaje);
-                                    estaciones[miPos].tren[posTren].migrado = 1;
-                                    sprintf(mensaje, "tren %d",estaciones[miPos].tren[posTren].ID);
+                                    sprintf(mensaje, "./tren %d",estaciones[miPos].tren[posTren].ID);
 
-                                    if (fork() == 0)
+                                    pid_t pid = fork();
+                                    if (pid == 0)
                                     {
                                         strcpy(argv[0], mensaje);
+                                        sprintf(mensaje, "%s        ",estaciones[miPos].nombre);
+                                        strcpy(argv[1], mensaje);
+                                        pause();
+                                        exit(0);
+                                    }
+                                    else
+                                    {
+                                        estaciones[miPos].tren[posTren].migrado = pid;
                                     }
 
                                 break;

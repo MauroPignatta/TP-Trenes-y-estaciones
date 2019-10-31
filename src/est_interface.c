@@ -2,6 +2,7 @@
 #include "../lib/Conexion.h"
 #include "../lib/funcEstaciones.h"
 #include <string.h>
+#include <signal.h>
 
 void initUserInterface(ST_APP_WINDOW *pWindow)
 {
@@ -153,7 +154,7 @@ int printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[])
         if (j < cantTrenes)
         {
             char migrado[3] = "No";
-            if (trenes[posTrenes[j]].migrado == 1)
+            if (trenes[posTrenes[j]].migrado != 0)
                 strcpy(migrado, "Si");
 
             werase(pWin->pLogWindow);
@@ -164,7 +165,7 @@ int printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[])
             wprintw(pWin->pLogWindow,"Estacion Actual: %s\n",trenes[posTrenes[j]].estOrigen);
             wprintw(pWin->pLogWindow,"Estacion Destino: %s\n",trenes[posTrenes[j]].estDestino);
             wprintw(pWin->pLogWindow,"Tiempo de viaje restante: %d\n",trenes[posTrenes[j]].tiempoRestante);
-            wprintw(pWin->pLogWindow,"Migrado: %s\n\n", migrado);
+            wprintw(pWin->pLogWindow,"Migrado: %s PID: %d \n\n", migrado, trenes[posTrenes[j]].migrado);
             mvwprintw(pWin->pLogWindow, y-2 , 0,"<- ant\t\t Pagina %d/%d \t\tsig ->\n",j + 1, cantTrenes);
             mvwprintw(pWin->pLogWindow, y-1 , 0, "Escriba \"back\" para volver.");
             wrefresh(pWin->pLogWindow);
@@ -386,7 +387,9 @@ void InterfazGrafica()
                         	prepararEnvioTren(mensaje , posTren);
                         	send(serverEst[posEst], mensaje, sizeMsj,0);
                         	estaciones[miPos].tren[posTren].ID = 0;
-				estaciones[miPos].tren[posTren].migrado = 0;
+
+                            kill( estaciones[miPos].tren[posTren].migrado , SIGKILL);
+				            estaciones[miPos].tren[posTren].migrado = 0;
 
                         	clearWindow(pWin.pLogWindow);
 	            			printLog(&pWin, "Tren Enviado.", WHITE);
