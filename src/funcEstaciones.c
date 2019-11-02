@@ -417,6 +417,7 @@ void ConexionServer(void * argumento)
                                         sprintf(mensaje, "%s        ",estaciones[miPos].nombre);
                                         strcpy(argv[1], mensaje);
                                         pause();
+                                        _Exit(1);
                                     }
                                     else
                                     {
