@@ -17,21 +17,15 @@ FILE * openFile(char * nombreArchivo)
 
 TREN inicializarTren(char *arch)
 {
-    
     FILE *tren = openFile(arch);
     TREN aux;
-    
     fscanf(tren, "ID: %d\n", &aux.ID);
-    
     fscanf(tren, "Combustible: %d\n",&aux.combustible);
-
     fscanf(tren, "Modelo: %s", aux.modelo);
-   
     aux.tiempoRestante = 0;
     strcpy(aux.estDestino,"A asignar");
     strcpy(aux.estOrigen,"A asignar");
-    aux.registrado = 0;
-    aux.nCliente = -1;
+    aux.migrado = 0;
     fclose(tren);
     return aux;
 }
@@ -44,7 +38,7 @@ void solicitarPasoAnden()
 void partir(TREN tren)
 {
     for(int i=tren.tiempoRestante;i>0;i--){
-    sleep(1);       
+    sleep(1);  
     tren.tiempoRestante--;
     }   
 }
@@ -78,9 +72,15 @@ void armarMensajeEstadoDelTren(TREN t, char * mensaje)
     sprintf(mensaje,"Tiempo de viaje restante: %d\n",t.tiempoRestante);
 }
 
+void armarMensajePartir(TREN tren ,char * mensaje)
+{
+    sprintf(mensaje, "1;3;%d", tren.ID);
+}
+
 void armarMensajeExit(TREN tren, char * mensaje)
 {
     sprintf(mensaje, "1;5;%d", tren.ID);
+<<<<<<< HEAD
 }
 <<<<<<< HEAD
 void armarMensajePartir(TREN tren, char * mensaje){
@@ -90,3 +90,6 @@ void armarMensajePartir(TREN tren, char * mensaje){
 
 =======
 >>>>>>> trainsThings
+=======
+}
+>>>>>>> master

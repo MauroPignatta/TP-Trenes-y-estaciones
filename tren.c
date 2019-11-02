@@ -8,22 +8,21 @@
 int main(int argc, char** argv) {
 
     if(argc != 3){
-        printf("\nuso: ./tren <Nombre archivo Conf Tren> <Nombre archivo Conf Red>\n");
+        printf("\nuso: ./tren <Nombre archivo Conf Tren> <Nombre de Estacion a conectarse>\n");
         exit(3);
     }
 
     system("clear");
 
-    char *nomArchivoTren = FormatearNombreArchivo(argv[1]);
-    TREN tren = inicializarTren(nomArchivoTren);
-    free(nomArchivoTren);
+    char nomArchivo[40] = "../config/tren/";
+    strcat(nomArchivo, FormatearNombre(argv[1]));
+    TREN tren = inicializarTren(nomArchivo);
     
     /* Devuelve el socket ya configurado */
-    char *nomArchivoRed = FormatearNombreArchivo(argv[2]);
-    int client = CrearSocketCliente(nomArchivoRed);
+    obtenerConfRed(FormatearNombre(argv[2]) , nomArchivo);
+    int client = CrearSocketCliente(nomArchivo);
     send(client, "1", sizeMsj, 0);
-    free(nomArchivoRed);
-
+    
     char mensaje[sizeMsj];
 
     /* Flag para que un tren no pueda registrarse 2 veces*/
@@ -34,7 +33,8 @@ int main(int argc, char** argv) {
     initUserInterface(&pWin);
     drawUserInterface(&pWin);
     
-    printWindowTitle(pWin.pAppFrame, " Tren ");
+    sprintf(mensaje, " Tren %d ",tren.ID);
+    printWindowTitle(pWin.pAppFrame, mensaje);
     printWindowTitle(pWin.pLogFrame, "### Log ###");
     printWindowTitle(pWin.pCmdFrame, "### Comandos ###");
 
@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
                 printMessage(&pWin, token, WHITE);
             }
         }
-        
+
         else if(!strcmp(mensaje, "anden"))
         {
             //solicitar anden
@@ -88,8 +88,54 @@ int main(int argc, char** argv) {
             printMessage(&pWin, "Todavia no implementado.", WHITE);
         }
         
-        
+        else if(!strcmp(mensaje, "partir"))
+        {
+            if (yaRegistrado)
+            {
+                armarMensajePartir(tren, mensaje);
+                send(client, mensaje, sizeMsj, 0);
 
+                recv(client, mensaje, sizeMsj, 0);
+
+                clearLogWindow(pWin.pLogWindow);
+                printMessage(&pWin, mensaje, WHITE);
+
+                if (strcmp(mensaje, "No hay estaciones disponibles"))
+                {
+                    clearLogWindow(pWin.pLogWindow);
+                    printMessage(&pWin, mensaje, WHITE);
+
+                    clearCmdWindow(pWin.pCmdWindow);
+                    wgetnstr(pWin.pCmdWindow, mensaje, sizeMsj);
+                    send(client, mensaje, sizeMsj, 0);
+
+                    recv(client, mensaje, sizeMsj, 0);
+                    if (!strcmp(mensaje, "OK"))
+                    {
+                        recv(client, mensaje, sizeMsj, 0);
+                        tren.tiempoRestante = atoi(mensaje);
+                        tren.combustible -= restarCombustible(tren.tiempoRestante);
+                        DibujarTrenViajando(pWin.pLogWindow, &tren.tiempoRestante);
+                        
+                        armarMensajeExit(tren, mensaje);
+                        send(client, mensaje, strlen(mensaje), 0);
+                        unInitUserInterface(&pWin);
+                        exit(EXIT_SUCCESS);
+                    }
+                    else
+                    {
+                        clearLogWindow(pWin.pLogWindow);
+                        printMessage(&pWin, mensaje, WHITE);
+                    }
+                }
+            }
+            else 
+            {
+                clearLogWindow(pWin.pLogWindow);
+                printMessage(&pWin, "Es necesario estar registrado en la estacion.", WHITE);
+            }
+        }
+        
         else  if(!strcmp(mensaje, "estado"))
         {
             clearLogWindow(pWin.pLogWindow);
@@ -113,11 +159,7 @@ int main(int argc, char** argv) {
         }
 
         clearCmdWindow(pWin.pCmdWindow);
-
-        
     }
-
-    unInitUserInterface(&pWin);
     return (EXIT_SUCCESS);
 }
 

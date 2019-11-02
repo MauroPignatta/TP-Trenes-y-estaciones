@@ -2,6 +2,7 @@
 #include "../lib/Conexion.h"
 #include "../lib/funcEstaciones.h"
 #include <string.h>
+#include <signal.h>
 
 void initUserInterface(ST_APP_WINDOW *pWindow)
 {
@@ -152,6 +153,10 @@ int printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[])
     {
         if (j < cantTrenes)
         {
+            char migrado[3] = "No";
+            if (trenes[posTrenes[j]].migrado != 0)
+                strcpy(migrado, "Si");
+
             werase(pWin->pLogWindow);
             mvwprintw(pWin->pLogWindow, 0, 0,"Estado: Tren %d\n\n", j + 1);
             wprintw(pWin->pLogWindow,"ID: %d\n",trenes[posTrenes[j]].ID);
@@ -159,7 +164,8 @@ int printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[])
             wprintw(pWin->pLogWindow,"Modelo: %s\n",trenes[posTrenes[j]].modelo);
             wprintw(pWin->pLogWindow,"Estacion Actual: %s\n",trenes[posTrenes[j]].estOrigen);
             wprintw(pWin->pLogWindow,"Estacion Destino: %s\n",trenes[posTrenes[j]].estDestino);
-            wprintw(pWin->pLogWindow,"Tiempo de viaje restante: %d\n\n",trenes[posTrenes[j]].tiempoRestante);
+            wprintw(pWin->pLogWindow,"Tiempo de viaje restante: %d\n",trenes[posTrenes[j]].tiempoRestante);
+            wprintw(pWin->pLogWindow,"Migrado: %s PID: %d \n\n", migrado, trenes[posTrenes[j]].migrado);
             mvwprintw(pWin->pLogWindow, y-2 , 0,"<- ant\t\t Pagina %d/%d \t\tsig ->\n",j + 1, cantTrenes);
             mvwprintw(pWin->pLogWindow, y-1 , 0, "Escriba \"back\" para volver.");
             wrefresh(pWin->pLogWindow);
@@ -268,11 +274,10 @@ void InterfazGrafica()
     printWindowTitle(pWin.pCmdFrame, "### Comandos ###");
 
     char comandos[20];
-    int serverEst[MAX_ESTACION];
     
     while(1)
     {
-    	mvwprintw(pWin.pLogWindow, getmaxy(pWin.pLogWindow) -1 , 0 , "Escriba \"help\" para obtener informacion.");
+        memset(mensaje ,'\0', sizeMsj);
         wgetnstr(pWin.pCmdWindow, comandos, 20);
         clearCmdWindow(pWin.pCmdWindow);
 
@@ -299,20 +304,25 @@ void InterfazGrafica()
         else if (!strcmp(comandos, "buscar est"))
         {
             clearWindow(pWin.pLogWindow);
+            char nombreArchivo[25];
             printLog(&pWin, "Buscando estaciones...", WHITE);
             int cont = 0;
-            char auxMensaje[50];
+
+            char mensajeIdEst[6];
+            sprintf(mensajeIdEst, "2;%d", miPos);
+
             for(int i  = 0; i < MAX_ESTACION; i ++)
             {
                 if (i != miPos)
                 {
-                    sprintf(mensaje, "../config/Red%d.conf", i + 1);
-                    if (serverEst[i] = conectarEstacion(mensaje))
+                    sprintf(nombreArchivo, "../config/red/Red%d.conf", i + 1);
+                    if (serverEst[i] = conectarEstacion(nombreArchivo))
                     {
-                        cont ++ ;
-                        send(serverEst[i], "2", sizeMsj, 0);
+                        cont ++;
+                        send(serverEst[i], mensajeIdEst, sizeMsj, 0);
                         estaciones[i].online = 1;
-                        sprintf(auxMensaje, estaciones[i].nombre);
+                        strcat(mensaje, estaciones[i].nombre);
+                        strcat(mensaje, "\n");
                     }
                 }
             }
@@ -320,10 +330,11 @@ void InterfazGrafica()
             if (cont == 0)
                 printLog(&pWin, "No se encontraron estaciones", WHITE);
             else
+            {
                 printLog(&pWin, "Se encontraron estaciones", WHITE);
                 printLog(&pWin, "Las estaciones disponibles son: \n", WHITE);      
-            	printLog(&pWin, auxMensaje, WHITE);   	
-                //Armar y mostrar la lista de estaciones disponibles 
+            	printLog(&pWin, mensaje, WHITE);   	
+            }
 
         }
 
@@ -352,30 +363,66 @@ void InterfazGrafica()
             unInitUserInterface(&pWin);
             exit(EXIT_SUCCESS);
         }
-        /*else if (!strcmp(comandos, "partir tren"))
+
+        else if (!strcmp(comandos, "partir tren"))
         {
-            clearLogWindow(pWin.pLogWindow);
-                            
+            clearWindow(pWin.pLogWindow);
+            int cantTrenesMigrados = mostrarTrenesMigrados(mensaje);
+            if (cantTrenesMigrados > 0)
+            {
+	            printLog(&pWin, mensaje, WHITE);
+	            int posTren = elegirTren();
+	            if (posTren != -1)
+	            {
+	            	int cantEstDisp = mensajeListadoEstDisp(mensaje);
+	            	if (cantEstDisp > 0)
+	            	{
+	            		clearWindow(pWin.pLogWindow);
+	            		printLog(&pWin, mensaje, WHITE);
+	            		int posEst = elegirEstDestino();
+	            		if (posEst != -1)
+	            		{
+	            			int tiempo = calcularTiempoDeViaje(posEst);
+                        	estaciones[miPos].tren[posTren].combustible -= restarCombustible(tiempo);
+                        	prepararEnvioTren(mensaje , posTren);
+                        	send(serverEst[posEst], mensaje, sizeMsj,0);
+                        	estaciones[miPos].tren[posTren].ID = 0;
 
-            printLog(&pWin, "A dónde desea viajar?", WHITE);
-            printLog(&pWin, mensaje, WHITE);
-            wgetnstr(pWin.pCmdWindow, comandos, 20);
+                            kill( estaciones[miPos].tren[posTren].migrado , SIGKILL);
+				            estaciones[miPos].tren[posTren].migrado = 0;
 
-            //char solicitud[sizeMsj]="3;";
-            send(client,solicitud,strlen(solicitud),0);
-            /*recv(client,solicitud,sizeMsj,0);
-            tren.tiempoRestante=atoi(solicitud);
-            partir(&tren);
-            
-            trencitoViajando(pWin.pLogWindow);
-            printMessage(&pWin, "", WHITE);
-            break;
-        }*/
+                        	clearWindow(pWin.pLogWindow);
+	            			printLog(&pWin, "Tren Enviado.", WHITE);
+	            		}
+	            		else 
+            			{
+            				clearWindow(pWin.pLogWindow);
+	            			printLog(&pWin, "La estacion elegida no es valida. \nIntente nuevamente", WHITE);
+	        	 		}
+	            	}
+	            	else
+	            	{
+	            		clearWindow(pWin.pLogWindow);
+	            		printLog(&pWin, "No hay estaciones para viajar. \nIntente nuevamente mas tarde", WHITE);
+	            	}
+	            }
+	         	else
+	         	{
+	         		clearWindow(pWin.pLogWindow);
+	            	printLog(&pWin, "El tren elegido no es valido. \nIntente nuevamente", WHITE);
+	         	}
+	        }
+	        else 
+	        {
+	        	clearWindow(pWin.pLogWindow);
+            	printLog(&pWin, "No hay trenes que la estacion controle", WHITE);
+	        }
+        }
 
         else
         {
-            clearWindow(pWin.pLogWindow);
             strcat(comandos, " no es un comando valido.");
+            clearWindow(pWin.pLogWindow);
             printLog(&pWin, comandos, WHITE);
         }
     }

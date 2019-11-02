@@ -16,20 +16,20 @@ int main(int argc, char** argv)
     system("clear");
 
     //Obtengo los datos de las estaciones. 
-    char *nomArchivoEst = FormatearNombreArchivo(argv[1]);
-    miPos = ObtenerDatosMiEstacion(nomArchivoEst, estaciones); 
+    char nomArchivoEst[40] = "../config/estacion/";
+    strcat(nomArchivoEst, FormatearNombre(argv[1]));
+    miPos = ObtenerDatosMiEstacion( nomArchivoEst, estaciones); 
     ObtenerOtrasEstaciones(estaciones, miPos);
-    free(nomArchivoEst);
 
     /* Hilo para la interfaz grafica */
     pthread_t Interfaz;
     wmove(pWin.pCmdWindow, 0,0);
-    pthread_create(&Interfaz, NULL,(void*) InterfazGrafica ,NULL);
+    pthread_create(&Interfaz, NULL,(void*) InterfazGrafica , NULL);
 
     /* Hilo para la conexion */
     pthread_t Conexion;
     wmove(pWin.pCmdWindow, 0,0);
-    pthread_create(&Conexion, NULL,(void*) ConexionServer ,NULL);
+    pthread_create(&Conexion, NULL,(void*) ConexionServer ,(void *) argv);
 
     /* Espero a que los hilos "terminen" cosa que no va a pasar nunca porque son infinitos,
     pero si no pongo esto el main sigue viaje, llega al return y termina la ejecucion */ 

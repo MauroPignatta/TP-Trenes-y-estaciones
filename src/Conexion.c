@@ -3,7 +3,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char *  FormatearNombreArchivo(char * Palabra)
+void obtenerConfRed(char * nombreEstacion , char * archConfigRed)
+{
+    strcpy(archConfigRed, "../config/red/");
+    
+    if(!strcmp(nombreEstacion, "Retiro"))
+        strcat(archConfigRed,"Red1.conf");
+    else if(!strcmp(nombreEstacion, "Munro"))
+        strcat(archConfigRed,"Red2.conf");
+    else if(!strcmp(nombreEstacion, "Carapachay"))
+        strcat(archConfigRed,"Red3.conf"); 
+    else if(!strcmp(nombreEstacion, "Boulogne"))
+        strcat(archConfigRed,"Red4.conf");
+    else if(!strcmp(nombreEstacion, "Tokyo"))
+        strcat(archConfigRed,"Red5.conf");
+}
+
+char * FormatearNombre(char * Palabra)
 {	
     int primerLetra = 1; 
     char * aux = Palabra;
@@ -20,15 +36,7 @@ char *  FormatearNombreArchivo(char * Palabra)
 		primerLetra = 0;
 		Palabra++;
 	}
-    char * nArchivo = malloc(30);
-    if(!nArchivo)
-    {
-        printf("Ocurrio un error\n");
-        exit(EXIT_FAILURE);
-    }
-    strcpy(nArchivo, "../config/");
-    strcat(nArchivo, aux);
-    return nArchivo;
+    return aux;
 }
 
 
