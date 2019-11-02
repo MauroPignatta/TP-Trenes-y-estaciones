@@ -9,12 +9,16 @@ void obtenerConfRed(char * nombreEstacion , char * archConfigRed)
     
     if(!strcmp(nombreEstacion, "Retiro"))
         strcat(archConfigRed,"Red1.conf");
+
     else if(!strcmp(nombreEstacion, "Munro"))
         strcat(archConfigRed,"Red2.conf");
+
     else if(!strcmp(nombreEstacion, "Carapachay"))
         strcat(archConfigRed,"Red3.conf"); 
+
     else if(!strcmp(nombreEstacion, "Boulogne"))
         strcat(archConfigRed,"Red4.conf");
+    
     else if(!strcmp(nombreEstacion, "Tokyo"))
         strcat(archConfigRed,"Red5.conf");
 }

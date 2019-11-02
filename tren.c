@@ -84,8 +84,45 @@ int main(int argc, char** argv) {
         else if(!strcmp(mensaje, "anden"))
         {
             //solicitar anden
-            clearLogWindow(pWin.pLogWindow);
-            printMessage(&pWin, "Todavia no implementado.", WHITE);
+            if (yaRegistrado)
+            {
+                armarMensajePartir(tren, mensaje);
+                send(client, mensaje, sizeMsj, 0);
+
+                recv(client, mensaje, sizeMsj, 0);
+
+                clearLogWindow(pWin.pLogWindow);
+                printMessage(&pWin, mensaje, WHITE);
+
+                if (strcmp(mensaje, "No hay estaciones disponibles"))
+                {
+                    clearLogWindow(pWin.pLogWindow);
+                    printMessage(&pWin, mensaje, WHITE);
+
+                    clearCmdWindow(pWin.pCmdWindow);
+                    wgetnstr(pWin.pCmdWindow, mensaje, sizeMsj);
+                    send(client, mensaje, sizeMsj, 0);
+
+                    recv(client, mensaje, sizeMsj, 0);
+                    if (!strcmp(mensaje, "OK"))
+                    {
+                        recv(client, mensaje, sizeMsj, 0);
+                        tren.tiempoRestante = atoi(mensaje);
+
+                        recv(client, mensaje, sizeMsj, 0); // recibo la posicion en la cola o si tengo el anden
+                    }
+                    else
+                    {
+                        clearLogWindow(pWin.pLogWindow);
+                        printMessage(&pWin, mensaje, WHITE);
+                    }
+                }
+            }
+            else 
+            {
+                clearLogWindow(pWin.pLogWindow);
+                printMessage(&pWin, "Es necesario estar registrado en la estacion.", WHITE);
+            }
         }
         
         else if(!strcmp(mensaje, "partir"))

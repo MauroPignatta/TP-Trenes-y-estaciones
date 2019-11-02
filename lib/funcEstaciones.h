@@ -16,6 +16,8 @@
 
 #define esEstacion(x) x == '2'
 #define estacionConectada(y) y == 1
+#define andenLibre(x) x == NULL
+#define multiplicar(x,y) x*y
 
 #include "funcTrenes.h"
 
@@ -32,6 +34,13 @@ typedef struct
 	int nCliente;
 	TREN tren[MAX_TREN];
 }ESTACION;
+
+typedef struct nodo
+{
+	struct nodo * sig;
+	TREN * tren;
+	int prioridad;
+}ST_NODO_TRENES;
 
 int serverEst[MAX_ESTACION];
 ESTACION estaciones[MAX_ESTACION];
