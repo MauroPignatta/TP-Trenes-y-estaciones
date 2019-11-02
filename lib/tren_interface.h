@@ -35,7 +35,7 @@ typedef struct {
 /**
  *Estructura del tipo enum para los colores a utilizar
  */
-typedef enum {RED = 1, GREEN, BLUE, WHITE} COLOUR;
+typedef enum {RED = 1, GREEN, BLUE, WHITE, YELLOW, CYAN,} COLOUR;
 
 /**
  * Crea las ventanas de la app. Asocia colores con las ventanas
