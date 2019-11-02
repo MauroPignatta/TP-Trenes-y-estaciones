@@ -66,14 +66,14 @@ typedef enum {RED=1, GREEN, BLUE, WHITE,} COLOUR;
  * @param ST_APP_WINDOW * puntero a estructura que contiene las ventanas
  */
 
-void initUserInterface(ST_APP_WINDOW *);
+void initInterfazDeUsuario(ST_APP_WINDOW *);
 
 /**
  * Funcion que Dibuja el Marco de la App, Ventana Log, Ventana Cmd, Ventana Reg,
  * @param ST_APP_WINDOW * puntero a estructura que contiene las ventanas
  */
 
-void drawUserInterface(ST_APP_WINDOW *);
+void dibujarInterfazDeUsuario(ST_APP_WINDOW *);
 
 /**
  * Funcion que toma el Titulo a imprimir
@@ -81,7 +81,7 @@ void drawUserInterface(ST_APP_WINDOW *);
  * @param * message es la Estacion y su numero como titulo
  */
 
-void printWindowTitle(WINDOW *pWin, const char * message);
+void imprimirTituloVentana(WINDOW *pWin, const char * message);
 
 /**
  * Funcion que imprime en la pantalla tipo Log en la parte superior
@@ -90,7 +90,7 @@ void printWindowTitle(WINDOW *pWin, const char * message);
  * @param colour de la estructura tipo enum con los colores a utilizar
  */
 
-void printLog(ST_APP_WINDOW *pWindow, const char * message, COLOUR colour);
+void imprimirVentanaLog(ST_APP_WINDOW *pWindow, const char * message, COLOUR colour);
 
 /**
  * Funcion que imprime en la parte derecha de la ventana si se conecto el tren
@@ -100,7 +100,7 @@ void printLog(ST_APP_WINDOW *pWindow, const char * message, COLOUR colour);
  * @param COLOUR colour es de la estructura tipo enum con los colores a utilizar
  */
 
-void printRegistro(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour);
+void imprimirRegistro(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour);
 
 /**
  * Funcion que imprime el Estado completo del Tren con todas sus variables
@@ -109,14 +109,14 @@ void printRegistro(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour);
  * @return 
  */
 
-int printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[]);
+int imprimirEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[]);
 
 /**
  * Funcion que inicia el usuario de la interfaz grafica
  * @param * variable global para la interfaz grafica
  */
 
-void unInitUserInterface(ST_APP_WINDOW *);
+void desInitInterfazDeUsuario(ST_APP_WINDOW *);
 
 /**
  * Funcion que imprime el Estado completo de la Estacion
@@ -124,14 +124,14 @@ void unInitUserInterface(ST_APP_WINDOW *);
  * @param ESTACION est es el vector de estaciones
  */
 
-void printEstadoEstaciones(ST_APP_WINDOW *pWin, ESTACION est[]);
+void imprimirEstadoEstaciones(ST_APP_WINDOW *pWin, ESTACION est[]);
 
 /**
  * Funcion que imprime la Ayuda del programa
  * @param * pAppWin representa la Variable global para la interfaz grafica
  */
 
-void printHelp(ST_APP_WINDOW *pAppWin);
+void imprimirAyuda(ST_APP_WINDOW *pAppWin);
 
 /**
  * Funcion que limpia la ventana de comandos y hace un refresco de pantalla
@@ -139,7 +139,7 @@ void printHelp(ST_APP_WINDOW *pAppWin);
  * @return ERR_OK
  */
 
-void clearWindow(WINDOW *pWin);
+void limpiarVentana(WINDOW *pWin);
 
 /**
  * Funcion que limpia la ventana de comandos
@@ -147,7 +147,7 @@ void clearWindow(WINDOW *pWin);
  * @return ERR_OK
  */
 
-void clearCmdWindow(WINDOW *pWin);
+void limpiarVentanaDeCmd(WINDOW *pWin);
 
 /** 
  * Funcion para el hilo que se encarga de la interfaz grafica

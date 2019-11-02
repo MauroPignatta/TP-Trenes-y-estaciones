@@ -89,7 +89,6 @@ int CrearSocketServer(char * confRed)
     }
     
     listen(server, MaxClientes + 1);
-    printf("Esperando conexiones entrantes...\n");
     
     return server;
 }

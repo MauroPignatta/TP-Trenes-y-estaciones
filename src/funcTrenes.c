@@ -81,3 +81,14 @@ void armarMensajeExit(TREN tren, char * mensaje)
 {
     sprintf(mensaje, "1;5;%d", tren.ID);
 }
+void matarTren(TREN tren, int client, ST_APP_WINDOW* pWin){
+    char mensaje[sizeMsj];   
+    armarMensajeExit(tren, mensaje);
+    send(client, mensaje, strlen(mensaje), 0);
+    desInitInterfazDeUsuario(pWin);
+    exit(EXIT_SUCCESS);
+}
+void limpiar_imprimirLog(ST_APP_WINDOW* pWin, char* mensaje){
+        limpiarVentanaDeLog(pWin->pLogWindow);
+        imprimirMensaje(pWin, mensaje, WHITE);
+}

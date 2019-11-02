@@ -30,16 +30,16 @@ int main(int argc, char** argv) {
 
     //Aca empieza a correr ncurses
     ST_APP_WINDOW pWin;
-    initUserInterface(&pWin);
-    drawUserInterface(&pWin);
+    InitInterfazDeUsuario(&pWin);
+    dibujarInterfazDeUsuario(&pWin);
     
     sprintf(mensaje, " Tren %d ",tren.ID);
-    printWindowTitle(pWin.pAppFrame, mensaje);
-    printWindowTitle(pWin.pLogFrame, "### Log ###");
-    printWindowTitle(pWin.pCmdFrame, "### Comandos ###");
+    imprimirTituloDeVentana(pWin.pAppFrame, mensaje);
+    imprimirTituloDeVentana(pWin.pLogFrame, "### Log ###");
+    imprimirTituloDeVentana(pWin.pCmdFrame, "### Comandos ###");
 
     recv(client, mensaje, sizeMsj, 0);  // Recibo el mensaje de Bienvenido a la estacion <nombre estacion>
-    printMessage(&pWin, mensaje, WHITE);
+    imprimirMensaje(&pWin, mensaje, WHITE);
     wmove(pWin.pCmdWindow, 0,0);
 
     while(1)
@@ -49,16 +49,16 @@ int main(int argc, char** argv) {
 
         if(! strcmp(mensaje, "help"))
         {
-            clearLogWindow(pWin.pLogWindow);
+            limpiarVentanaDeLog(pWin.pLogWindow);
             printHelp(&pWin);
         }
 
         else if(!strcmp(mensaje, "registrarse"))
         {
-            clearLogWindow(pWin.pLogWindow);
+            limpiarVentanaDeLog(pWin.pLogWindow);
             if (yaRegistrado)
             {
-                printMessage(&pWin, "Ya te has registrado.", WHITE);
+                imprimirMensaje(&pWin, "Ya te has registrado.", WHITE);
             }
             else
             {
@@ -77,15 +77,15 @@ int main(int argc, char** argv) {
                 }
 
                 token = strtok(NULL,";");
-                printMessage(&pWin, token, WHITE);
+                imprimirMensaje(&pWin, token, WHITE);
             }
         }
 
         else if(!strcmp(mensaje, "anden"))
         {
             //solicitar anden
-            clearLogWindow(pWin.pLogWindow);
-            printMessage(&pWin, "Todavia no implementado.", WHITE);
+            limpiarVentanaDeLog(pWin.pLogWindow);
+            imprimirMensaje(&pWin, "Todavia no implementado.", WHITE);
         }
         
         else if(!strcmp(mensaje, "partir"))
@@ -97,15 +97,13 @@ int main(int argc, char** argv) {
 
                 recv(client, mensaje, sizeMsj, 0);
 
-                clearLogWindow(pWin.pLogWindow);
-                printMessage(&pWin, mensaje, WHITE);
+                limpiar_imprimirLog(&pWin, mensaje);
 
                 if (strcmp(mensaje, "No hay estaciones disponibles"))
                 {
-                    clearLogWindow(pWin.pLogWindow);
-                    printMessage(&pWin, mensaje, WHITE);
+                    limpiar_imprimirLog(&pWin, mensaje);
 
-                    clearCmdWindow(pWin.pCmdWindow);
+                    limpiarVentanaDeCmd(pWin.pCmdWindow);
                     wgetnstr(pWin.pCmdWindow, mensaje, sizeMsj);
                     send(client, mensaje, sizeMsj, 0);
 
@@ -117,48 +115,39 @@ int main(int argc, char** argv) {
                         tren.combustible -= restarCombustible(tren.tiempoRestante);
                         DibujarTrenViajando(pWin.pLogWindow, &tren.tiempoRestante);
                         
-                        armarMensajeExit(tren, mensaje);
-                        send(client, mensaje, strlen(mensaje), 0);
-                        unInitUserInterface(&pWin);
-                        exit(EXIT_SUCCESS);
+                        matarTren(tren, client, &pWin);
                     }
                     else
                     {
-                        clearLogWindow(pWin.pLogWindow);
-                        printMessage(&pWin, mensaje, WHITE);
+                        limpiar_imprimirLog(&pWin, mensaje);
                     }
                 }
             }
             else 
             {
-                clearLogWindow(pWin.pLogWindow);
-                printMessage(&pWin, "Es necesario estar registrado en la estacion.", WHITE);
+                limpiar_imprimirLog(&pWin, "Es necesario estar registrado en la estacion.");
             }
         }
         
         else  if(!strcmp(mensaje, "estado"))
         {
-            clearLogWindow(pWin.pLogWindow);
             armarMensajeEstadoDelTren(tren, mensaje);
-            printMessage(&pWin, mensaje, WHITE);
+            limpiar_imprimirLog(&pWin, mensaje);
         }
+
 
         else  if(!strcmp(mensaje, "exit"))
         {
-            armarMensajeExit(tren, mensaje);
-            send(client, mensaje, strlen(mensaje), 0);
-            unInitUserInterface(&pWin);
-            exit(EXIT_SUCCESS);
+            matarTren(tren, client, &pWin);
         }
 
         else
         {
-            clearLogWindow(pWin.pLogWindow);
             strncat(mensaje," no es un comando valido.", 26);
-            printMessage(&pWin, mensaje, WHITE);
+            limpiar_imprimirLog(&pWin, mensaje);
         }
 
-        clearCmdWindow(pWin.pCmdWindow);
+        limpiarVentanaDeCmd(pWin.pCmdWindow);
     }
     return (EXIT_SUCCESS);
 }

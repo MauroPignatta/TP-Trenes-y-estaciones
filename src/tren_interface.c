@@ -1,7 +1,7 @@
 #include "../lib/tren_interface.h"
 #include <string.h>
 
-void initUserInterface(ST_APP_WINDOW *pWindow)
+void initInterfazDeUsuario(ST_APP_WINDOW *pWindow)
 {
     initscr();
     clear();
@@ -47,7 +47,7 @@ void initUserInterface(ST_APP_WINDOW *pWindow)
     cbreak();
 }
 
-void drawUserInterface(ST_APP_WINDOW *pWindow){
+void dibujarInterfazDeUsuario(ST_APP_WINDOW *pWindow){
     refresh();
    
     // Dibuja el marco de la App
@@ -63,7 +63,7 @@ void drawUserInterface(ST_APP_WINDOW *pWindow){
     wrefresh(pWindow->pCmdFrame);
 }
 
-void printHelp(ST_APP_WINDOW *pAppWin){
+void imprimirAyuda(ST_APP_WINDOW *pAppWin){
     char msg[1024];
     memset(msg, '\0', 1024);
     strncpy(msg, "Comandos del Tren\n", 20);
@@ -77,7 +77,7 @@ void printHelp(ST_APP_WINDOW *pAppWin){
 }
 
 
-void clearLogWindow(WINDOW *pWin){
+void limpiarVentanaDeLog(WINDOW *pWin){
     werase(pWin);
     wrefresh(pWin);
 }
@@ -88,7 +88,7 @@ void clearLogWindow(WINDOW *pWin){
  * @param pWin ventana de comandos
  * @return ERR_OK
  */
-void clearCmdWindow(WINDOW *pWin){
+void limpiarVentanaDeComandos(WINDOW *pWin){
     werase(pWin);
 }
 
@@ -131,7 +131,7 @@ void printMessage(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour){
     wrefresh(pWindow->pLogWindow);
 }
 
-void unInitUserInterface(ST_APP_WINDOW *pWindow){
+void desInitInterfazDeUsuario(ST_APP_WINDOW *pWindow){
     delwin(pWindow->pLogWindow);
     delwin(pWindow->pCmdWindow);
     clear();

@@ -119,9 +119,9 @@ elegido no sea valido.*/
 int elegirTren()
 {
     char opcion[4];
-    clearCmdWindow(pWin.pCmdWindow);
+    limpiarVentanaDeCmd(pWin.pCmdWindow);
     wgetnstr(pWin.pCmdWindow, opcion, 3);
-    clearCmdWindow(pWin.pCmdWindow);
+    limpiarVentanaDeCmd(pWin.pCmdWindow);
     int ID = atoi(opcion);
     int pos = BuscarTrenPorID(estaciones[miPos] , ID);
 
@@ -136,9 +136,9 @@ int elegirTren()
 int elegirEstDestino()
 {
     char opcion[30];
-    clearCmdWindow(pWin.pCmdWindow);
+    limpiarVentanaDeCmd(pWin.pCmdWindow);
     wgetnstr(pWin.pCmdWindow, opcion, 29);
-    clearCmdWindow(pWin.pCmdWindow);
+    limpiarVentanaDeCmd(pWin.pCmdWindow);
     FormatearNombre(opcion);
     int pos = buscarEstacionPorNombre(opcion);
 
@@ -284,14 +284,14 @@ void ConexionServer(void * argumento)
 
             if ( esTren( mensaje[0]) )
             {
-                printRegistro(&pWin,"Se conecto un nuevo tren", WHITE);
+                imprimirRegistro(&pWin,"Se conecto un nuevo tren", WHITE);
                 memset(mensaje,'\0',sizeMsj);
                 sprintf(mensaje,"Bienvenido a la estacion %s", estaciones[miPos].nombre);
                 send(client[n], mensaje, sizeMsj, 0);
             }
             else if ( esEstacion( mensaje[0]) )
             {
-                printRegistro(&pWin,"Se conecto una Estacion", WHITE);
+                imprimirRegistro(&pWin,"Se conecto una Estacion", WHITE);
             }
             /* lo agrega al fd */
             FD_SET(client[n] ,&master);
@@ -311,7 +311,7 @@ void ConexionServer(void * argumento)
                     //  Para saber si el cliente se desconecto 
                     if (bytesRecibidos <= 0) // si el cliente se desconecta haciendo ctrl + c, no vamos a poder saber quien era
                     {
-                        printRegistro(&pWin,"Se desconecto algo", WHITE);
+                        imprimirRegistro(&pWin,"Se desconecto algo", WHITE);
                         FD_CLR(client[i], &master);
                     }
 
@@ -330,11 +330,11 @@ void ConexionServer(void * argumento)
                                     /*Comprueba que el tren se haya registrado*/
                                     if (regCorrecto == -1)
                                     {
-                                        printRegistro(&pWin,"No se pudo registrar a un\ntren: Ya registrado.", WHITE);
+                                        imprimirRegistro(&pWin,"No se pudo registrar a un\ntren: Ya registrado.", WHITE);
                                         strcpy(mensaje,"2;No te has podido registrar: Ya existe un tren con el mismo ID.");
                                     }
                                     else{
-                                        printRegistro(&pWin,"Un tren se ha registrado", WHITE);
+                                        imprimirRegistro(&pWin,"Un tren se ha registrado", WHITE);
                                     }
                                     /*Envio una respuesta al tren*/
                                     send(client[i], mensaje, sizeMsj, 0);
@@ -353,7 +353,7 @@ void ConexionServer(void * argumento)
 
                                     if (cantEstDisp != 0)
                                     {
-                                        printRegistro(&pWin,"Un tren quiere partir", WHITE);
+                                        imprimirRegistro(&pWin,"Un tren quiere partir", WHITE);
                                         recv(client[i], mensaje, sizeMsj, 0); // recibo la estacion donde quiere ir
                                         FormatearNombre(mensaje);
                                         posEst = buscarEstacionPorNombre(mensaje);
@@ -394,7 +394,7 @@ void ConexionServer(void * argumento)
                                     if (posTren != -1)
                                         estaciones[miPos].tren[posTren].ID = 0;
                                     
-                                    printRegistro(&pWin,"Se desconecto un tren", WHITE);
+                                    imprimirRegistro(&pWin,"Se desconecto un tren", WHITE);
                                     FD_CLR(client[i], &master);
                                     break;
                             }
@@ -406,7 +406,7 @@ void ConexionServer(void * argumento)
                             switch (opcion)
                             {
                                 case '3': //Recibo un tren
-                                    printRegistro(&pWin,"Ha llegado un nuevo tren", WHITE);
+                                    imprimirRegistro(&pWin,"Ha llegado un nuevo tren", WHITE);
                                     posTren = registrarTren(&estaciones[miPos], mensaje);
                                     sprintf(mensaje, "./tren %d",estaciones[miPos].tren[posTren].ID);
 
@@ -428,7 +428,7 @@ void ConexionServer(void * argumento)
                                 case '5': //exit
                                     sscanf(mensaje, "2;5;%d", &posEst);
                                     estaciones[posEst].online = 0;
-                                    printRegistro(&pWin,"Se desconecto una estacion", WHITE);
+                                    imprimirRegistro(&pWin,"Se desconecto una estacion", WHITE);
                                     FD_CLR(client[i], &master);
                                 break;
                             }

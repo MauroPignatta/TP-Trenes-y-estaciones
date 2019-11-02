@@ -91,7 +91,7 @@ void printMessage(ST_APP_WINDOW *pWindow, const char * message, COLOUR colour);
  * @param * variable global para la interfaz grafica
  */
 
-void unInitUserInterface(ST_APP_WINDOW *);
+void desInitInterfazDeUsuario(ST_APP_WINDOW *);
 
 /**
  * Funcion que limpia la ventana de comandos
@@ -99,7 +99,7 @@ void unInitUserInterface(ST_APP_WINDOW *);
  * @return ERR_OK
  */
 
-void clearCmdWindow(WINDOW *pWin);
+void limpiarCmdWindow(WINDOW *pWin);
 
 /**
  * Funcion que limpia la ventana de comandos y hace un refresco de pantalla
@@ -108,7 +108,7 @@ void clearCmdWindow(WINDOW *pWin);
  * @return ERR_OK
  */
 
-void clearLogWindow(WINDOW *pWin);
+void limpiarLogWindow(WINDOW *pWin);
 
 /**
  * Funcion que imprime la Ayuda del programa
