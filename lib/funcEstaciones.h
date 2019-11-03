@@ -11,7 +11,7 @@
  * Mariano Wiñar.
  */
 
-#define MAX_TREN 10
+#define MAX_TREN 20
 #define MAX_ESTACION 5
 
 #define esEstacion(x) x == '2'
@@ -42,6 +42,10 @@ typedef struct nodo
 	int prioridad;
 }ST_NODO_TRENES;
 
+
+TREN * anden ;
+ST_NODO_TRENES * ColaPrioridadMenor ;
+ST_NODO_TRENES * ColaPrioridadMayor ;
 int serverEst[MAX_ESTACION];
 ESTACION estaciones[MAX_ESTACION];
 int miPos;
@@ -148,10 +152,18 @@ int calcularTiempoDeViaje(int posEstacionDestino);
 /**
  * Funcion Prepara el mensaje para enviar un tren de una estacion a otra
  * @param * mensaje puntero a char copia el mensaje a enviar
- * @param * posTren Para saber que tren hay que enviar
+ * @param * tren Para saber que tren hay que enviar
  */
 
-void prepararEnvioTren(char *mensaje , int posTren);
+void prepararEnvioTren(char *mensaje , TREN * tren);
+
+ST_NODO_TRENES * crearNuevoNodo(TREN * tren);
+void encolarTren(TREN * tren, ST_NODO_TRENES ** cola);
+TREN * asignarAnden(ST_NODO_TRENES ** cola);
+TREN * eliminarNodoPrioridad(ST_NODO_TRENES ** cola);
+TREN * eliminarNodoTrenSegunID(int IDTren, ST_NODO_TRENES ** cola);
+int subirPrioridadTrenes(ST_NODO_TRENES * cola);
+void CambiarDeColaTrenes(ST_NODO_TRENES ** cola_Menor, ST_NODO_TRENES ** cola_Mayor, int cantNodos) ;
 
 
 #endif	// FUNCESTACIONES_H

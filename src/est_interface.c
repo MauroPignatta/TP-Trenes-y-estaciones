@@ -103,6 +103,7 @@ void printHelp(ST_APP_WINDOW *pAppWin){
     strncat(msg, "* estado tren: Muestra estado de trenes.\n", 43);
     strncat(msg, "* estado est: Muestra estado de estaciones.\n", 46);
     strncat(msg, "* buscar est: Buscar y conecta estaciones.\n", 45);
+    strncat(msg, "* anden: Pide anden para un tren migrado.\n", 44);
     strncat(msg, "* partir tren: Permite migrar un tren.\n", 41);
     strncat(msg, "* clearlog: Limpia la pantalla de log.\n", 41);
     strncat(msg, "* clearreg: Limpia la pantalla de registros.\n", 45);
@@ -159,6 +160,10 @@ int printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[])
             if (trenes[posTrenes[j]].migrado != 0)
                 strcpy(migrado, "Si");
 
+            char enAnden[3] = "No";
+            if (anden &&  anden->ID == trenes[posTrenes[j]].ID)
+                strcpy(enAnden, "Si");
+
             werase(pWin->pLogWindow);
             mvwprintw(pWin->pLogWindow, 0, 0,"Estado: Tren %d\n\n", j + 1);
             wprintw(pWin->pLogWindow,"ID: %d\n",trenes[posTrenes[j]].ID);
@@ -167,7 +172,8 @@ int printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[])
             wprintw(pWin->pLogWindow,"Estacion Actual: %s\n",trenes[posTrenes[j]].estOrigen);
             wprintw(pWin->pLogWindow,"Estacion Destino: %s\n",trenes[posTrenes[j]].estDestino);
             wprintw(pWin->pLogWindow,"Tiempo de viaje restante: %d\n",trenes[posTrenes[j]].tiempoRestante);
-            wprintw(pWin->pLogWindow,"Migrado: %s PID: %d \n\n", migrado, trenes[posTrenes[j]].migrado);
+            wprintw(pWin->pLogWindow,"Migrado: %s \n", migrado);
+            wprintw(pWin->pLogWindow,"En anden: %s \n\n", enAnden);
             mvwprintw(pWin->pLogWindow, y-2 , 0,"<- ant\t\t Pagina %d/%d \t\tsig ->\n",j + 1, cantTrenes);
             mvwprintw(pWin->pLogWindow, y-1 , 0, "Escriba \"back\" para volver.");
             wrefresh(pWin->pLogWindow);
@@ -256,7 +262,31 @@ void unInitUserInterface(ST_APP_WINDOW *pWindow){
     clear();
     endwin();
 }
-               
+
+void dibujarTrenViajando(WINDOW * pLogWindow, int * tiempoRestante)
+{
+    int y = getmaxy(pLogWindow)/ 2;
+    int x = 18;
+    int fixX = 0;
+    werase(pLogWindow);
+    wrefresh(pLogWindow);
+    while(*tiempoRestante > 0)
+    {
+        mvwprintw(pLogWindow, 0 , 0, "Viajando...\nTiempo Restante: %d", * tiempoRestante);
+        mvwprintw(pLogWindow, y    , x, "     ooOOOO\n");
+        mvwprintw(pLogWindow, y + 1, x, "    oo      _____\n");
+        mvwprintw(pLogWindow, y + 2, x, "   _I__n_n__||_|| ________\n");
+        mvwprintw(pLogWindow, y + 3, x, " >(_________|_7_|-|______|\n");
+        mvwprintw(pLogWindow, y + 4, x, "  /o ()() ()() o   oo  oo\n");
+        mvwprintw(pLogWindow, y + 5, fixX, "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-");
+        wrefresh(pLogWindow);
+        x--;
+        (*tiempoRestante) -- ;
+        usleep(500000);
+        werase(pLogWindow);
+    }
+    wrefresh(pLogWindow);
+}
 
 void InterfazGrafica()
 {
@@ -366,59 +396,120 @@ void InterfazGrafica()
             exit(EXIT_SUCCESS);
         }
 
-        else if (!strcmp(comandos, "partir tren"))
+        else if (!strcmp(comandos, "anden"))
         {
             clearWindow(pWin.pLogWindow);
             int cantTrenesMigrados = mostrarTrenesMigrados(mensaje);
             if (cantTrenesMigrados > 0)
             {
-	            printLog(&pWin, mensaje, WHITE);
-	            int posTren = elegirTren();
-	            if (posTren != -1)
-	            {
-	            	int cantEstDisp = mensajeListadoEstDisp(mensaje);
-	            	if (cantEstDisp > 0)
-	            	{
-	            		clearWindow(pWin.pLogWindow);
-	            		printLog(&pWin, mensaje, WHITE);
-	            		int posEst = elegirEstDestino();
-	            		if (posEst != -1)
-	            		{
-	            			int tiempo = calcularTiempoDeViaje(posEst);
-                        	estaciones[miPos].tren[posTren].combustible -= restarCombustible(tiempo);
-                        	prepararEnvioTren(mensaje , posTren);
-                        	send(serverEst[posEst], mensaje, sizeMsj,0);
-                        	estaciones[miPos].tren[posTren].ID = 0;
+                printLog(&pWin, mensaje, WHITE);
+                int posTren = elegirTren();
+                if (posTren != -1)
+                {
+                    int cantEstDisp = mensajeListadoEstDisp(mensaje);
+                    if (cantEstDisp > 0)
+                    {
+                        clearWindow(pWin.pLogWindow);
+                        printLog(&pWin, mensaje, WHITE);
+                        int posEst = elegirEstDestino();
+                        if (posEst != -1)
+                        {
+                            estaciones[miPos].tren[posTren].tiempoRestante = calcularTiempoDeViaje(posEst);
+                            strcpy(estaciones[miPos].tren[posTren].estDestino, estaciones[posEst].nombre);
 
-                            kill( estaciones[miPos].tren[posTren].migrado , SIGKILL);
-				            estaciones[miPos].tren[posTren].migrado = 0;
+                            clearWindow(pWin.pLogWindow);
+                            if( andenLibre(anden) )
+                            {
+                                anden = &estaciones[miPos].tren[posTren];
+                                printLog(&pWin, "El tren se encuentra en el anden", WHITE);
+                            }
+                            else
+                            {
+                                encolarTren(&estaciones[miPos].tren[posTren], &ColaPrioridadMenor);
+                                printLog(&pWin, "El tren se ingreso a la cola", WHITE);
+                            }
+                        }
+                        else 
+                        {
+                            clearWindow(pWin.pLogWindow);
+                            printLog(&pWin, "La estacion elegida no es valida. \nIntente nuevamente", WHITE);
+                        }
+                    }
+                    else
+                    {
+                        clearWindow(pWin.pLogWindow);
+                        printLog(&pWin, "No hay estaciones para viajar. \nIntente nuevamente mas tarde", WHITE);
+                    }
+                }
+                else
+                {
+                    clearWindow(pWin.pLogWindow);
+                    printLog(&pWin, "El tren elegido no es valido. \nIntente nuevamente", WHITE);
+                }
+            }
+            else 
+            {
+                clearWindow(pWin.pLogWindow);
+                printLog(&pWin, "No hay trenes que la estacion controle", WHITE);
+            }
+        }
 
-                        	clearWindow(pWin.pLogWindow);
-	            			printLog(&pWin, "Tren Enviado.", WHITE);
-	            		}
-	            		else 
-            			{
-            				clearWindow(pWin.pLogWindow);
-	            			printLog(&pWin, "La estacion elegida no es valida. \nIntente nuevamente", WHITE);
-	        	 		}
-	            	}
-	            	else
-	            	{
-	            		clearWindow(pWin.pLogWindow);
-	            		printLog(&pWin, "No hay estaciones para viajar. \nIntente nuevamente mas tarde", WHITE);
-	            	}
-	            }
-	         	else
-	         	{
-	         		clearWindow(pWin.pLogWindow);
-	            	printLog(&pWin, "El tren elegido no es valido. \nIntente nuevamente", WHITE);
-	         	}
-	        }
-	        else 
-	        {
-	        	clearWindow(pWin.pLogWindow);
-            	printLog(&pWin, "No hay trenes que la estacion controle", WHITE);
-	        }
+        else if (!strcmp(comandos, "partir tren"))
+        {
+            if (anden && anden->migrado > 0)
+            {
+                int combustibleaGastar = restarCombustible(anden->tiempoRestante);
+                if ( anden->combustible - combustibleaGastar < 0)
+                {
+                    clearWindow(pWin.pLogWindow);
+                    printLog(&pWin, "Combustible insuficiente para viajar.\nIngrese cargar para recargar combustible.", WHITE);
+                    do
+                    {
+                        wgetnstr(pWin.pCmdWindow, comandos, 20);
+                        clearCmdWindow(pWin.pCmdWindow);
+                    }while(strcmp(comandos,"cargar"));
+                    anden->combustible = 500;
+                }
+                anden->combustible -= combustibleaGastar;
+                prepararEnvioTren(mensaje , anden);
+
+                dibujarTrenViajando(pWin.pLogWindow, &anden->tiempoRestante);
+                send(serverEst[buscarEstacionPorNombre(anden->estDestino)] , mensaje, sizeMsj,0);
+
+                printRegistro(&pWin, "Tren Enviado", WHITE);
+
+                anden->ID = 0;
+                kill( anden->migrado , SIGKILL);
+                anden->migrado =0;
+
+                //Posiblemente necesitemos un mutex aca
+
+                int cantTrenesACambiar = subirPrioridadTrenes(ColaPrioridadMenor);
+                if( cantTrenesACambiar > 0 )
+                {
+                    CambiarDeColaTrenes(&ColaPrioridadMenor, &ColaPrioridadMayor, cantTrenesACambiar);
+                }
+                anden = asignarAnden(&ColaPrioridadMayor);
+                if ( andenLibre(anden) )
+                {
+                    anden = asignarAnden(&ColaPrioridadMenor);
+                }
+                if ( !(andenLibre(anden)) && anden->migrado == 0)
+                {
+                    send(anden->nCliente,"Se te ha asigando el anden", sizeMsj, 0);
+                }
+                if ( !(andenLibre(anden)) && anden->migrado > 0)
+                {
+                    clearWindow(pWin.pLogWindow);
+                    printLog(&pWin, "Un tren migrado posee anden", WHITE);
+                }
+
+            }
+            else 
+            {
+                clearWindow(pWin.pLogWindow);
+                printLog(&pWin, "El anden no pertenece a ningun tren migrado.", WHITE);
+            }
         }
 
         else

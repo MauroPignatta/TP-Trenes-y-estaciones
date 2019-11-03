@@ -22,8 +22,8 @@
 
 #define sizeIP sizeof(char) * 16
 #define sizePORT sizeof(char) * 6
-#define sizeMsj 1024
-#define MaxClientes 15
+#define sizeMsj 512
+#define MaxClientes 25
 
 /**
  * Funcion que organiza la palabra ingresada

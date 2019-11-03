@@ -134,4 +134,6 @@ void DibujarTrenViajando(WINDOW *pLogWindow, int * tiempoRestante);
 
 void salirDelPrograma(TREN tren, int client, ST_APP_WINDOW * pWin);
 
+void InterfazGrafica(void * argumentos);
+
 #endif
