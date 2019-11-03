@@ -28,6 +28,7 @@ typedef struct{
     char estDestino[max_nombre_est];
     int tiempoRestante;
     int migrado;
+    int nCliente;
 }TREN;
 
 /**

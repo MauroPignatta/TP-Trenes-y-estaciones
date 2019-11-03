@@ -13,6 +13,8 @@
 
 #include <curses.h>
 #include <unistd.h>
+#include "funcTrenes.h"
+#include "Conexion.h"
 
 #define LINE_LENGTH 80
 #define VIEW_WIN_WIDTH 0
@@ -118,11 +120,18 @@ void clearLogWindow(WINDOW *pWin);
 void printHelp(ST_APP_WINDOW *pAppWin);
 
 /**
+ * Funcion que imprime un mensaje que se le a asignado el anden al tren
+ * @param * pAppWin representa la Variable global para la interfaz grafica
+ */
+void imprimirAndenAsignado(ST_APP_WINDOW *pWin);
+
+/**
  * Funcion Muestra el Tren viajando
  * @param * pLogWindow representa la Variable global
  * @param * puntero al tiempo restante del tren para actualizarlo.
  */
-
 void DibujarTrenViajando(WINDOW *pLogWindow, int * tiempoRestante);
+
+void salirDelPrograma(TREN tren, int client, ST_APP_WINDOW * pWin);
 
 #endif

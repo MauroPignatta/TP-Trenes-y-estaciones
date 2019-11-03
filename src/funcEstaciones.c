@@ -183,7 +183,7 @@ int registrarTren(ESTACION * estacion, char * mensaje)
     return i;
 }
 
-int mensajelistadoEstDisp(char * mensaje)
+int mensajeListadoEstDisp(char * mensaje)
 {
     strcpy(mensaje, "Elija la estacion a la cual quiere viajar:\n\n");
     strcat(mensaje, "Las estaciones disponibles son:\n");
@@ -249,21 +249,22 @@ ST_NODO_TRENES * crearNuevoNodo(TREN * tren)
     nodo->tren = tren;
     nodo->prioridad = 0;
     nodo->sig = NULL;
+    return nodo;
 }
 
-void encolarTren(TREN * tren, int tiempo, ST_NODO_TRENES ** cola)
+void encolarTren(TREN * tren, ST_NODO_TRENES ** cola)
 {
     ST_NODO_TRENES * nuevo = crearNuevoNodo(tren);
 
     ST_NODO_TRENES * aux = *cola;
     ST_NODO_TRENES * ant = NULL;
 
-    while (aux && tiempo < aux->tren->tiempoRestante)
+    while (aux != NULL && tren->tiempoRestante < (aux->tren)->tiempoRestante)
     {
         ant = aux;
         aux = aux->sig;
     }
-    if ( !ant )
+    if ( ant == NULL )
         *cola = nuevo;
     else
         ant->sig = nuevo;
@@ -271,7 +272,51 @@ void encolarTren(TREN * tren, int tiempo, ST_NODO_TRENES ** cola)
     nuevo->sig = aux;
 }
 
-TREN * eliminarNodoTrenSegunID(int IDTren, ST_NODO_TRENES ** cola);
+TREN * asignarAnden(ST_NODO_TRENES ** cola)
+{
+    TREN * tren = NULL;
+    ST_NODO_TRENES * aux = *cola;
+
+    if (aux != NULL)
+    {
+        if (aux->sig == NULL) {
+            tren = aux->tren;
+            *cola = NULL;
+            free(aux);
+        }
+        else
+        {
+            while(aux->sig->sig){
+            aux = aux->sig;
+            }
+            tren = (aux->sig)->tren;
+            free(aux->sig);
+            aux->sig = NULL;
+        }
+    }
+    return tren;
+}
+
+TREN * eliminarNodoPrioridad(ST_NODO_TRENES ** cola)
+{   
+    ST_NODO_TRENES * aux = *cola;
+    ST_NODO_TRENES * ant = NULL;
+    TREN * tren = NULL;
+    while (aux && aux->prioridad < 2)
+    {
+        ant = aux;
+        aux = aux->sig;
+    }
+    if (ant == NULL)
+        *cola = (*cola)->sig;
+    else 
+        ant->sig = aux->sig;
+    tren = aux->tren;
+    free(aux);
+    return tren;
+}
+
+TREN * eliminarNodoTrenSegunID(int IDTren, ST_NODO_TRENES ** cola)
 {   
     ST_NODO_TRENES * aux = *cola;
     ST_NODO_TRENES * ant = NULL;
@@ -281,13 +326,35 @@ TREN * eliminarNodoTrenSegunID(int IDTren, ST_NODO_TRENES ** cola);
         ant = aux;
         aux = aux->sig;
     }
-    if (!ant)
+    if (ant == NULL)
         *cola = (*cola)->sig;
     else 
         ant->sig = aux->sig;
     tren = aux->tren;
     free(aux);
     return tren;
+}
+
+int subirPrioridadTrenes(ST_NODO_TRENES * cola)
+{
+    int TrenesACambiarDeCola = 0;
+    while(cola != NULL)
+    {
+        cola->prioridad += 1;
+        TrenesACambiarDeCola += cola->prioridad == 2 ? 1 : 0;
+        cola = cola->sig;
+    }
+    return TrenesACambiarDeCola;
+}
+
+void CambiarDeColaTrenes(ST_NODO_TRENES ** cola_Menor, ST_NODO_TRENES ** cola_Mayor, int cantNodos)    
+{
+    TREN * tren = NULL;
+    for(int i=0; i < cantNodos; i++)
+    {
+        tren = eliminarNodoPrioridad(cola_Menor);
+        encolarTren(tren,cola_Mayor);
+    }
 }
 
 void ConexionServer(void * argumento)
@@ -302,6 +369,10 @@ void ConexionServer(void * argumento)
     fd_set master;
     FD_ZERO(&master);
     FD_SET(server, &master);
+
+    TREN * anden = NULL;
+    ST_NODO_TRENES * ColaPrioridadMenor = NULL;
+    ST_NODO_TRENES * ColaPrioridadMayor = NULL;
     
     //Variables con los datos para la conexion
     int client[MaxClientes];
@@ -319,11 +390,6 @@ void ConexionServer(void * argumento)
         int regCorrecto = 0;
         char opcion = ' '; 
         memset(mensaje,'\0',sizeMsj);
-
-        TREN * anden = NULL;
-
-        ST_NODO_TRENES * ColaPrioridadMenor = NULL;
-        ST_NODO_TRENES * ColaPrioridadMayor = NULL;
 
         select(maxfd, &copy, NULL, NULL, NULL); 
         
@@ -387,6 +453,7 @@ void ConexionServer(void * argumento)
                                     }
                                     else{
                                         printRegistro(&pWin,"Un tren se ha registrado", WHITE);
+                                        estaciones[miPos].tren[regCorrecto].nCliente = client[i];
                                     }
                                     /*Envio una respuesta al tren*/
                                     send(client[i], mensaje, sizeMsj, 0);
@@ -396,37 +463,39 @@ void ConexionServer(void * argumento)
                                     sscanf(mensaje, "1;2;%d", &TrenID); //recibo el id del tren
                                     posTren = BuscarTrenPorID(estaciones[miPos], TrenID); //busco al tren
 
-                                    int cantEstDisp = mensajelistadoEstDisp(mensaje); //armo un NODOdo de las estaciones disponibles
+                                    int cantEstDisp = mensajeListadoEstDisp(mensaje); //armo un listado de las estaciones disponibles
                                     send(client[i], mensaje, sizeMsj, 0); // envio el NODOdo
 
                                     if (cantEstDisp != 0)
                                     {
-                                        printRegistro(&pWin,"Un tren esta solicitando anden", WHITE);
+                                        printRegistro(&pWin,"Un tren solicito anden", WHITE);
                                         recv(client[i], mensaje, sizeMsj, 0); // recibo la estacion donde quiere ir
                                         FormatearNombre(mensaje);
                                         posEst = buscarEstacionPorNombre(mensaje);
 
                                         if( posEst >= 0 && estacionConectada(estaciones[posEst].online) )
                                         {
-                                            strcpy(estaciones[posEst].tren[posTren].estDestino, mensaje); 
+                                            strcpy(estaciones[miPos].tren[posTren].estDestino, mensaje); 
                                             strcpy(mensaje, "OK");
                                             send(client[i], mensaje, sizeMsj, 0);
 
                                             int tiempo = calcularTiempoDeViaje( posEst );
-                                            estaciones[posEst].tren[posTren].tiempoRestante = tiempo;
+                                            estaciones[miPos].tren[posTren].tiempoRestante = tiempo;
 
                                             sprintf(mensaje, "%d", tiempo);
                                             send(client[i], mensaje, sizeMsj, 0);
 
                                             if( andenLibre(anden) )
                                             {
-                                                anden = &estaciones[posEst].tren[posTren];
+                                                anden = &estaciones[miPos].tren[posTren];
+                                                strcpy(mensaje, "anden");
                                             }
                                             else
                                             {
-                                                encolarTren(&estaciones[posEst].tren[posTren], tiempo, &ColaPrioridadMenor);
+                                                encolarTren(&estaciones[miPos].tren[posTren], &ColaPrioridadMenor);
+                                                strcpy(mensaje, "cola");
                                             }
-
+                                            send(client[i], mensaje, sizeMsj, 0);
                                         }
                                         else //Si eligio una estacion que no es valida
                                         {
@@ -438,43 +507,52 @@ void ConexionServer(void * argumento)
                                     break;
                                     
                                 case '3':
-                                    sscanf(mensaje, "1;3;%d;%s", &TrenID); //recibo el id del tren
-                                    posTren = BuscarTrenPorID(estaciones[miPos], TrenID); //busco al tren
-                                    printRegistro(&pWin,"Un tren quiere partir", WHITE);
+                                    sscanf(mensaje, "1;3;%d", &TrenID); //recibo el id del tren
 
-                                    posEst = buscarEstacionPorNombre(estaciones[miPos].tren[posTren].estDestino);
-
-                                    if( posEst >= 0 && estacionConectada(estaciones[posEst].online) )
+                                    if (anden && TrenID == anden->ID)
                                     {
-                                        strcpy(mensaje, "OK");
-                                        send(client[i], mensaje, sizeMsj, 0);
+                                        posTren = BuscarTrenPorID(estaciones[miPos], TrenID); //busco al tren
+                                        printRegistro(&pWin,"Un tren quiere partir", WHITE);
 
-                                        estaciones[miPos].tren[posTren].combustible -= restarCombustible(tiempo);
+                                        posEst = buscarEstacionPorNombre(estaciones[miPos].tren[posTren].estDestino);
 
-                                        prepararEnvioTren(mensaje, posTren);
-                                        send(serverEst[posEst], mensaje, sizeMsj, 0);
+                                        if( posEst >= 0 && estacionConectada(estaciones[posEst].online) )
+                                        {
+                                            strcpy(mensaje, "OK");
+                                            send(client[i], mensaje, sizeMsj, 0);
 
-                                        estaciones[miPos].tren[posTren].ID = 0;
-                                        anden = NULL;
+                                            estaciones[miPos].tren[posTren].combustible -= restarCombustible(estaciones[miPos].tren[posTren].tiempoRestante);
 
+                                            prepararEnvioTren(mensaje, posTren);
+                                            send(serverEst[posEst], mensaje, sizeMsj, 0);
 
+                                            estaciones[miPos].tren[posTren].ID = 0;
+
+                                            int cantTrenesACambiar = subirPrioridadTrenes(ColaPrioridadMenor);
+
+                                            if( cantTrenesACambiar > 0 )
+                                            {
+                                                CambiarDeColaTrenes(&ColaPrioridadMenor, &ColaPrioridadMayor, cantTrenesACambiar);
+                                            }
+
+                                            anden = asignarAnden(&ColaPrioridadMayor);
+                                            if ( andenLibre(anden) )
+                                            {
+                                                anden = asignarAnden(&ColaPrioridadMenor);
+                                            }
+                                            if ( !(andenLibre(anden)) )
+                                            {
+                                                send(anden->nCliente,"Se te ha asigando el anden", sizeMsj, 0);
+                                            }
+                                        }
+                                        else //Si eligio una estacion que no es valida
+                                        {
+                                            strcpy(mensaje, "La estacion se desconecto.");
+                                            send(client[i], mensaje, sizeMsj, 0);
+                                        }
                                     }
-                                    else //Si eligio una estacion que no es valida
-                                    {
-                                        strcpy(mensaje, "La estacion se desconecto.");
-                                        send(client[i], mensaje, sizeMsj, 0);
-                                    }
-                                    
                                     break;
-                                /*   
-                                case '4':
-                                     Esto va a haber que cambiarlo, no borrar por ahora.
 
-                                    estadoDelTren(estacion ,mensaje);
-                                    puts("Estado enviado");
-                                    send(clientTrenes[i], mensaje, strlen(mensaje), 0);
-                                    
-                                    break;*/
                                 case '5':   //Agrego este para cuando un tren quiere desconectarse
                                     sscanf(mensaje, "1;5;%d", &TrenID);
                                     posTren = BuscarTrenPorID(estaciones[miPos], TrenID);

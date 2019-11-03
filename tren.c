@@ -27,6 +27,7 @@ int main(int argc, char** argv) {
 
     /* Flag para que un tren no pueda registrarse 2 veces*/
     int yaRegistrado = 0;
+    int solicitoAnden = 0;
 
     //Aca empieza a correr ncurses
     ST_APP_WINDOW pWin;
@@ -86,7 +87,7 @@ int main(int argc, char** argv) {
             //solicitar anden
             if (yaRegistrado)
             {
-                armarMensajePartir(tren, mensaje);
+                sprintf(mensaje, "1;2;%d",tren.ID);
                 send(client, mensaje, sizeMsj, 0);
 
                 recv(client, mensaje, sizeMsj, 0);
@@ -102,17 +103,28 @@ int main(int argc, char** argv) {
                     clearCmdWindow(pWin.pCmdWindow);
                     wgetnstr(pWin.pCmdWindow, mensaje, sizeMsj);
                     send(client, mensaje, sizeMsj, 0);
+                    strcpy(tren.estDestino, FormatearNombre(mensaje));
 
                     recv(client, mensaje, sizeMsj, 0);
                     if (!strcmp(mensaje, "OK"))
                     {
                         recv(client, mensaje, sizeMsj, 0);
                         tren.tiempoRestante = atoi(mensaje);
+                        solicitoAnden = 1;
 
-                        recv(client, mensaje, sizeMsj, 0); // recibo la posicion en la cola o si tengo el anden
+                        recv(client, mensaje, sizeMsj, 0); // recibo si estoy en cola o si tengo el anden
+                        if (!strcmp(mensaje, "cola"))
+                        {
+                            clearLogWindow(pWin.pLogWindow);
+                            printMessage(&pWin, "Has entrado en la cola. Esperando que se desocupe el anden..", WHITE);
+                            clearCmdWindow(pWin.pCmdWindow);
+                            recv(client, mensaje, sizeMsj, 0);
+                        }
+                        imprimirAndenAsignado(&pWin);
                     }
                     else
                     {
+                        strcpy(tren.estDestino, "A asignar");
                         clearLogWindow(pWin.pLogWindow);
                         printMessage(&pWin, mensaje, WHITE);
                     }
@@ -127,49 +139,30 @@ int main(int argc, char** argv) {
         
         else if(!strcmp(mensaje, "partir"))
         {
-            if (yaRegistrado)
+            if (yaRegistrado && solicitoAnden)
             {
                 armarMensajePartir(tren, mensaje);
                 send(client, mensaje, sizeMsj, 0);
 
                 recv(client, mensaje, sizeMsj, 0);
 
-                clearLogWindow(pWin.pLogWindow);
-                printMessage(&pWin, mensaje, WHITE);
-
-                if (strcmp(mensaje, "No hay estaciones disponibles"))
+                if (!strcmp(mensaje, "OK"))
+                {
+                    clearLogWindow(pWin.pLogWindow);
+                    DibujarTrenViajando(pWin.pLogWindow, &tren.tiempoRestante);
+                    
+                    salirDelPrograma(tren, client, &pWin);
+                }
+                else
                 {
                     clearLogWindow(pWin.pLogWindow);
                     printMessage(&pWin, mensaje, WHITE);
-
-                    clearCmdWindow(pWin.pCmdWindow);
-                    wgetnstr(pWin.pCmdWindow, mensaje, sizeMsj);
-                    send(client, mensaje, sizeMsj, 0);
-
-                    recv(client, mensaje, sizeMsj, 0);
-                    if (!strcmp(mensaje, "OK"))
-                    {
-                        recv(client, mensaje, sizeMsj, 0);
-                        tren.tiempoRestante = atoi(mensaje);
-                        tren.combustible -= restarCombustible(tren.tiempoRestante);
-                        DibujarTrenViajando(pWin.pLogWindow, &tren.tiempoRestante);
-                        
-                        armarMensajeExit(tren, mensaje);
-                        send(client, mensaje, strlen(mensaje), 0);
-                        unInitUserInterface(&pWin);
-                        exit(EXIT_SUCCESS);
-                    }
-                    else
-                    {
-                        clearLogWindow(pWin.pLogWindow);
-                        printMessage(&pWin, mensaje, WHITE);
-                    }
                 }
             }
             else 
             {
                 clearLogWindow(pWin.pLogWindow);
-                printMessage(&pWin, "Es necesario estar registrado en la estacion.", WHITE);
+                printMessage(&pWin, "Es necesario estar registrado en la estacion y solicitar anden.", WHITE);
             }
         }
         
@@ -182,10 +175,7 @@ int main(int argc, char** argv) {
 
         else  if(!strcmp(mensaje, "exit"))
         {
-            armarMensajeExit(tren, mensaje);
-            send(client, mensaje, strlen(mensaje), 0);
-            unInitUserInterface(&pWin);
-            exit(EXIT_SUCCESS);
+            salirDelPrograma(tren, client, &pWin);
         }
 
         else

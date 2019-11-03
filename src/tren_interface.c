@@ -1,5 +1,7 @@
 #include "../lib/tren_interface.h"
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 void initUserInterface(ST_APP_WINDOW *pWindow)
 {
@@ -136,4 +138,19 @@ void unInitUserInterface(ST_APP_WINDOW *pWindow){
     delwin(pWindow->pCmdWindow);
     clear();
     endwin();
+}
+
+void salirDelPrograma(TREN tren, int client, ST_APP_WINDOW * pWin)
+{
+    char mensaje[sizeMsj];
+    armarMensajeExit(tren, mensaje);
+    send(client, mensaje, sizeMsj, 0);
+    unInitUserInterface(pWin);
+    exit(EXIT_SUCCESS);
+}
+
+void imprimirAndenAsignado(ST_APP_WINDOW *pWin)
+{
+    clearLogWindow(pWin->pLogWindow);
+    printMessage(pWin, "Se te asigno el anden, usa partir para viajar.", WHITE);
 }

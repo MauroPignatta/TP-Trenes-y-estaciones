@@ -2,25 +2,32 @@
 #include "../lib/est_interface.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 void obtenerConfRed(char * nombreEstacion , char * archConfigRed)
 {
     strcpy(archConfigRed, "../config/red/");
-    
-    if(!strcmp(nombreEstacion, "Retiro"))
-        strcat(archConfigRed,"Red1.conf");
 
-    else if(!strcmp(nombreEstacion, "Munro"))
-        strcat(archConfigRed,"Red2.conf");
+    FILE * conf = NULL;
+    int encontrado = 0;
+    char estacion[40];
+    char nomEst[30];
 
-    else if(!strcmp(nombreEstacion, "Carapachay"))
-        strcat(archConfigRed,"Red3.conf"); 
-
-    else if(!strcmp(nombreEstacion, "Boulogne"))
-        strcat(archConfigRed,"Red4.conf");
-    
-    else if(!strcmp(nombreEstacion, "Tokyo"))
-        strcat(archConfigRed,"Red5.conf");
+    int i=1;
+    while (i <= 5 && !encontrado)
+    {
+        sprintf(estacion, "../config/estacion/Estacion%d.conf", i);
+        conf = fopen (estacion, "r");
+        fscanf(conf,"Nombre: %s\n", nomEst);
+        if(!strcmp(nombreEstacion,nomEst))
+        {
+            encontrado = 1;
+            sprintf(estacion, "Red%d.conf", i);
+            strcat(archConfigRed,estacion);
+        }
+        fclose(conf);
+        i++;      
+    }
 }
 
 char * FormatearNombre(char * Palabra)
@@ -93,7 +100,6 @@ int CrearSocketServer(char * confRed)
     }
     
     listen(server, MaxClientes + 1);
-    printf("Esperando conexiones entrantes...\n");
     
     return server;
 }

@@ -81,3 +81,4 @@ void armarMensajeExit(TREN tren, char * mensaje)
 {
     sprintf(mensaje, "1;5;%d", tren.ID);
 }
+
