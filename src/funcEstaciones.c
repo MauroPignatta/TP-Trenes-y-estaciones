@@ -183,6 +183,45 @@ int registrarTren(ESTACION * estacion, char * mensaje)
     return i;
 }
 
+void archivoRegistro (char * mensajeArchivo, ESTACION * estacion)
+{
+    FILE * txt = NULL;
+    char nomEst[50];
+    sprintf(nomEst,"../log/%s.txt", estacion->nombre);
+    txt = fopen (nomEst, "r+");
+
+    TREN tren;
+        
+    //token ahora contiene el ID
+    char * token = strtok(mensajeArchivo, ";");
+    tren.ID = atoi(token);
+                
+    //token ahora contiene el combustible
+    token = strtok(NULL, ";");
+    tren.combustible = atoi(token);
+        
+    //token ahora contiene el modelo
+    token = strtok(NULL, ";");
+    strcpy(tren.modelo, token);
+    
+    //token ahora contiene Estacion Origen
+    strcpy(tren.estOrigen, estacion->nombre);
+
+    //token ahora contiene Estacion Destino
+    //token = strtok(NULL, ";");
+    strcpy(tren.estDestino, "A asignar");
+
+    //token ahora contiene Tiempo Restante de Viaje
+    tren.tiempoRestante = 0;
+
+    //token ahora contiene si esta migrado o no
+    tren.migrado = 0;  
+
+    fprintf(txt, "ID: %ls;Modelo: %s;Est. Origen: %s;Est. Destino: %s\n", &tren.ID, tren.modelo, tren.estOrigen, tren.estDestino);
+
+    fclose(txt);
+}
+
 int mensajeListadoEstDisp(char * mensaje)
 {
     strcpy(mensaje, "Elija la estacion a la cual quiere viajar:\n\n");
@@ -247,8 +286,9 @@ void ConexionServer(void * argumento)
 {
     char ** argv = (char **) argumento;
     char mensaje[sizeMsj];
+    char mensajeArchivo[sizeMsj];
     sprintf(mensaje,"../config/red/Red%d.conf", miPos + 1);
-
+    
     int server = CrearSocketServer(mensaje);  //Devuelve el socket ya configurado
     
     int maxfd = server + MaxClientes + 1;
@@ -325,6 +365,8 @@ void ConexionServer(void * argumento)
                                 case '1':
                                     /*Registro al tren*/
                                     regCorrecto = registrarTren(&estaciones[miPos], mensaje);
+                                    strcpy(mensajeArchivo,mensaje);
+                                    archivoRegistro(mensajeArchivo,&estaciones[miPos]);
                                     sprintf(mensaje,"1;%s;Te has registrado correctamente", estaciones[miPos].nombre);
 
                                     /*Comprueba que el tren se haya registrado*/
