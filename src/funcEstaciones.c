@@ -217,7 +217,7 @@ void archivoRegistro (char * mensajeArchivo, ESTACION * estacion)
     //token ahora contiene si esta migrado o no
     tren.migrado = 0;  
 
-    fprintf(txt, "ID: %ls;Modelo: %s;Est. Origen: %s;Est. Destino: %s\n", &tren.ID, tren.modelo, tren.estOrigen, tren.estDestino);
+    fprintf(txt, "ID: %i;Modelo: %s;Est. Origen: %s;Est. Destino: %s\n", tren.ID, tren.modelo, tren.estOrigen, tren.estDestino);
 
     fclose(txt);
 }
