@@ -25,8 +25,8 @@ void obtenerConfRed(char * nombreEstacion , char * archConfigRed)
             sprintf(estacion, "Red%d.conf", i);
             strcat(archConfigRed,estacion);
         }
-        fclose(conf);
-        i++;      
+        i++;
+        fclose(conf);   
     }
 }
 

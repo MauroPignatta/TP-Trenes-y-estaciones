@@ -15,6 +15,8 @@ void initUserInterface(ST_APP_WINDOW *pWindow)
         init_pair(2, COLOR_GREEN, COLOR_BLACK);
         init_pair(3, COLOR_BLUE, COLOR_BLACK);
         init_pair(4, COLOR_WHITE, COLOR_BLACK);
+        init_pair(5, COLOR_YELLOW, COLOR_BLACK);
+        init_pair(6, COLOR_CYAN, COLOR_BLACK);
     }
 
     // Marco general de la App. Ocupa toda la pantalla
@@ -48,7 +50,7 @@ void initUserInterface(ST_APP_WINDOW *pWindow)
     pWindow->pRegWindow = derwin(pWindow->pRegFrame, regWinHeigth-2, regWinWidth-2, 1, 1);
     
     // asocia colores con las ventanas
-    wbkgd(pWindow->pAppFrame, COLOR_PAIR(RED));
+    wbkgd(pWindow->pAppFrame, COLOR_PAIR(YELLOW));
     wbkgd(pWindow->pRegFrame, COLOR_PAIR(WHITE));
     wbkgd(pWindow->pLogFrame, COLOR_PAIR(WHITE));
     wbkgd(pWindow->pCmdFrame, COLOR_PAIR(WHITE));

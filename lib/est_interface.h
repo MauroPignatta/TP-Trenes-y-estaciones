@@ -41,7 +41,7 @@ typedef struct {
  */
 ST_APP_WINDOW pWin;
 
-typedef enum {RED=1, GREEN, BLUE, WHITE,} COLOUR;
+typedef enum {RED=1, GREEN, BLUE, WHITE, YELLOW, CYAN,} COLOUR;
 
 /**
  * Funcion que:
