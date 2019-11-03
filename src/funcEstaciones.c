@@ -4,8 +4,6 @@
 #include "../lib/Conexion.h"
 #include <signal.h>
 #include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 void ObtenerOtrasEstaciones(ESTACION est[],int miPos)
 {
@@ -316,6 +314,9 @@ TREN * eliminarNodoPrioridad(ST_NODO_TRENES ** cola)
 
 TREN * eliminarNodoTrenSegunID(int IDTren, ST_NODO_TRENES ** cola)
 {   
+
+    pthread_mutex_lock(&lock);
+
     ST_NODO_TRENES * aux = *cola;
     ST_NODO_TRENES * ant = NULL;
     TREN * tren = NULL;
@@ -324,17 +325,25 @@ TREN * eliminarNodoTrenSegunID(int IDTren, ST_NODO_TRENES ** cola)
         ant = aux;
         aux = aux->sig;
     }
-    if (ant == NULL)
-        *cola = (*cola)->sig;
-    else 
-        ant->sig = aux->sig;
-    tren = aux->tren;
-    free(aux);
+    if (aux && IDTren == aux->tren->ID) //si lo encontro elimina el nodo
+    {
+        if (ant == NULL)
+            *cola = (*cola)->sig;
+        else 
+            ant->sig = aux->sig;
+        tren = aux->tren;
+        free(aux); 
+    }
+
+    pthread_mutex_unlock(&lock);
+
     return tren;
 }
 
 int subirPrioridadTrenes(ST_NODO_TRENES * cola)
 {
+    pthread_mutex_lock(&lock);
+
     int TrenesACambiarDeCola = 0;
     while(cola != NULL)
     {
@@ -342,18 +351,64 @@ int subirPrioridadTrenes(ST_NODO_TRENES * cola)
         TrenesACambiarDeCola += cola->prioridad == 2 ? 1 : 0;
         cola = cola->sig;
     }
+
+    pthread_mutex_unlock(&lock);
+
     return TrenesACambiarDeCola;
 }
 
 void CambiarDeColaTrenes(ST_NODO_TRENES ** cola_Menor, ST_NODO_TRENES ** cola_Mayor, int cantNodos)    
 {
+    pthread_mutex_lock(&lock);
+
     TREN * tren = NULL;
     for(int i=0; i < cantNodos; i++)
     {
         tren = eliminarNodoPrioridad(cola_Menor);
         encolarTren(tren,cola_Mayor);
     }
+
+    pthread_mutex_unlock(&lock);
 }
+void NuevoTrenAnden(TREN ** anden, ST_NODO_TRENES ** cola_Menor, ST_NODO_TRENES ** cola_Mayor)
+{
+    pthread_mutex_lock(&lock);
+
+    *anden = asignarAnden(cola_Mayor);
+    if ( andenLibre(*anden) )
+    {
+        *anden = asignarAnden(cola_Menor);
+    }
+    if ( !(andenLibre(*anden)) && (*anden)->migrado == 0 )
+    {
+        send((*anden)->nCliente,"Se te ha asigando el anden", sizeMsj, 0);
+    }
+
+    pthread_mutex_unlock(&lock);
+}
+
+FILE * crearLogEstacion(char * nombreEstacion)
+{
+    char nombreArchivo[45];
+    sprintf(nombreArchivo ,"../log/%s_Log.txt", nombreEstacion);
+    FILE * logEstacion = fopen(nombreArchivo,"w+");
+    if (!logEstacion)
+    {
+        exit(4);
+    } 
+    fprintf(logEstacion, "Registro de la estacion %s:\n\n", nombreEstacion);
+    return logEstacion;
+}
+
+void * llenarLog(TREN * tren , FILE * logEstacion)
+{
+    pthread_mutex_lock(&log_lock);
+    char texto[100];
+    sprintf(texto,"Tren ID: %d | Origen: %s | Destino: %s \n",tren->ID, tren->estOrigen, tren->estDestino);
+    fprintf(logEstacion, texto);
+    pthread_mutex_unlock(&log_lock);
+}
+
 
 void ConexionServer(void * argumento)
 {
@@ -478,6 +533,8 @@ void ConexionServer(void * argumento)
                                             int tiempo = calcularTiempoDeViaje( posEst );
                                             estaciones[miPos].tren[posTren].tiempoRestante = tiempo;
 
+                                            llenarLog(&estaciones[miPos].tren[posTren], logEstacion);
+
                                             sprintf(mensaje, "%d", tiempo);
                                             send(client[i], mensaje, sizeMsj, 0);
 
@@ -544,24 +601,26 @@ void ConexionServer(void * argumento)
                                         CambiarDeColaTrenes(&ColaPrioridadMenor, &ColaPrioridadMayor, cantTrenesACambiar);
                                     }
 
-                                    anden = asignarAnden(&ColaPrioridadMayor);
-                                    if ( andenLibre(anden) )
-                                    {
-                                        anden = asignarAnden(&ColaPrioridadMenor);
-                                    }
-                                    if ( !(andenLibre(anden)) )
-                                    {
-                                        send(anden->nCliente,"Se te ha asigando el anden", sizeMsj, 0);
-                                    }
-
+                                    NuevoTrenAnden(&anden, &ColaPrioridadMenor, &ColaPrioridadMayor);
 
                                 case '5':   //Agrego este para cuando un tren quiere desconectarse
                                     sscanf(mensaje, "1;5;%d", &TrenID);
                                     posTren = BuscarTrenPorID(estaciones[miPos], TrenID);
 
                                     if (posTren != -1)
+                                    {
+                                        if ( !(andenLibre(anden)) )
+                                        {
+                                            if(anden->ID == TrenID)
+                                                NuevoTrenAnden(&anden, &ColaPrioridadMenor, &ColaPrioridadMayor);
+                                        }
+                                        else
+                                        {
+                                            eliminarNodoTrenSegunID(TrenID , &ColaPrioridadMayor);
+                                            eliminarNodoTrenSegunID(TrenID , &ColaPrioridadMenor);
+                                        }
                                         estaciones[miPos].tren[posTren].ID = 0;
-                                    
+                                    }
                                     printRegistro(&pWin,"Se desconecto un tren", WHITE);
                                     FD_CLR(client[i], &master);
                                     break;

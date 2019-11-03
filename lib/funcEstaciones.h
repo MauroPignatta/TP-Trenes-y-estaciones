@@ -20,6 +20,9 @@
 #define multiplicar(x,y) x*y
 
 #include "funcTrenes.h"
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /** 
  * Estructura de datos para Estaciones 
@@ -42,10 +45,14 @@ typedef struct nodo
 	int prioridad;
 }ST_NODO_TRENES;
 
-
+pthread_mutex_t lock;
 TREN * anden ;
 ST_NODO_TRENES * ColaPrioridadMenor ;
 ST_NODO_TRENES * ColaPrioridadMayor ;
+
+pthread_mutex_t log_lock;
+FILE * logEstacion;
+
 int serverEst[MAX_ESTACION];
 ESTACION estaciones[MAX_ESTACION];
 int miPos;
@@ -163,7 +170,10 @@ TREN * asignarAnden(ST_NODO_TRENES ** cola);
 TREN * eliminarNodoPrioridad(ST_NODO_TRENES ** cola);
 TREN * eliminarNodoTrenSegunID(int IDTren, ST_NODO_TRENES ** cola);
 int subirPrioridadTrenes(ST_NODO_TRENES * cola);
-void CambiarDeColaTrenes(ST_NODO_TRENES ** cola_Menor, ST_NODO_TRENES ** cola_Mayor, int cantNodos) ;
+void CambiarDeColaTrenes(ST_NODO_TRENES ** cola_Menor, ST_NODO_TRENES ** cola_Mayor, int cantNodos);
+void NuevoTrenAnden(TREN ** anden, ST_NODO_TRENES ** cola_Menor, ST_NODO_TRENES ** cola_Mayor);
+FILE * crearLogEstacion(char * nombreEstacion);
+void * llenarLog(TREN * tren , FILE * logEstacion);
 
 
 #endif	// FUNCESTACIONES_H

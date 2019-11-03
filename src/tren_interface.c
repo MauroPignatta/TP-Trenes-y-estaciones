@@ -261,7 +261,6 @@ void InterfazGrafica(void * argumentos)
                         {
                             clearLogWindow(pWin.pLogWindow);
                             printMessage(&pWin, "Has entrado en la cola. Esperando que se desocupe el anden..", WHITE);
-                            clearCmdWindow(pWin.pCmdWindow);
                             recv(client, mensaje, sizeMsj, 0);
                         }
                         imprimirAndenAsignado(&pWin);

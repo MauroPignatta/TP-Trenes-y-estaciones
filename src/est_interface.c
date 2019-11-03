@@ -417,6 +417,8 @@ void InterfazGrafica()
                             estaciones[miPos].tren[posTren].tiempoRestante = calcularTiempoDeViaje(posEst);
                             strcpy(estaciones[miPos].tren[posTren].estDestino, estaciones[posEst].nombre);
 
+                            llenarLog(&estaciones[miPos].tren[posTren] , logEstacion);
+
                             clearWindow(pWin.pLogWindow);
                             if( andenLibre(anden) )
                             {
@@ -450,7 +452,7 @@ void InterfazGrafica()
             else 
             {
                 clearWindow(pWin.pLogWindow);
-                printLog(&pWin, "No hay trenes que la estacion controle", WHITE);
+                printLog(&pWin, "No hay trenes que la estacion controle\npasa solicitar anden.", WHITE);
             }
         }
 
@@ -482,22 +484,14 @@ void InterfazGrafica()
                 kill( anden->migrado , SIGKILL);
                 anden->migrado =0;
 
-                //Posiblemente necesitemos un mutex aca
-
                 int cantTrenesACambiar = subirPrioridadTrenes(ColaPrioridadMenor);
                 if( cantTrenesACambiar > 0 )
                 {
                     CambiarDeColaTrenes(&ColaPrioridadMenor, &ColaPrioridadMayor, cantTrenesACambiar);
                 }
-                anden = asignarAnden(&ColaPrioridadMayor);
-                if ( andenLibre(anden) )
-                {
-                    anden = asignarAnden(&ColaPrioridadMenor);
-                }
-                if ( !(andenLibre(anden)) && anden->migrado == 0)
-                {
-                    send(anden->nCliente,"Se te ha asigando el anden", sizeMsj, 0);
-                }
+
+                NuevoTrenAnden(&anden , &ColaPrioridadMenor, &ColaPrioridadMayor);
+
                 if ( !(andenLibre(anden)) && anden->migrado > 0)
                 {
                     clearWindow(pWin.pLogWindow);
