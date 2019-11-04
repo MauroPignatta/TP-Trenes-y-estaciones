@@ -392,6 +392,7 @@ void InterfazGrafica()
                 if (i != miPos)
                     send(serverEst[i], mensaje, sizeMsj, 0);
             }
+            free(estaciones[miPos].tren);
             unInitUserInterface(&pWin);
             exit(EXIT_SUCCESS);
         }

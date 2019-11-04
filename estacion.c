@@ -18,6 +18,8 @@ int main(int argc, char** argv)
     miPos = ObtenerDatosMiEstacion( nomArchivoEst, estaciones); 
     ObtenerOtrasEstaciones(estaciones, miPos);
 
+    
+
     logEstacion = crearLogEstacion(estaciones[miPos].nombre);
 
     pthread_mutex_init(&lock, NULL);

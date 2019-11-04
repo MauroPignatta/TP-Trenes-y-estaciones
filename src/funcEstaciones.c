@@ -33,10 +33,17 @@ int ObtenerDatosMiEstacion(char * nomArchivo, ESTACION est[])
         printf("Error al abrir archivo de configuracion.\n");
         exit(1);
     }
-    
     fscanf(configEst ,"Nombre: %s\n",estAux.nombre);
     fscanf(configEst ,"Distancia: %d\n", &estAux.distancia);
     fscanf(configEst ,"ID: %d\n", &estAux.ID);
+
+    estAux.tren = (TREN *) malloc(sizeof(TREN) * MAX_TREN);
+    if (!estAux.tren)
+    {
+        printf("No se pudo asignar memoria.\n");
+        exit(1);
+    }
+
     for(int i = 0; i < MAX_TREN; i++)
     { 
         memset(&estAux.tren[i], 0,sizeof(TREN));
@@ -612,7 +619,7 @@ void ConexionServer(void * argumento)
                                     }
                                     else 
                                     {
-                                        strcpy(mensaje, "Hay un tren en camino.\n No se puede enviar un tren hasta que llege.");
+                                        strcpy(mensaje, "Hay un tren en camino.\nNo se puede enviar un tren hasta que llegue.");
                                         send(client[i], mensaje,sizeMsj, 0);
                                     }
                                     break;

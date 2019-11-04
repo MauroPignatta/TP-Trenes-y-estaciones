@@ -27,7 +27,6 @@
 /** 
  * Estructura de datos para Estaciones 
  */
-
 typedef struct 
 {
 	int ID;
@@ -35,7 +34,7 @@ typedef struct
 	int distancia;
 	int online;
 	int nCliente;
-	TREN tren[MAX_TREN];
+	TREN * tren;
 }ESTACION;
 
 /** 
