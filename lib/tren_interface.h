@@ -40,7 +40,7 @@ typedef struct {
 typedef enum {RED = 1, GREEN, BLUE, WHITE, YELLOW, CYAN,} COLOUR;
 
 /**
- * Crea las ventanas de la app. Asocia colores con las ventanas
+ * Funcion que Crea las ventanas de la app. Asocia colores con las ventanas
  * Crea en pantalla un grupo de ventanas con la siguiente estructura:
  * Log: muestra mensajes
  * Cmd: permite el ingreso de comnandos al usuario.
@@ -132,7 +132,19 @@ void imprimirAndenAsignado(ST_APP_WINDOW *pWin);
  */
 void DibujarTrenViajando(WINDOW *pLogWindow, int * tiempoRestante);
 
+/**
+ * Funcion Salir del programa
+ * @param TREN tren estructura de datos tren
+ * @param int client numero de cliente servidor
+ * @param * pAppWin representa la Variable global para la interfaz grafica
+ */
+
 void salirDelPrograma(TREN tren, int client, ST_APP_WINDOW * pWin);
+
+/**
+ * Funcion para el hilo que se encarga de la interfaz grafica
+ * @param * argumentos
+ */
 
 void InterfazGrafica(void * argumentos);
 

@@ -41,6 +41,9 @@ typedef struct {
  */
 ST_APP_WINDOW pWin;
 
+/**
+ *Estructura del tipo enum para los colores a utilizar
+ */
 typedef enum {RED=1, GREEN, BLUE, WHITE, YELLOW, CYAN,} COLOUR;
 
 /**
@@ -106,7 +109,7 @@ void printRegistro(ST_APP_WINDOW *pWindow, const char *message, COLOUR colour);
  * Funcion que imprime el Estado completo del Tren con todas sus variables
  * @param * pWin Variable global para la interfaz grafica
  * @param TREN trenes es el vector de trenes
- * @return 
+ * @return un entero
  */
 
 int printEstadoTrenes(ST_APP_WINDOW *pWin , TREN trenes[]);

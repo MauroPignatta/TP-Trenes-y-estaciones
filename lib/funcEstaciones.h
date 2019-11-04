@@ -38,6 +38,9 @@ typedef struct
 	TREN tren[MAX_TREN];
 }ESTACION;
 
+/** 
+ * Estructura de datos de Nodo Trenes
+ */
 typedef struct nodo
 {
 	struct nodo * sig;
@@ -45,6 +48,9 @@ typedef struct nodo
 	int prioridad;
 }ST_NODO_TRENES;
 
+/** 
+ * Variables globales Tipo Nodos a Tren, anden, tipo file txt a estacion
+ */
 pthread_mutex_t lock;
 TREN * anden ;
 ST_NODO_TRENES * ColaPrioridadMenor ;
@@ -105,7 +111,6 @@ int BuscarTrenPorID(ESTACION estacion, int idTren);
 
 /**
  * Funcion para el hilo que se encarga de la conexion servidor-cliente
- * @param
  */
 
 void ConexionServer();
@@ -164,15 +169,77 @@ int calcularTiempoDeViaje(int posEstacionDestino);
 
 void prepararEnvioTren(char *mensaje , TREN * tren);
 
+/**
+ * Funcion Crea nodo de tren
+ * @param * puntero tren de estructura TREN
+ * @return devuelve el nodo del nuevo nodo creado
+ */
 ST_NODO_TRENES * crearNuevoNodo(TREN * tren);
+
+/**
+ * Funcion Suma trenes a la cola de trenes
+ * @param * puntero tren de estructura TREN
+ * @param ** cola puntero a puntero del Nodo Trenes
+ */
 void encolarTren(TREN * tren, ST_NODO_TRENES ** cola);
+
+/**
+ * Funcion Asigna Anden al tren
+ * @param ** cola puntero a puntero del Nodo Trenes
+ * @return devuelve el puntero del tren afectado
+ */
 TREN * asignarAnden(ST_NODO_TRENES ** cola);
+
+/**
+ * Funcion Elimina Nodos segun la prioridades
+ * @param ** cola puntero a puntero del Nodo Trenes
+ * @return devuelve el puntero del tren afectado
+ */
 TREN * eliminarNodoPrioridad(ST_NODO_TRENES ** cola);
+
+/**
+ * Funcion Elimina Nodo del tren por ID
+ * @param int IDTren para identificar al tren afectado
+ * @param ** cola puntero a puntero del Nodo Trenes
+ * @return devuelve el puntero del tren afectado
+ */
 TREN * eliminarNodoTrenSegunID(int IDTren, ST_NODO_TRENES ** cola);
+
+/**
+ * Funcion Sube la prioridad a los trenes por tiempo de su espera en la cola
+ * @param * cola puntero al Nodo Trenes
+ * @return devuelve el entero con la sumatoria que le corresponda segun la vuelta de prioridades
+ */
 int subirPrioridadTrenes(ST_NODO_TRENES * cola);
+
+/**
+ * Funcion Cambia de cola menor prioridad a la Cola Mayor prioridad
+ * @param ** cola Menor puntero a la Colas de Menor prioridad
+ * @param ** cola Mayor puntero a la Colas de Mayor prioridad
+ * @param int cantNodos lleva la cantidad de nodos tipo entero
+ */
 void CambiarDeColaTrenes(ST_NODO_TRENES ** cola_Menor, ST_NODO_TRENES ** cola_Mayor, int cantNodos);
+
+/**
+ * Funcion Nuevo tren para anden
+ * @param TREN ** anden puntero de puntero anden de trenes
+ * @param ** cola Menor puntero a la Colas de Menor prioridad
+ * @param ** cola Mayor puntero a la Colas de Mayor prioridad
+ */
 void NuevoTrenAnden(TREN ** anden, ST_NODO_TRENES ** cola_Menor, ST_NODO_TRENES ** cola_Mayor);
+
+/**
+ * Funcion Crea el Archivo tipo txt segun nombre de la estacion
+ * @param char * nombreEstacion puntero del nombre de la estacion
+ * @return puntero tipo FILE al archvio txt de la estacion
+ */
 FILE * crearLogEstacion(char * nombreEstacion);
+
+/**
+ * Funcion Carga los datos en el archivo txt de la estacion afectada
+ * @param TREN * tren puntero estructura tipo TREN con los datos del tren afectado
+ * @param FILE * logEstacion puntero tipo FILE al archivo txt de la estacion afectada
+ */
 void * llenarLog(TREN * tren , FILE * logEstacion);
 
 

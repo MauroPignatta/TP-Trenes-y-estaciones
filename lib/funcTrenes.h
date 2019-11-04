@@ -40,13 +40,6 @@ typedef struct{
 TREN inicializarTren(char *arch);
 
 /**
- * Funcion Solicita el Tren a la Estacion si tiene Anden libre o no
- * @param Falta terminar///////
- */
-
-void solicitarPasoAnden();
-
-/**
  * Funcion Dibuja el Tren y resta el tiempo 
  * @param TREN tren variable tipo tren
  */

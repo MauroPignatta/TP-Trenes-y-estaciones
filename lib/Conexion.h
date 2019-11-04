@@ -64,7 +64,7 @@ int CrearSocketCliente(char * confRed);
 int conectarEstacion(char * confRed);
 
 /**
- * Obtiene el nombre del archivo de conf de Red segun el nombre de la estacion a conectarse
+ * Funcion que Obtiene el nombre del archivo de conf de Red segun el nombre de la estacion a conectarse
  * @param * nombreEstacion puntero al argumento con el nombre de la estacion a conectarse
  * @param * archConfigRed puntero a char donde se va a guardar el nombre del archivo de conf de red
  */

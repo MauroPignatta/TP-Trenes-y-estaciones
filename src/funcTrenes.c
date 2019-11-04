@@ -30,11 +30,6 @@ TREN inicializarTren(char *arch)
     return aux;
 }
 
-void solicitarPasoAnden()
-{
-    
-}
-
 void partir(TREN tren)
 {
     for(int i=tren.tiempoRestante;i>0;i--){
