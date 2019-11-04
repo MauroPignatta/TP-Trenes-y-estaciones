@@ -63,6 +63,8 @@ int serverEst[MAX_ESTACION];
 ESTACION estaciones[MAX_ESTACION];
 int miPos;
 
+int trenEnViaje;
+
 /**
  * Funcion Abre el archivo de configuracion pasado como argumento y lo guarda 
  * en la posicion del vector de estaciones que correspanda,
@@ -177,21 +179,21 @@ void prepararEnvioTren(char *mensaje , TREN * tren);
 ST_NODO_TRENES * crearNuevoNodo(TREN * tren);
 
 /**
- * Funcion Suma trenes a la cola de trenes
+ * Funcion agrega un tren a la cola de trenes
  * @param * puntero tren de estructura TREN
  * @param ** cola puntero a puntero del Nodo Trenes
  */
 void encolarTren(TREN * tren, ST_NODO_TRENES ** cola);
 
 /**
- * Funcion Asigna Anden al tren
+ * Funcion Asigna el anden al trende una cola especifica
  * @param ** cola puntero a puntero del Nodo Trenes
  * @return devuelve el puntero del tren afectado
  */
 TREN * asignarAnden(ST_NODO_TRENES ** cola);
 
 /**
- * Funcion Elimina Nodos segun la prioridades
+ * Funcion Elimina Nodos que hayan alcanzado la prioridad maxima y van a ser cambiados de cola
  * @param ** cola puntero a puntero del Nodo Trenes
  * @return devuelve el puntero del tren afectado
  */
@@ -201,14 +203,14 @@ TREN * eliminarNodoPrioridad(ST_NODO_TRENES ** cola);
  * Funcion Elimina Nodo del tren por ID
  * @param int IDTren para identificar al tren afectado
  * @param ** cola puntero a puntero del Nodo Trenes
- * @return devuelve el puntero del tren afectado
  */
-TREN * eliminarNodoTrenSegunID(int IDTren, ST_NODO_TRENES ** cola);
+void eliminarNodoTrenSegunID(int IDTren, ST_NODO_TRENES ** cola);
 
 /**
  * Funcion Sube la prioridad a los trenes por tiempo de su espera en la cola
  * @param * cola puntero al Nodo Trenes
- * @return devuelve el entero con la sumatoria que le corresponda segun la vuelta de prioridades
+ * @return devuelve la cantidad de nodos que alcanzaron la prioridad maxima y 
+ * deben ser cambiados de cola
  */
 int subirPrioridadTrenes(ST_NODO_TRENES * cola);
 
@@ -216,15 +218,15 @@ int subirPrioridadTrenes(ST_NODO_TRENES * cola);
  * Funcion Cambia de cola menor prioridad a la Cola Mayor prioridad
  * @param ** cola Menor puntero a la Colas de Menor prioridad
  * @param ** cola Mayor puntero a la Colas de Mayor prioridad
- * @param int cantNodos lleva la cantidad de nodos tipo entero
+ * @param int cantNodos cantidad de nodos que tiene que cambiar de colas
  */
 void CambiarDeColaTrenes(ST_NODO_TRENES ** cola_Menor, ST_NODO_TRENES ** cola_Mayor, int cantNodos);
 
 /**
- * Funcion Nuevo tren para anden
+ * Funcion Selecciona al siguiente tren que va a ocupar el anden
  * @param TREN ** anden puntero de puntero anden de trenes
- * @param ** cola Menor puntero a la Colas de Menor prioridad
- * @param ** cola Mayor puntero a la Colas de Mayor prioridad
+ * @param ** cola Menor puntero a la Cola de Menor prioridad
+ * @param ** cola Mayor puntero a la Cola de Mayor prioridad
  */
 void NuevoTrenAnden(TREN ** anden, ST_NODO_TRENES ** cola_Menor, ST_NODO_TRENES ** cola_Mayor);
 
@@ -242,5 +244,11 @@ FILE * crearLogEstacion(char * nombreEstacion);
  */
 void * llenarLog(TREN * tren , FILE * logEstacion);
 
+/**
+ * Funcion Avisa a las estaciones que hay un tren en viaje o que llego al destino
+ * @param int posEstacionDestino posicion de la estacion a la que viaja el tren
+ * @param int tipoAviso 1 para avisar que viaja, 2 para avisa que llego
+ */
+void avisarEstaciones(int posEstacionDestino, int tipoAviso);
 
 #endif	// FUNCESTACIONES_H
