@@ -425,9 +425,12 @@ FILE * crearLogEstacion(char * nombreEstacion)
 void * llenarLog(TREN * tren , FILE * logEstacion)
 {
     pthread_mutex_lock(&log_lock);
+
     char texto[100];
     sprintf(texto,"Tren ID: %d | Origen: %s | Destino: %s \n",tren->ID, tren->estOrigen, tren->estDestino);
     fprintf(logEstacion, "%s",texto);
+    fflush(logEstacion);
+    
     pthread_mutex_unlock(&log_lock);
 }
 
