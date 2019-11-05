@@ -1,5 +1,7 @@
 #include "../lib/tren_interface.h"
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 void initInterfazDeUsuario(ST_APP_WINDOW *pWindow)
 {
@@ -12,6 +14,8 @@ void initInterfazDeUsuario(ST_APP_WINDOW *pWindow)
         init_pair(2, COLOR_GREEN, COLOR_BLACK);
         init_pair(3, COLOR_BLUE, COLOR_BLACK);
         init_pair(4, COLOR_WHITE, COLOR_BLACK);
+        init_pair(5, COLOR_YELLOW, COLOR_BLACK);
+        init_pair(6, COLOR_CYAN, COLOR_BLACK);
     }
 
     // Marco general de la App. Ocupa toda la pantalla
@@ -38,7 +42,7 @@ void initInterfazDeUsuario(ST_APP_WINDOW *pWindow)
     pWindow->pCmdWindow = derwin(pWindow->pCmdFrame, viewWinHeigth-2, viewWinWidth-2, 1, 1);
     
     // asocia colores con las ventanas
-    wbkgd(pWindow->pAppFrame, COLOR_PAIR(GREEN));
+    wbkgd(pWindow->pAppFrame, COLOR_PAIR(CYAN));
     wbkgd(pWindow->pLogFrame, COLOR_PAIR(WHITE));
     wbkgd(pWindow->pCmdFrame, COLOR_PAIR(WHITE));
     
@@ -97,6 +101,8 @@ void DibujarTrenViajando(WINDOW *pLogWindow, int * tiempoRestante)
     int y = getmaxy(pLogWindow)/ 2;
     int x = 18;
     int fixX = 0;
+    werase(pLogWindow);
+    wrefresh(pLogWindow);
     while(*tiempoRestante > 0)
     {
         mvwprintw(pLogWindow, 0 , 0, "Viajando...\nTiempo Restante: %d", * tiempoRestante);
@@ -136,4 +142,190 @@ void desInitInterfazDeUsuario(ST_APP_WINDOW *pWindow){
     delwin(pWindow->pCmdWindow);
     clear();
     endwin();
+}
+
+void salirDelPrograma(TREN tren, int client, ST_APP_WINDOW * pWin)
+{
+    char mensaje[sizeMsj];
+    armarMensajeExit(tren, mensaje);
+    send(client, mensaje, sizeMsj, 0);
+    unInitUserInterface(pWin);
+    exit(EXIT_SUCCESS);
+}
+
+void imprimirAndenAsignado(ST_APP_WINDOW *pWin)
+{
+    clearLogWindow(pWin->pLogWindow);
+    printMessage(pWin, "Se te asigno el anden, usa partir para viajar.", WHITE);
+}
+
+void InterfazGrafica(void * argumentos)
+{
+    char ** argv = (char**) argumentos;
+    char nomArchivo[40] = "../config/tren/";
+    strcat(nomArchivo, FormatearNombre(argv[1]));
+    TREN tren = inicializarTren(nomArchivo);
+    
+    /* Devuelve el socket ya configurado */
+    obtenerConfRed(FormatearNombre(argv[2]) , nomArchivo);
+    int client = CrearSocketCliente(nomArchivo);
+    send(client, "1", sizeMsj, 0);
+    
+    char mensaje[sizeMsj];
+
+    /* Flag para que un tren no pueda registrarse 2 veces*/
+    int yaRegistrado = 0;
+    int solicitoAnden = 0;
+
+    //Aca empieza a correr ncurses
+    ST_APP_WINDOW pWin;
+    initUserInterface(&pWin);
+    drawUserInterface(&pWin);
+    
+    sprintf(mensaje, " Tren %d ",tren.ID);
+    printWindowTitle(pWin.pAppFrame, mensaje);
+    printWindowTitle(pWin.pLogFrame, "### Log ###");
+    printWindowTitle(pWin.pCmdFrame, "### Comandos ###");
+
+    recv(client, mensaje, sizeMsj, 0);  // Recibo el mensaje de Bienvenido a la estacion <nombre estacion>
+    printMessage(&pWin, mensaje, WHITE);
+    wmove(pWin.pCmdWindow, 0,0);
+    while(1)
+    {
+        memset(mensaje, '\0', sizeMsj);
+        wgetnstr(pWin.pCmdWindow, mensaje, sizeMsj);
+        if(! strcmp(mensaje, "help"))
+        {
+            clearLogWindow(pWin.pLogWindow);
+            printHelp(&pWin);
+        }
+        else if(!strcmp(mensaje, "registrarse"))
+        {
+            clearLogWindow(pWin.pLogWindow);
+            if (yaRegistrado)
+            {
+                printMessage(&pWin, "Ya te has registrado.", WHITE);
+            }
+            else
+            {
+                armarMensajeRegistrarse(tren, mensaje);
+                send(client, mensaje, strlen(mensaje), 0);
+
+                recv(client, mensaje, sizeMsj, 0);
+                char * token = NULL;
+                token = strtok(mensaje,";");
+
+                if (*token == '1')
+                {
+                    yaRegistrado = 1;
+                    token = strtok(NULL,";");
+                    strcpy(tren.estOrigen, token);
+                }
+
+                token = strtok(NULL,";");
+                printMessage(&pWin, token, WHITE);
+            }
+        }
+        else if(!strcmp(mensaje, "anden"))
+        {
+            //solicitar anden
+            if (yaRegistrado)
+            {
+                sprintf(mensaje, "1;2;%d",tren.ID);
+                send(client, mensaje, sizeMsj, 0);
+
+                recv(client, mensaje, sizeMsj, 0);
+
+                clearLogWindow(pWin.pLogWindow);
+                printMessage(&pWin, mensaje, WHITE);
+
+                if (strcmp(mensaje, "No hay estaciones disponibles"))
+                {
+                    clearLogWindow(pWin.pLogWindow);
+                    printMessage(&pWin, mensaje, WHITE);
+
+                    clearCmdWindow(pWin.pCmdWindow);
+                    wgetnstr(pWin.pCmdWindow, mensaje, sizeMsj);
+                    send(client, mensaje, sizeMsj, 0);
+                    strcpy(tren.estDestino, FormatearNombre(mensaje));
+
+                    recv(client, mensaje, sizeMsj, 0);
+                    if (!strcmp(mensaje, "OK"))
+                    {
+                        recv(client, mensaje, sizeMsj, 0);
+                        tren.tiempoRestante = atoi(mensaje);
+                        solicitoAnden = 1;
+
+                        recv(client, mensaje, sizeMsj, 0); // recibo si estoy en cola o si tengo el anden
+                        if (!strcmp(mensaje, "cola"))
+                        {
+                            clearLogWindow(pWin.pLogWindow);
+                            printMessage(&pWin, "Has entrado en la cola. Esperando que se desocupe el anden..", WHITE);
+                            recv(client, mensaje, sizeMsj, 0);
+                        }
+                        imprimirAndenAsignado(&pWin);
+                    }
+                    else
+                    {
+                        strcpy(tren.estDestino, "A asignar");
+                        clearLogWindow(pWin.pLogWindow);
+                        printMessage(&pWin, mensaje, WHITE);
+                    }
+                }
+            }
+            else 
+            {
+                clearLogWindow(pWin.pLogWindow);
+                printMessage(&pWin, "Es necesario estar registrado en la estacion.", WHITE);
+            }
+        }
+        else if(!strcmp(mensaje, "partir"))
+        {
+            if (yaRegistrado && solicitoAnden)
+            {
+                armarMensajePartir(tren, mensaje);
+                send(client, mensaje, sizeMsj, 0);
+
+                recv(client, mensaje, sizeMsj, 0);
+
+                if (!strcmp(mensaje, "OK"))
+                {
+                    clearLogWindow(pWin.pLogWindow);
+                    DibujarTrenViajando(pWin.pLogWindow, &tren.tiempoRestante);
+
+                    sprintf(mensaje, "1;4;%d",tren.ID);
+                    send(client, mensaje, sizeMsj, 0);
+                    
+                    salirDelPrograma(tren, client, &pWin);
+                }
+                else
+                {
+                    clearLogWindow(pWin.pLogWindow);
+                    printMessage(&pWin, mensaje, WHITE);
+                }
+            }
+            else 
+            {
+                clearLogWindow(pWin.pLogWindow);
+                printMessage(&pWin, "Es necesario estar registrado en la estacion y solicitar anden.", WHITE);
+            }
+        }
+        else  if(!strcmp(mensaje, "estado"))
+        {
+            clearLogWindow(pWin.pLogWindow);
+            armarMensajeEstadoDelTren(tren, mensaje);
+            printMessage(&pWin, mensaje, WHITE);
+        }
+        else  if(!strcmp(mensaje, "exit"))
+        {
+            salirDelPrograma(tren, client, &pWin);
+        }
+        else
+        {
+            clearLogWindow(pWin.pLogWindow);
+            strncat(mensaje," no es un comando valido.", 26);
+            printMessage(&pWin, mensaje, WHITE);
+        }
+        clearCmdWindow(pWin.pCmdWindow);
+    }
 }

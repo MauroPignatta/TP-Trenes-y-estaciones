@@ -11,13 +11,18 @@
  * Mariano Wiñar.
  */
 
-#define MAX_TREN 10
+#define MAX_TREN 20
 #define MAX_ESTACION 5
 
 #define esEstacion(x) x == '2'
 #define estacionConectada(y) y == 1
+#define andenLibre(x) x == NULL
+#define multiplicar(x,y) x*y
 
 #include "funcTrenes.h"
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /** 
  * Estructura de datos para Estaciones 
@@ -33,9 +38,32 @@ typedef struct
 	TREN tren[MAX_TREN];
 }ESTACION;
 
+/** 
+ * Estructura de datos de Nodo Trenes
+ */
+typedef struct nodo
+{
+	struct nodo * sig;
+	TREN * tren;
+	int prioridad;
+}ST_NODO_TRENES;
+
+/** 
+ * Variables globales Tipo Nodos a Tren, anden, tipo file txt a estacion
+ */
+pthread_mutex_t lock;
+TREN * anden ;
+ST_NODO_TRENES * ColaPrioridadMenor ;
+ST_NODO_TRENES * ColaPrioridadMayor ;
+
+pthread_mutex_t log_lock;
+FILE * logEstacion;
+
 int serverEst[MAX_ESTACION];
 ESTACION estaciones[MAX_ESTACION];
 int miPos;
+
+int trenEnViaje;
 
 /**
  * Funcion Abre el archivo de configuracion pasado como argumento y lo guarda 
@@ -85,7 +113,6 @@ int BuscarTrenPorID(ESTACION estacion, int idTren);
 
 /**
  * Funcion para el hilo que se encarga de la conexion servidor-cliente
- * @param
  */
 
 void ConexionServer();
@@ -139,10 +166,89 @@ int calcularTiempoDeViaje(int posEstacionDestino);
 /**
  * Funcion Prepara el mensaje para enviar un tren de una estacion a otra
  * @param * mensaje puntero a char copia el mensaje a enviar
- * @param * posTren Para saber que tren hay que enviar
+ * @param * tren Para saber que tren hay que enviar
  */
 
-void prepararEnvioTren(char *mensaje , int posTren);
+void prepararEnvioTren(char *mensaje , TREN * tren);
 
+/**
+ * Funcion Crea nodo de tren
+ * @param * puntero tren de estructura TREN
+ * @return devuelve el nodo del nuevo nodo creado
+ */
+ST_NODO_TRENES * crearNuevoNodo(TREN * tren);
+
+/**
+ * Funcion agrega un tren a la cola de trenes
+ * @param * puntero tren de estructura TREN
+ * @param ** cola puntero a puntero del Nodo Trenes
+ */
+void encolarTren(TREN * tren, ST_NODO_TRENES ** cola);
+
+/**
+ * Funcion Asigna el anden al trende una cola especifica
+ * @param ** cola puntero a puntero del Nodo Trenes
+ * @return devuelve el puntero del tren afectado
+ */
+TREN * asignarAnden(ST_NODO_TRENES ** cola);
+
+/**
+ * Funcion Elimina Nodos que hayan alcanzado la prioridad maxima y van a ser cambiados de cola
+ * @param ** cola puntero a puntero del Nodo Trenes
+ * @return devuelve el puntero del tren afectado
+ */
+TREN * eliminarNodoPrioridad(ST_NODO_TRENES ** cola);
+
+/**
+ * Funcion Elimina Nodo del tren por ID
+ * @param int IDTren para identificar al tren afectado
+ * @param ** cola puntero a puntero del Nodo Trenes
+ */
+void eliminarNodoTrenSegunID(int IDTren, ST_NODO_TRENES ** cola);
+
+/**
+ * Funcion Sube la prioridad a los trenes por tiempo de su espera en la cola
+ * @param * cola puntero al Nodo Trenes
+ * @return devuelve la cantidad de nodos que alcanzaron la prioridad maxima y 
+ * deben ser cambiados de cola
+ */
+int subirPrioridadTrenes(ST_NODO_TRENES * cola);
+
+/**
+ * Funcion Cambia de cola menor prioridad a la Cola Mayor prioridad
+ * @param ** cola Menor puntero a la Colas de Menor prioridad
+ * @param ** cola Mayor puntero a la Colas de Mayor prioridad
+ * @param int cantNodos cantidad de nodos que tiene que cambiar de colas
+ */
+void CambiarDeColaTrenes(ST_NODO_TRENES ** cola_Menor, ST_NODO_TRENES ** cola_Mayor, int cantNodos);
+
+/**
+ * Funcion Selecciona al siguiente tren que va a ocupar el anden
+ * @param TREN ** anden puntero de puntero anden de trenes
+ * @param ** cola Menor puntero a la Cola de Menor prioridad
+ * @param ** cola Mayor puntero a la Cola de Mayor prioridad
+ */
+void NuevoTrenAnden(TREN ** anden, ST_NODO_TRENES ** cola_Menor, ST_NODO_TRENES ** cola_Mayor);
+
+/**
+ * Funcion Crea el Archivo tipo txt segun nombre de la estacion
+ * @param char * nombreEstacion puntero del nombre de la estacion
+ * @return puntero tipo FILE al archvio txt de la estacion
+ */
+FILE * crearLogEstacion(char * nombreEstacion);
+
+/**
+ * Funcion Carga los datos en el archivo txt de la estacion afectada
+ * @param TREN * tren puntero estructura tipo TREN con los datos del tren afectado
+ * @param FILE * logEstacion puntero tipo FILE al archivo txt de la estacion afectada
+ */
+void * llenarLog(TREN * tren , FILE * logEstacion);
+
+/**
+ * Funcion Avisa a las estaciones que hay un tren en viaje o que llego al destino
+ * @param int posEstacionDestino posicion de la estacion a la que viaja el tren
+ * @param int tipoAviso 1 para avisar que viaja, 2 para avisa que llego
+ */
+void avisarEstaciones(int posEstacionDestino, int tipoAviso);
 
 #endif	// FUNCESTACIONES_H

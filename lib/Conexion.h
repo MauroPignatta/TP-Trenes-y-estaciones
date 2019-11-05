@@ -22,8 +22,8 @@
 
 #define sizeIP sizeof(char) * 16
 #define sizePORT sizeof(char) * 6
-#define sizeMsj 1024
-#define MaxClientes 15
+#define sizeMsj 512
+#define MaxClientes 25
 
 /**
  * Funcion que organiza la palabra ingresada
@@ -64,7 +64,7 @@ int CrearSocketCliente(char * confRed);
 int conectarEstacion(char * confRed);
 
 /**
- * Obtiene el nombre del archivo de conf de Red segun el nombre de la estacion a conectarse
+ * Funcion que Obtiene el nombre del archivo de conf de Red segun el nombre de la estacion a conectarse
  * @param * nombreEstacion puntero al argumento con el nombre de la estacion a conectarse
  * @param * archConfigRed puntero a char donde se va a guardar el nombre del archivo de conf de red
  */

@@ -8,12 +8,12 @@ HEADERS = $(wildcard lib/*.h)
 
 LIB = -Ilib
 
-CFLAG = -lncurses 
+CFLAG = -lncurses -lpthread
 
 CC = gcc
 
 estacion: estacion.c $(SRCFILES) $(HEADERS)
-	$(CC) $(LIB) estacion.c $(SRCEST) -o bin/estacion $(CFLAG) -lpthread
+	$(CC) $(LIB) estacion.c $(SRCEST) -o bin/estacion $(CFLAG) 
 
 tren: tren.c $(SRCFILES) $(HEADERS)
 	$(CC) $(LIB) tren.c $(SRCTREN) -o bin/tren $(CFLAG)

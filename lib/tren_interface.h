@@ -13,6 +13,8 @@
 
 #include <curses.h>
 #include <unistd.h>
+#include "funcTrenes.h"
+#include "Conexion.h"
 
 #define LINE_LENGTH 80
 #define VIEW_WIN_WIDTH 0
@@ -35,10 +37,10 @@ typedef struct {
 /**
  *Estructura del tipo enum para los colores a utilizar
  */
-typedef enum {RED = 1, GREEN, BLUE, WHITE} COLOUR;
+typedef enum {RED = 1, GREEN, BLUE, WHITE, YELLOW, CYAN,} COLOUR;
 
 /**
- * Crea las ventanas de la app. Asocia colores con las ventanas
+ * Funcion que Crea las ventanas de la app. Asocia colores con las ventanas
  * Crea en pantalla un grupo de ventanas con la siguiente estructura:
  * Log: muestra mensajes
  * Cmd: permite el ingreso de comnandos al usuario.
@@ -118,11 +120,32 @@ void limpiarLogWindow(WINDOW *pWin);
 void printHelp(ST_APP_WINDOW *pAppWin);
 
 /**
+ * Funcion que imprime un mensaje que se le a asignado el anden al tren
+ * @param * pAppWin representa la Variable global para la interfaz grafica
+ */
+void imprimirAndenAsignado(ST_APP_WINDOW *pWin);
+
+/**
  * Funcion Muestra el Tren viajando
  * @param * pLogWindow representa la Variable global
  * @param * puntero al tiempo restante del tren para actualizarlo.
  */
-
 void DibujarTrenViajando(WINDOW *pLogWindow, int * tiempoRestante);
+
+/**
+ * Funcion Salir del programa
+ * @param TREN tren estructura de datos tren
+ * @param int client numero de cliente servidor
+ * @param * pAppWin representa la Variable global para la interfaz grafica
+ */
+
+void salirDelPrograma(TREN tren, int client, ST_APP_WINDOW * pWin);
+
+/**
+ * Funcion para el hilo que se encarga de la interfaz grafica
+ * @param * argumentos
+ */
+
+void InterfazGrafica(void * argumentos);
 
 #endif

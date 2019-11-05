@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 #include "lib/Conexion.h"
 #include "lib/funcTrenes.h"
 #include "lib/tren_interface.h"
@@ -14,20 +15,12 @@ int main(int argc, char** argv) {
 
     system("clear");
 
-    char nomArchivo[40] = "../config/tren/";
-    strcat(nomArchivo, FormatearNombre(argv[1]));
-    TREN tren = inicializarTren(nomArchivo);
-    
-    /* Devuelve el socket ya configurado */
-    obtenerConfRed(FormatearNombre(argv[2]) , nomArchivo);
-    int client = CrearSocketCliente(nomArchivo);
-    send(client, "1", sizeMsj, 0);
-    
-    char mensaje[sizeMsj];
+    pthread_t Interfaz;
+    pthread_create(&Interfaz, NULL,(void*) InterfazGrafica , (void*) argv);    
 
-    /* Flag para que un tren no pueda registrarse 2 veces*/
-    int yaRegistrado = 0;
+    pthread_join(Interfaz, NULL);
 
+<<<<<<< HEAD
     //Aca empieza a correr ncurses
     ST_APP_WINDOW pWin;
     InitInterfazDeUsuario(&pWin);
@@ -149,6 +142,7 @@ int main(int argc, char** argv) {
 
         limpiarVentanaDeCmd(pWin.pCmdWindow);
     }
+=======
+>>>>>>> master
     return (EXIT_SUCCESS);
 }
-

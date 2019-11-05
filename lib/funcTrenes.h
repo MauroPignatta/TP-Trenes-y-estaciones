@@ -28,6 +28,7 @@ typedef struct{
     char estDestino[max_nombre_est];
     int tiempoRestante;
     int migrado;
+    int nCliente;
 }TREN;
 
 /**
@@ -37,13 +38,6 @@ typedef struct{
  */
 
 TREN inicializarTren(char *arch);
-
-/**
- * Funcion Solicita el Tren a la Estacion si tiene Anden libre o no
- * @param Falta terminar///////
- */
-
-void solicitarPasoAnden();
 
 /**
  * Funcion Dibuja el Tren y resta el tiempo 
