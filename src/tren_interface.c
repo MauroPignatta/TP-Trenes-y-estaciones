@@ -239,7 +239,7 @@ void InterfazGrafica(void * argumentos)
                 clearLogWindow(pWin.pLogWindow);
                 printMessage(&pWin, mensaje, WHITE);
 
-                if (strcmp(mensaje, "No hay estaciones disponibles"))
+                if (strcmp(mensaje, "No hay estaciones disponibles para viajar."))
                 {
                     clearLogWindow(pWin.pLogWindow);
                     printMessage(&pWin, mensaje, WHITE);

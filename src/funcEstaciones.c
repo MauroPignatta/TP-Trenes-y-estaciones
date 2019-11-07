@@ -132,7 +132,7 @@ int elegirTren()
 
     if (pos == -1 || estaciones[miPos].tren[pos].migrado == 0)
     {
-        return -1;
+        pos = -1;
     }
 
     return pos;
@@ -206,7 +206,7 @@ int mensajeListadoEstDisp(char * mensaje)
     }
     if (cont == 0)
     {
-        strcpy(mensaje, "No hay estaciones disponibles");
+        strcpy(mensaje, "No hay estaciones disponibles para viajar.");
     }
     return cont;
 }
@@ -305,7 +305,7 @@ TREN * eliminarNodoPrioridad(ST_NODO_TRENES ** cola)
     ST_NODO_TRENES * aux = *cola;
     ST_NODO_TRENES * ant = NULL;
     TREN * tren = NULL;
-    while (aux && aux->prioridad < 2)
+    while (aux && aux->prioridad < 3)
     {
         ant = aux;
         aux = aux->sig;
@@ -357,11 +357,14 @@ void avisarEstaciones(int posEstacionDestino, int tipoAviso)
     }
     char mensaje[sizeMsj];
     strcpy(mensaje, "2;1");
-    if (tipoAviso == 2)
-            strcpy(mensaje,"2;2;1");
+
+    
+
     while (i != max)
     {
         i += direccion;
+        if (tipoAviso == 2)
+            strcpy(mensaje,"2;2;1");
         if ( i == posEstacionDestino && tipoAviso == 2)
             strcpy(mensaje,"2;2;0");
         if (estaciones[i].online)
@@ -377,7 +380,7 @@ int subirPrioridadTrenes(ST_NODO_TRENES * cola)
     while(cola != NULL)
     {
         cola->prioridad += 1;
-        TrenesACambiarDeCola += cola->prioridad == 2 ? 1 : 0;
+        TrenesACambiarDeCola += cola->prioridad == 3 ? 1 : 0;
         cola = cola->sig;
     }
 
@@ -626,10 +629,11 @@ void ConexionServer(void * argumento)
 
                                 case '4':
                                     sscanf(mensaje, "1;4;%d", &TrenID);
-                                    avisarEstaciones(posEst, 2);
 
                                     posTren = BuscarTrenPorID(estaciones[miPos], TrenID); //busco al tren
                                     posEst = buscarEstacionPorNombre(estaciones[miPos].tren[posTren].estDestino);
+
+                                    avisarEstaciones(posEst, 2);
 
                                     estaciones[miPos].tren[posTren].combustible -= restarCombustible(estaciones[miPos].tren[posTren].tiempoRestante);
 
