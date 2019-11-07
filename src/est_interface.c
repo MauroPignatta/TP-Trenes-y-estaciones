@@ -453,7 +453,7 @@ void InterfazGrafica()
             else 
             {
                 clearWindow(pWin.pLogWindow);
-                printLog(&pWin, "No hay trenes que la estacion controle\npasa solicitar anden.", WHITE);
+                printLog(&pWin, "No hay trenes que la estacion controle\npara solicitar anden.", WHITE);
             }
         }
 
@@ -461,10 +461,10 @@ void InterfazGrafica()
         {
         	if (!trenEnViaje)
         	{
-	        	int posEst = buscarEstacionPorNombre(anden->estDestino);
-	        	avisarEstaciones(posEst, 1);
 	            if (anden && anden->migrado > 0)
 	            {
+                    int posEst = buscarEstacionPorNombre(anden->estDestino);
+                    avisarEstaciones(posEst, 1);
 	                int combustibleaGastar = restarCombustible(anden->tiempoRestante);
 	                if ( anden->combustible - combustibleaGastar < 0)
 	                {
