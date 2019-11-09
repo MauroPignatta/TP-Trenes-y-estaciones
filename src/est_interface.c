@@ -263,6 +263,15 @@ void unInitUserInterface(ST_APP_WINDOW *pWindow){
     endwin();
 }
 
+void matarTrenes()
+{
+	for ( int i = 0; i < MAX_TREN; i++)
+		{
+			if (estaciones[miPos].tren[i].ID > 0 && estaciones[miPos].tren[i].migrado > 0)
+				kill( estaciones[miPos].tren[i].migrado, SIGKILL);
+		}
+}
+
 void dibujarTrenViajando(WINDOW * pLogWindow, int * tiempoRestante)
 {
     int y = getmaxy(pLogWindow)/ 2;
@@ -392,6 +401,7 @@ void InterfazGrafica()
                 if (i != miPos)
                     send(serverEst[i], mensaje, sizeMsj, 0);
             }
+			matarTrenes();
             free(estaciones[miPos].tren);
             unInitUserInterface(&pWin);
             exit(EXIT_SUCCESS);
