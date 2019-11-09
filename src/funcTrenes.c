@@ -30,13 +30,6 @@ TREN inicializarTren(char *arch)
     return aux;
 }
 
-void partir(TREN tren)
-{
-    for(int i=tren.tiempoRestante;i>0;i--){
-    sleep(1);  
-    tren.tiempoRestante--;
-    }   
-}
 
 void cargarCombustible(int *combustible)
 {
