@@ -229,7 +229,7 @@ void InterfazGrafica(void * argumentos)
         else if(!strcmp(mensaje, "anden"))
         {
             //solicitar anden
-            if (yaRegistrado)
+            if (yaRegistrado && !solicitoAnden)
             {
                 sprintf(mensaje, "1;2;%d",tren.ID);
                 send(client, mensaje, sizeMsj, 0);
@@ -275,9 +275,16 @@ void InterfazGrafica(void * argumentos)
             }
             else 
             {
-                clearLogWindow(pWin.pLogWindow);
-                printMessage(&pWin, "Es necesario estar registrado en la estacion.", WHITE);
-            }
+				if (!yaRegistrado)
+				{
+					clearLogWindow(pWin.pLogWindow);
+					printMessage(&pWin, "Es necesario estar registrado en la estacion.", WHITE);
+				}
+				else 
+				{
+					clearLogWindow(pWin.pLogWindow);
+					printMessage(&pWin, "Ya solicitaste anden previamente.", WHITE);
+				}
         }
         else if(!strcmp(mensaje, "partir"))
         {
