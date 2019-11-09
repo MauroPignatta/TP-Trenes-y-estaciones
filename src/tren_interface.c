@@ -226,6 +226,7 @@ void InterfazGrafica(void * argumentos)
                 printMessage(&pWin, token, WHITE);
             }
         }
+
         else if(!strcmp(mensaje, "anden"))
         {
             //solicitar anden
@@ -285,7 +286,9 @@ void InterfazGrafica(void * argumentos)
 					clearLogWindow(pWin.pLogWindow);
 					printMessage(&pWin, "Ya solicitaste anden previamente.", WHITE);
 				}
+			}
         }
+
         else if(!strcmp(mensaje, "partir"))
         {
             if (yaRegistrado && solicitoAnden)
