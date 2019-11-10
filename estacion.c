@@ -30,6 +30,8 @@ int main(int argc, char** argv)
     wmove(pWin.pCmdWindow, 0,0);
     pthread_create(&Conexion, NULL,(void*) ConexionServer ,(void *) argv);
 
+    sleep(1);
+
     /* Hilo para la interfaz grafica */
     pthread_t Interfaz;
     wmove(pWin.pCmdWindow, 0,0);

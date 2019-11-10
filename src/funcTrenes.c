@@ -30,12 +30,6 @@ TREN inicializarTren(char *arch)
     return aux;
 }
 
-
-void cargarCombustible(int *combustible)
-{
-    *combustible=500;
-}
-
 void armarMensajeRegistrarse(TREN tren,char * mensaje)
 {
     sprintf(mensaje , "1;1;%d;%d;%s;%s;%s;",
