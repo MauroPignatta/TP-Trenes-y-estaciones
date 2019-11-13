@@ -31,4 +31,4 @@
 11-	Abrir otra Terminal para ejecutar el programa de Tren con el siguiente comando:
 	Para el Tren: ./tren <nombre del archivo de configuración de trenes>.conf <nombre estacion donde conectarse>
 
-12-	Por cada Tren que desee agregar, deberá repetir el punto 11 completo.
+12-	Por cada Tren que desee agregar, deberá repetir el punto 11.
