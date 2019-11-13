@@ -18,8 +18,6 @@ int main(int argc, char** argv)
     miPos = ObtenerDatosMiEstacion( nomArchivoEst, estaciones); 
     ObtenerOtrasEstaciones(estaciones, miPos);
 
-    
-
     logEstacion = crearLogEstacion(estaciones[miPos].nombre);
 
     pthread_mutex_init(&lock, NULL);
@@ -37,8 +35,6 @@ int main(int argc, char** argv)
     wmove(pWin.pCmdWindow, 0,0);
     pthread_create(&Interfaz, NULL,(void*) InterfazGrafica , NULL);    
 
-    /* Espero a que los hilos "terminen" cosa que no va a pasar nunca porque son infinitos,
-    pero si no pongo esto el main sigue viaje, llega al return y termina la ejecucion */ 
     pthread_join(Conexion, NULL);
     pthread_join(Interfaz, NULL);
 

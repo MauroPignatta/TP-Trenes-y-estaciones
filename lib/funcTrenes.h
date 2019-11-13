@@ -1,15 +1,12 @@
 #ifndef FUNCTRENES_H
 #define FUNCTRENES_H
 
-/** 
- * Integrantes:
- * Alejandro Ugobono, 
- * Ezequiel Pirrota, 
- * Facundo Palacios,
- * Gonzalo Fernandez, 
- * Mauro Pignata, 
- * Mariano Wiñar.
- */
+/**
+  @file funcTrenes.h
+  @brief TAD para manejo de los trenes.
+  @authors Alejandro Ugobono, Ezequiel Pirrota, Facundo Palacios, Gonzalo Fernandez, Mauro Pignatta, Mariano Wiñar.
+  @date 8/2019, 11/2019.
+*/
 
 #define max_nombre_est 30
 #define restarCombustible(x) 4 * x
@@ -19,7 +16,6 @@
 /**
  * Estructura de datos para Trenes 
  */
-
 typedef struct{
     int ID;
     int combustible;
@@ -32,58 +28,38 @@ typedef struct{
 }TREN;
 
 /**
- * Funcion Inicializa el Tren con todas las variables
- * @param char * arch puntero a
- * @return devuelve la variable tipo Tren con toda la info cargada
+ * Inicializa un tren con los datos del archivo de configuracion.
+ * @param arch Ruta al archivo de configuracion.
+ * @return Tren inicializado.
  */
-
 TREN inicializarTren(char *arch);
 
 /**
- * Funcion Dibuja el Tren y resta el tiempo 
- * @param TREN tren variable tipo tren
+ * Arma un mensaje de registro.
+ * @param tren Tren a registrar.
+ * @param mensaje Puntero al vector donde se va a copiar el mensaje del registro.
  */
-
-void partir(TREN tren);
+void armarMensajeRegistrarse(TREN tren,char * mensaje);
 
 /**
- * Funcion Carga Combustible al tren que lo solicite
- * @param int * combustible variable para indicar cantidad
+ * Arma el mensaje con el estado del tren.
+ * @param tren Tren del cual se arma el estado.
+ * @param mensaje Puntero al vector donde se va a copiar el mensaje del estado.
  */
-
-void cargarCombustible(int *combustible);
+void armarMensajeEstadoDelTren(TREN tren, char * mensaje);
 
 /**
- * Funcion Arma en una variable el mensaje con los datos del tren
- * @param TREN tren una variable del tipo TREN
- * @param char * mensaje la variable del mensaje a enviar
+ * Arma el mensaje para avisar a la estacion que va a salir del programa.
+ * @param tren Tren que va a salir del programa.
+ * @param mensaje Puntero al vector donde se va a copiar el mensaje del salida.
  */
-
-void armarMensajeRegistrarse(TREN tren,char *mensaje);
-
-/**
- * Funcion Arma el mensaje con el estado del tren 
- * @param TREN tren una variable del tipo TREN
- * @param char * mensaje la variable del mensaje a enviar
- */
-
-void armarMensajeEstadoDelTren(TREN t, char * mensaje);
-
-/**
- * Funcion Arma el mensaje para salir del programa
- * @param TREN tren una variable del tipo TREN
- * @param char * mensaje la variable del mensaje a enviar
- */
-
 void armarMensajeExit(TREN tren, char * mensaje);
 
 /**
- * Funcion Arma el mensaje para indicarle a la estacion que quiere partir el tren
- * @param TREN tren una variable del tipo TREN
- * @param char * mensaje la variable del mensaje a enviar
+ * Arma el mensaje para indicarle a la estacion que el tren quiere partir.
+ * @param tren Tren que quiere partir.
+ * @param mensaje Puntero al vector donde se va a copiar el mensaje del partir.
  */
-
 void armarMensajePartir(TREN tren ,char * mensaje);
 
 #endif	// FUNCTRENES_H
-

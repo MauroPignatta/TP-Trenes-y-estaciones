@@ -211,8 +211,6 @@ int mensajeListadoEstDisp(char * mensaje)
     return cont;
 }
 
-/* Busca a la estacion por el nombre
-Devuelve la pos si la encuentrao -1 si no la encuentra*/
 int buscarEstacionPorNombre(char * mensaje)
 {
     int pos = -1;

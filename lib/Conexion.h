@@ -1,15 +1,12 @@
 #ifndef CONEXION_H
 #define CONEXION_H
 
-/** 
- * Integrantes:
- * Alejandro Ugobono, 
- * Ezequiel Pirrota, 
- * Facundo Palacios,
- * Gonzalo Fernandez, 
- * Mauro Pignata, 
- * Mariano Wiñar.
- */
+/**
+  @file Conexion.h
+  @brief Contiene funciones para la conexion entre servidor y cliente.
+  @authors Alejandro Ugobono, Ezequiel Pirrota, Facundo Palacios, Gonzalo Fernandez, Mauro Pignatta, Mariano Wiñar.
+  @date 8/2019, 11/2019.
+*/
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -26,47 +23,45 @@
 #define MaxClientes 25
 
 /**
- * Funcion que organiza la palabra ingresada
- * @param * palabra es la palabra ingresada en el comando
- * return el nombre formateado primera en Mayuscula 
- * y las demas en minusculas
+ * Formatea una palabra poniendo la primer letra en mayuscula y el resto en minuscula.
+ * @param Palabra Palabra a formatear.
+ * @return Palabra ya formateada. 
  */
 char * FormatearNombre( char * Palabra);
 
 /**
- * Funcion que obtiene IP y Puerto de la red de servicios.
- * @param char * IP es la direccion de IP que identifica la interfaz de red
- * @param char * Puerto es el puerto de comunicacion
- * @param char * confRed el archivo de configuracion de red
- * return * red puntero al archivo de configuracion de red
+ * Obtiene la direccion IP y el puerto de un archivo de configuracion de red.
+ * @param IP Puntero a char donde guardar la IP.
+ * @param Puerto Puntero a int donde guardar el puerto.
+ * @param confRed Ruta al archivo de configuracion de red.
  */
-void obtenerDatosRed(char* IP, int *Puerto, char * confRed);
+void obtenerDatosRed(char * IP, int * Puerto, char * confRed);
 
 /**
- * Funcion que crea el Socket de comunicacion tipo Servidor
- * @param * confRed es el puntero del archivo de configuracion del Servidor
- * return un int server formateado para la conexion
+ * Crea el Socket de comunicacion tipo Servidor
+ * @param confRed Ruta al archivo de configuracion de red.
+ * @return Socket ya configurado.
  */
 int CrearSocketServer(char * confRed);
 
 /**
- * Funcion que crea el Socket de comunicacion tipo Cliente
- * @param * confRed es el puntero al archivo de configuracion del Cliente
- * return un int cliente formateado para la conexion.
+ * Crea el Socket de comunicacion tipo Cliente
+ * @param confRed Ruta al archivo de configuracion de red.
+ * @return Socket ya configurado.
  */
 int CrearSocketCliente(char * confRed);
 
 /**
- * Funcion que crea la Conexion de la Estacion
- * @param * confRed es el puntero del archivo de configuracion del Servidor
- * return int cliente formateado para la conexion
+ * Conecta a una estacion con otra.
+ * @param confRed ruta al archivo de configuracion de red de la estacion a conectarse.
+ * @return Socket ya configurado.
  */
 int conectarEstacion(char * confRed);
 
 /**
- * Funcion que Obtiene el nombre del archivo de conf de Red segun el nombre de la estacion a conectarse
- * @param * nombreEstacion puntero al argumento con el nombre de la estacion a conectarse
- * @param * archConfigRed puntero a char donde se va a guardar el nombre del archivo de conf de red
+ * Obtiene el nombre del archivo de configuracion de Red segun el nombre de la estacion a conectarse.
+ * @param nombreEstacion Nombre de la estacion a conectarse.
+ * @param archConfigRed Puntero al vector donde se va a guardar la ruta al archivo de configuracion.
  */
 void obtenerConfRed(char * nombreEstacion , char * archConfigRed);
 

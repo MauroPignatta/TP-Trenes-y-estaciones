@@ -73,6 +73,11 @@ void obtenerDatosRed(char* IP, int *Puerto, char * confRed)
 int CrearSocketServer(char * confRed)
 {
     char * IP = (char*) malloc(sizeIP);
+    if (!IP)
+    {
+        perror("Error al asignar memoria");
+        exit(2);
+    }
     int Puerto;
     
     /* Obtiene los datos del archivo de config. y los almacenas en las variables*/

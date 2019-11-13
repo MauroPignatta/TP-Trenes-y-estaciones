@@ -1,15 +1,12 @@
-#ifndef USER_INTERFACE_H
-#define USER_INTERFACE_H
+#ifndef TREN_INTERFACE_H
+#define TREN_INTERFACE_H
 
-/** 
- * Integrantes:
- * Alejandro Ugobono, 
- * Ezequiel Pirrota, 
- * Facundo Palacios,
- * Gonzalo Fernandez, 
- * Mauro Pignata, 
- * Mariano Wiñar.
- */
+/**
+  @file tren_interface.h
+  @brief TAD para la interfaz grafica del tren.
+  @authors Alejandro Ugobono, Ezequiel Pirrota, Facundo Palacios, Gonzalo Fernandez, Mauro Pignatta, Mariano Wiñar.
+  @date 8/2019, 11/2019.
+*/
 
 #include <curses.h>
 #include <unistd.h>
@@ -40,112 +37,81 @@ typedef struct {
 typedef enum {RED = 1, GREEN, BLUE, WHITE, YELLOW, CYAN,} COLOUR;
 
 /**
- * Funcion que Crea las ventanas de la app. Asocia colores con las ventanas
- * Crea en pantalla un grupo de ventanas con la siguiente estructura:
- * Log: muestra mensajes
- * Cmd: permite el ingreso de comnandos al usuario.
- * 
- * |---------------|
- * ||-----Log-----||
- * ||             ||
- * ||             ||
- * ||             ||
- * ||             ||
- * ||-------------||
- * |               |
- * ||-----Cmd-----||
- * ||             ||
- * ||-------------||
- * |---------------|
- * 
- * @param ST_APP_WINDOW * puntero a estructura que contiene las ventanas
+ * Inicializa la interfaz grafica.
+ * @param pWindow Puntero a estructura que contiene la interfaz.
  */
-
-void initUserInterface(ST_APP_WINDOW *);
+void initUserInterface(ST_APP_WINDOW *pWindow);
 
 /**
- * Funcion que Dibuja el Marco de la App, Ventana Log, Ventana Cmd, Ventana Reg,
- * @param ST_APP_WINDOW * puntero a estructura que contiene las ventanas
+ * Dibuja la interfaz grafica.
+ * @param pWindow Puntero a estructura que contiene la interfaz.
  */
-
-void drawUserInterface(ST_APP_WINDOW *);
+void drawUserInterface(ST_APP_WINDOW *pWindow);
 
 /**
- * Funcion que imprime en la pantalla tipo Log en la parte superior
- * @param * pWindow puntero a la estructura que contiene las ventanas
- * @param * message contiene el mensaje a imprimir
- * @param colour de la estructura tipo enum con los colores a utilizar
+ * Imprime un titulo en el marco de la ventana.
+ * @param pWin Puntero a la ventana.
+ * @param message Titulo a imprimir.
  */
-
 void printWindowTitle(WINDOW *pWin, const char * message);
 
 /**
- * Funcion Imprime mensaje
- * @param * pWindow puntero a la estructura que contiene las ventanas
- * @param * message contiene el mensaje a imprimir
- * @param colour de la estructura tipo enum con los colores a utilizar
+ * Imprime un mensaje en la ventana de Log
+ * @param pWindow Puntero a estructura que contiene la interfaz.
+ * @param message Mensaje a imprimir.
+ * @param colour Color a utilizar.
  */
-
 void printMessage(ST_APP_WINDOW *pWindow, const char * message, COLOUR colour);
 
 /**
- * Funcion que inicia el usuario de la interfaz grafica
- * @param * variable global para la interfaz grafica
+ * Destruye la interfaz grafica.
+ * @param pWindow Puntero a estructura que contiene la interfaz.
  */
-
-void unInitUserInterface(ST_APP_WINDOW *);
+void unInitUserInterface(ST_APP_WINDOW *pWindow);
 
 /**
- * Funcion que limpia la ventana de comandos
- * @param * pWin variable global, ventana de comandos
- * @return ERR_OK
+ * Limpia la ventana de comandos.
+ * @param pWin Puntero a la ventana de comandos.
  */
-
 void clearCmdWindow(WINDOW *pWin);
 
 /**
- * Funcion que limpia la ventana de comandos y hace un refresco de pantalla
- * Limpia la pantalla del Log
- * @param * pWin variable global, ventana de comandos
- * @return ERR_OK
+ * Limpia la ventana del Log
+ * @param pWin Puntero a la ventana de Log.
  */
-
 void clearLogWindow(WINDOW *pWin);
 
 /**
- * Funcion que imprime la Ayuda del programa
- * @param * pAppWin representa la Variable global para la interfaz grafica
+ * Imprime la ayuda del programa.
+ * @param pAppWin Puntero a estructura que contiene la interfaz.
  */
-
 void printHelp(ST_APP_WINDOW *pAppWin);
 
 /**
- * Funcion que imprime un mensaje que se le a asignado el anden al tren
- * @param * pAppWin representa la Variable global para la interfaz grafica
+ * Imprime el mensaje de que el anden fue asignado.
+ * @param pWin Puntero a estructura que contiene la interfaz.
  */
 void imprimirAndenAsignado(ST_APP_WINDOW *pWin);
 
 /**
- * Funcion Muestra el Tren viajando
- * @param * pLogWindow representa la Variable global
- * @param * puntero al tiempo restante del tren para actualizarlo.
+ * Dibuja un tren viajando.
+ * @param pLogWindow Puntero a la ventana de Log.
+ * @param tiempoRestante Puntero al tiempo de viaje restante del tren. 
  */
 void DibujarTrenViajando(WINDOW *pLogWindow, int * tiempoRestante);
 
 /**
- * Funcion Salir del programa
- * @param TREN tren estructura de datos tren
- * @param int client numero de cliente servidor
- * @param * pAppWin representa la Variable global para la interfaz grafica
+ * Termina la ejecucion del programa.
+ * @param tren Tren que va a terminar la ejecucion del programa.
+ * @param client socket para enviarle mensaje a la estacion que va a salir del programa.
+ * @param pWin Puntero a estructura que contiene la interfaz.
  */
-
 void salirDelPrograma(TREN tren, int client, ST_APP_WINDOW * pWin);
 
 /**
- * Funcion para el hilo que se encarga de la interfaz grafica
- * @param * argumentos
+ * Funcion para el hilo que se encarga de la interfaz grafica.
+ * @param argumentos Puntero a los argumentos para modificarlos cuando un tren migra.
  */
-
 void InterfazGrafica(void * argumentos);
 
-#endif
+#endif /* TREN_INTERFACE_H */

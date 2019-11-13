@@ -37,21 +37,21 @@ void armarMensajeRegistrarse(TREN tren,char * mensaje)
             tren.estDestino, tren.estOrigen );
 }
 
-void armarMensajeEstadoDelTren(TREN t, char * mensaje)
+void armarMensajeEstadoDelTren(TREN tren, char * mensaje)
 {
     sprintf(mensaje,"Estado:\n\n");
     mensaje += strlen(mensaje);
-    sprintf(mensaje,"ID: %d\n",t.ID);
+    sprintf(mensaje,"ID: %d\n",tren.ID);
     mensaje += strlen(mensaje);
-    sprintf(mensaje,"Combustible restante: %d\n",t.combustible);
+    sprintf(mensaje,"Combustible restante: %d\n",tren.combustible);
     mensaje += strlen(mensaje);
-    sprintf(mensaje,"Modelo: %s\n",t.modelo); 
+    sprintf(mensaje,"Modelo: %s\n",tren.modelo); 
     mensaje += strlen(mensaje);
-    sprintf(mensaje,"Estacion Actual: %s\n",t.estOrigen);
+    sprintf(mensaje,"Estacion Actual: %s\n",tren.estOrigen);
     mensaje += strlen(mensaje);
-    sprintf(mensaje,"Estacion Destino: %s\n",t.estDestino);
+    sprintf(mensaje,"Estacion Destino: %s\n",tren.estDestino);
     mensaje += strlen(mensaje);
-    sprintf(mensaje,"Tiempo de viaje restante: %d\n",t.tiempoRestante);
+    sprintf(mensaje,"Tiempo de viaje restante: %d\n",tren.tiempoRestante);
 }
 
 void armarMensajePartir(TREN tren ,char * mensaje)
