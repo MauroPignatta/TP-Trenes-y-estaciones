@@ -13,7 +13,7 @@
 
 5-Instalar Make y GCC con los siguientes comandos:
 - sudo apt install make
-- sudo apt install make
+- sudo apt install gcc
 
 6-	Instalar NCurses con el siguiente comando:
 -	sudo apt-get install libncurses5-dev
