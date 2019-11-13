@@ -19,14 +19,16 @@
 -	sudo apt-get install libncurses5-dev
 -	sudo apt-get install libncursesw5-dev
 
-7-	Ingresar al sub-directorio “bin” ubicado en la carpeta contenedora donde se aloja el programa. 
+7-  Crear el subdirectorio "bin" del de la carpeta donde se aloja el programa.
+
+8-	Ingresar al sub-directorio “bin” ubicado en la carpeta contenedora donde se aloja el programa. 
 (Ej: "/TP-Trenes-y-estaciones/bin")
 
-8-	Ya puede ejecutar el programa de Estaciones con el siguiente comando:
+9-	Ya puede ejecutar el programa de Estaciones con el siguiente comando:
 -	Para la Estación: ./estación <nombre del archivo de configuración de estaciones> .conf
 
-9-	Abrir otra Terminal para ejecutar el programa de Tren con el siguiente comando:
+10-	Abrir otra Terminal para ejecutar el programa de Tren con el siguiente comando:
 -	Para cada Tren: ejecutar la aplicacion del programa "tren" y a continuacion el nombre del archivo de configuracion de trenes seguido del el nombre de la estacion a la cual desea conectarse.
 ./tren <nombre del archivo de configuración de trenes>.conf <nombre estacion>
 
-10-	Por cada Tren que desee agregar, deberá repetir el punto 8 completo.
+11-	Por cada Tren que desee agregar, deberá repetir el punto 8 completo.
