@@ -21,15 +21,15 @@
 
 7-  Crear el directorio "bin".
 
-8-  En una Terminal ingresar el comando make.
+8-  En una Terminal ingresar el comando make
 
 9-	Ingresar al directorio "bin".
 
-10-	Ya puede ejecutar el programa de Estaciones con el siguiente comando:
-	Para la Estación: ./estación <nombre del archivo de configuración de estaciones>.conf
+10-	Ya puede ejecutar el Programa de Estaciones con el siguiente comando:
+	./estación <nombre del archivo de configuración de estaciones>.conf
 
-11-	Abrir otra Terminal para ejecutar el programa de Tren con el siguiente comando:
-	Para el Tren: ./tren <nombre del archivo de configuración de trenes>.conf <nombre estacion donde conectarse>
+11-	Abrir otra Terminal para ejecutar el Programa de Tren con el siguiente comando:
+	./tren <nombre del archivo de configuración de trenes>.conf <nombre estacion donde conectarse>
 
 12-	Por cada Tren que desee agregar, deberá repetir el punto 11.
 
