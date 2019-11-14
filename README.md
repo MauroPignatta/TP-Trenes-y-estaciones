@@ -41,4 +41,4 @@
 2-	Abrir una terminal en el directorio principal del programa.
 
 3-	Ejecutar el siguiente comando en la terminal:
--	doxygen Doxifile
+-	doxygen Doxyfile
