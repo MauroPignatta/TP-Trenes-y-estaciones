@@ -32,3 +32,13 @@
 	Para el Tren: ./tren <nombre del archivo de configuración de trenes>.conf <nombre estacion donde conectarse>
 
 12-	Por cada Tren que desee agregar, deberá repetir el punto 11.
+
+## Generando la documentacion:
+
+1-	Instalar Doxygen con el siguiente comando:
+-	sudo apt-get install doxygen
+
+2-	Abrir una terminal en el directorio principal del programa.
+
+3-	Ejecutar el siguiente comando en la terminal:
+-	doxygen Doxifile

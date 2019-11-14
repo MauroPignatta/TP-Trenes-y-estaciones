@@ -1,3 +1,0 @@
-Registro de la estacion Munro:
-
-Tren ID: 10 | Origen: Munro | Destino: Retiro 

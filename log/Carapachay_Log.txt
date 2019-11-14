@@ -1,4 +1,0 @@
-Registro de la estacion Carapachay:
-
-Tren ID: 11 | Origen: Carapachay | Destino: Munro 
-Tren ID: 12 | Origen: Carapachay | Destino: Munro 

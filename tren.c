@@ -8,10 +8,12 @@
 
 int main(int argc, char** argv) {
 
-	if(argc == 3)
+	if(argc == 3) /* Para cuando el tren migra a la estacion. */
 	{
 		if( atoi(argv[1]) )
+		{
 			pause();
+		}
 	}
 
     if(argc != 3){
