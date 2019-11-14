@@ -99,11 +99,6 @@ int buscarTrenes( TREN trenes[] ,int posTrenes[]);
 int BuscarTrenPorID(ESTACION estacion, int idTren);
 
 /**
- * Funcion para el hilo que se encarga de la conexion servidor-cliente
- */
-void ConexionServer();
-
-/**
  * Copia un mensaje con los trenes migrados que pueden viajar.
  * @param mensaje puntero al vector donde se va a copiar el mensaje.
  * @return Cantidad de trenes migrados.
@@ -229,5 +224,10 @@ void * llenarLog(TREN * tren , FILE * logEstacion);
  * @param tipoAviso 1 para avisar un tren empezo a viajar, 2 para avisar que el tren llego.
  */
 void avisarEstaciones(int posEstacionDestino, int tipoAviso);
+
+/**
+ * Funcion para el hilo que se encarga de la conexion servidor-cliente
+ */
+void ConexionServer();
 
 #endif	// FUNCESTACIONES_H

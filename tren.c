@@ -8,9 +8,15 @@
 
 int main(int argc, char** argv) {
 
+	if(argc == 3)
+	{
+		if( atoi(argv[1]) )
+			pause();
+	}
+
     if(argc != 3){
-        printf("\nuso: ./tren <Nombre archivo Conf Tren> <Nombre de Estacion a conectarse>\n");
-        exit(3);
+		printf("\nuso: ./tren <Nombre archivo Conf Tren> <Nombre de Estacion a conectarse>\n");
+    	exit(3);
     }
 
     system("clear");

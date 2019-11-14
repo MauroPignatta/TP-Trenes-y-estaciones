@@ -1,0 +1,3 @@
+Registro de la estacion Boulogne:
+
+Tren ID: 10 | Origen: Boulogne | Destino: Munro 

@@ -26,7 +26,7 @@ int main(int argc, char** argv)
     /* Hilo para la conexion */
     pthread_t Conexion;
     wmove(pWin.pCmdWindow, 0,0);
-    pthread_create(&Conexion, NULL,(void*) ConexionServer ,(void *) argv);
+    pthread_create(&Conexion, NULL,(void*) ConexionServer , NULL);
 
     sleep(1);
 

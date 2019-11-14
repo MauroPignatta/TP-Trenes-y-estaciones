@@ -4,6 +4,8 @@
 #include "../lib/Conexion.h"
 #include <signal.h>
 #include <string.h>
+#include <sys/wait.h> 
+#include <sys/types.h>
 
 void ObtenerOtrasEstaciones(ESTACION est[],int miPos)
 {
@@ -443,9 +445,8 @@ void * llenarLog(TREN * tren , FILE * logEstacion)
 }
 
 
-void ConexionServer(void * argumento)
+void ConexionServer()
 {
-    char ** argv = (char **) argumento;
     char mensaje[sizeMsj];
     sprintf(mensaje,"../config/red/Red%d.conf", miPos + 1);
     trenEnViaje = 0;
@@ -691,21 +692,19 @@ void ConexionServer(void * argumento)
                                     trenEnViaje = 0;
                                     printRegistro(&pWin,"Ha llegado un nuevo tren", WHITE);
                                     posTren = registrarTren(&estaciones[miPos], mensaje);
-                                    sprintf(mensaje, "./tren %d",estaciones[miPos].tren[posTren].ID);
+                                    sprintf(mensaje, "%d",estaciones[miPos].tren[posTren].ID);
 
                                     pid_t pid = fork();
+                                    int stat;
                                     if (pid == 0)
                                     {
-                                        strcpy(argv[0], mensaje);
-                                        sprintf(mensaje, "%s        ",estaciones[miPos].nombre);
-                                        strcpy(argv[1], mensaje);
-                                        pause();
+                                        execlp("./tren", "./tren", mensaje, estaciones[miPos].nombre ,(char*) NULL);
+                                        
                                     }
                                     else
                                     {
                                         estaciones[miPos].tren[posTren].migrado = pid;
                                     }
-
                                 break;
 
                                 case '5': //exit
