@@ -29,7 +29,7 @@
 - 	Escriba: ./estación <nombre del archivo de configuración de estaciones>.conf
 
 11-	Abrir otra Terminal para ejecutar el Programa de Tren con el siguiente comando:
-- 	Escriba: ./tren <Archivo de configuracion>.conf <Estacion a conectarse>
+- 	Escriba: ./tren "Archivo de configuracion".conf "Estacion a conectarse"
 
 12-	Por cada Tren que desee agregar, deberá repetir el punto 11
 
